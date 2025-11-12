@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Container, Form, Button, Card, Row, Col, Image } from "react-bootstrap";
@@ -29,7 +30,7 @@ function ProductEdit() {
 
   const loadCategories = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/category/view");
+  const res = await axios.post(`${api_uri}category/view`);
       if (res.data.success) setCategories(res.data.categories);
     } catch {
       toast.error("Failed to load categories");
@@ -38,7 +39,7 @@ function ProductEdit() {
 
   const loadProduct = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/product/${id}`);
+  const res = await axios.get(`${api_uri}product/${id}`);
       if (res.data.success) {
         const product = res.data.product;
         setFormData({
@@ -50,7 +51,7 @@ function ProductEdit() {
         });
 
         if (product.images?.length > 0) {
-          setPreviewUrls(product.images.map((img) => `http://localhost:5000/${img.image_path}`));
+          setPreviewUrls(product.images.map((img) => `${base_uri}${img.image_path}`));
         }
       }
     } catch {
@@ -77,10 +78,7 @@ function ProductEdit() {
 
     try {
       // 1️⃣ Update text details
-      const res = await axios.put(
-        `http://localhost:5000/api/product/update/${id}`,
-        formData
-      );
+      const res = await axios.put(`${api_uri}product/update/${id}`, formData);
 
       if (res.data.success) {
         // 2️⃣ Upload images (optional)
@@ -88,7 +86,7 @@ function ProductEdit() {
           const imgForm = new FormData();
           images.forEach((file) => imgForm.append("images", file));
           await axios.post(
-            `http://localhost:5000/api/product/upload-images/${id}`,
+            `${api_uri}product/upload-images/${id}`,
             imgForm,
             { headers: { "Content-Type": "multipart/form-data" } }
           );

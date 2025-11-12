@@ -168,7 +168,7 @@
   .view-all-btn {
     width: 100%;
     max-width: 200px;
-    margin: 20px 0 0 0;
+    margin: 20px auto 0 auto;
     display: block;
   }
   
@@ -179,7 +179,7 @@
   
   .feature-products-section .row .col:last-child {
     order: 2;
-    text-align: left;
+    text-align: center;
     margin-top: 20px;
   }
   

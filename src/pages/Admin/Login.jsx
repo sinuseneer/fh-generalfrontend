@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import api_uri from "../../config/api";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -28,8 +29,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/login"
-, formData);
+  const res = await axios.post(`${api_uri}admin/login`, formData);
 
       if (res.data.success) {
         // ✅ Save admin info to localStorage

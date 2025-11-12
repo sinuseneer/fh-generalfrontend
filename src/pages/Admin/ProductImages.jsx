@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import { useParams } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -12,7 +13,7 @@ function ProductImages() {
   // Fetch product images
   const fetchImages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/product/images/${productId}`);
+  const res = await axios.get(`${api_uri}product/images/${productId}`);
       if (res.data.success) {
         setImages(res.data.images);
       }
@@ -31,7 +32,7 @@ function ProductImages() {
   // Set selected image as main
   const handleSetMain = async (imageId) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/product/setMainImage/${imageId}`);
+  const res = await axios.put(`${api_uri}product/setMainImage/${imageId}`);
       toast.success(res.data.message);
       // Update local state
       setImages((prev) =>
@@ -62,7 +63,7 @@ function ProductImages() {
               <Card className="shadow-sm text-center">
                 <Card.Img
                   variant="top"
-                  src={`http://localhost:5000/${img.image_path}`}
+                  src={`${base_uri}${img.image_path}`}
                   alt="Product"
                   style={{ height: "180px", objectFit: "cover" }}
                 />

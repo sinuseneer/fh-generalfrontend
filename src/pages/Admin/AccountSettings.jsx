@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api_uri from "../../config/api";
 import { Container, Card, Form, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,7 @@ const AccountSettings = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/update", formData);
+  const res = await axios.post(`${api_uri}admin/update`, formData);
 
       if (res.data.success) {
         toast.success(res.data.message);

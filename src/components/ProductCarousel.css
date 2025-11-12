@@ -177,6 +177,10 @@ button:focus,
 }
 
 @media (max-width: 576px) {
+  .product-carousel-section {
+    padding: 20px 0;
+  }
+  
   .image-wrapper {
     width: 140px;
     height: 140px;
@@ -185,13 +189,25 @@ button:focus,
     font-size: 0.95rem;
   }
   .product-card {
-    max-width: 180px;
+    max-width: 100%;
+    width: 100%;
+    padding: 8px;
   }
   .slick-slide {
     margin: 0 5px;
+    width: 100% !important;
   }
   .slick-list {
     margin: 0 -5px;
+    width: 100%;
+  }
+  .slick-track {
+    width: 100% !important;
+  }
+  
+  /* Ensure single slide takes full width */
+  .slick-slide > div {
+    width: 100% !important;
   }
 }
 
@@ -206,5 +222,122 @@ button:focus,
   .product-carousel-section h2 {
     margin-left: 0;
     text-align: left;
+  }
+}
+
+/* Custom Mobile Category Slider */
+.custom-mobile-category-slider {
+  width: 100%;
+  position: relative;
+}
+
+.category-slider-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  border-radius: 10px;
+  padding: 10px 0;
+}
+
+.category-slider-container::-webkit-scrollbar {
+  display: none; /* WebKit browsers */
+}
+
+.category-slider-track {
+  display: flex;
+  gap: 15px;
+  padding: 0 2rem;
+  align-items: center;
+}
+
+.mobile-category-slide {
+  flex: 0 0 calc(50% - 10px); /* Show 2 items: 50% width minus half the gap */
+  max-width: 180px;
+  min-width: 140px;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-category-slide .product-card {
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scroll snap for better UX */
+@supports (scroll-snap-type: x mandatory) {
+  .category-slider-container {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .mobile-category-slide {
+    scroll-snap-align: center;
+  }
+}
+
+/* Mobile category slider responsive adjustments */
+@media (max-width: 576px) {
+  .mobile-category-slide {
+    flex: 0 0 calc(50% - 8px);
+    max-width: 160px;
+    min-width: 130px;
+  }
+  
+  .category-slider-track {
+    gap: 12px;
+    padding: 0 2rem;
+  }
+  
+  .mobile-category-slide .product-card {
+    padding: 8px;
+  }
+  
+  .mobile-category-slide .image-wrapper {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 8px;
+  }
+  
+  .mobile-category-slide .product-title {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-category-slide {
+    flex: 0 0 calc(50% - 6px);
+    max-width: 150px;
+    min-width: 120px;
+  }
+  
+  .category-slider-track {
+    gap: 10px;
+    padding: 0 1.5rem;
+  }
+  
+  .mobile-category-slide .product-card {
+    padding: 6px;
+  }
+  
+  .mobile-category-slide .image-wrapper {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 6px;
+  }
+  
+  .mobile-category-slide .product-title {
+    font-size: 0.8rem;
+    margin-top: 6px;
   }
 }

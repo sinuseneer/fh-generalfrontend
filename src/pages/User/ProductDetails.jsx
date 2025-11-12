@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Container, Row, Col, Button, Form, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import { Box, IconButton, Card as MuiCard, CardMedia } from "@mui/material";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import "../../App.css";
@@ -30,10 +31,13 @@ export default function ProductDetails() {
 useEffect(() => {
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/product/userview/${id}`);
+      const res = await axios.get(`${api_uri}product/userview/${id}`);
       if (res.data.success) {
         setProduct(res.data.product);
-        setSelectedImage(res.data.product.main_image);
+        // prefix image path with base_uri so image URLs resolve correctly
+        if (res.data.product.main_image) {
+          setSelectedImage(`${base_uri}${res.data.product.main_image}`);
+        }
       } else {
         setProduct(null);
       }
@@ -85,7 +89,11 @@ useEffect(() => {
   }
 
   // ✅ Prepare all images (main + gallery)
-  const allImages = [product.main_image, ...(product.gallery || [])].filter(Boolean);
+  // ensure gallery images are full URLs
+  const normalizeImg = (img) => (img && img.startsWith("http") ? img : `${base_uri}${img}`);
+  const allImages = [product.main_image, ...(product.gallery || [])]
+    .filter(Boolean)
+    .map(normalizeImg);
   console.log("✅ allImages array:", allImages);
   console.log("✅ selectedImage:", selectedImage);
 

@@ -56,8 +56,8 @@ const LatestNews = () => {
                   className="rounded-top-4"
                   style={{ height: "180px", objectFit: "cover" }}
                 />
-                <Card.Body>
-                  <small className="text-muted d-block mb-2">{item.date}</small>
+                <Card.Body className="text-start">
+                  <small className="text-muted mb-2">{item.date}</small>
                   <Card.Title className="fs-6 fw-semibold">{item.title}</Card.Title>
                   <a href="#" className="text-success fw-semibold small">
                     Read More

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api_uri from "../../config/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -36,7 +37,7 @@ function ProductAdd() {
   // ✅ Fetch categories
   useEffect(() => {
     axios
-      .post("http://localhost:5000/api/category/view")
+      .post(`${api_uri}category/view`)
       .then((res) => {
         if (res.data.success) setCategories(res.data.categories);
       })
@@ -72,10 +73,7 @@ function ProductAdd() {
 
     try {
       // 1️⃣ Add product details
-      const res = await axios.post(
-        "http://localhost:5000/api/product/add",
-        formData
-      );
+      const res = await axios.post(`${api_uri}product/add`, formData);
 
       if (res.data.success) {
         const productId = res.data.product._id;
@@ -86,7 +84,7 @@ function ProductAdd() {
           images.forEach((file) => imgForm.append("images", file));
 
           await axios.post(
-            `http://localhost:5000/api/product/upload-images/${productId}`,
+            `${api_uri}product/upload-images/${productId}`,
             imgForm,
             { headers: { "Content-Type": "multipart/form-data" } }
           );

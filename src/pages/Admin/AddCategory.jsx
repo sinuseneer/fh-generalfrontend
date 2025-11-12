@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api_uri from "../../config/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +25,7 @@ const AddCategory = () => {
     formData.append("image", image);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/category/add", formData, {
+      const res = await axios.post(`${api_uri}category/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

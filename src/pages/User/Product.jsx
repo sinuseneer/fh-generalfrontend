@@ -13,6 +13,7 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import { toast } from "react-toastify";
 import Banner from "../../components/Banner";
 import ProductCarousel from "../../components/ProductCarousel";
@@ -53,12 +54,10 @@ export default function Product() {
 
         if (selectedCategory) {
           // 🔍 Fetch only products for this category
-          res = await axios.get(
-            `http://localhost:5000/api/product/category/${selectedCategory}`
-          );
+          res = await axios.get(`${api_uri}product/category/${selectedCategory}`);
         } else {
           // 🔍 Otherwise, fetch all products
-          res = await axios.get("http://localhost:5000/api/product/userview");
+          res = await axios.get(`${api_uri}product/userview`);
         }
 
         if (res.data.success) {
@@ -215,7 +214,7 @@ export default function Product() {
                       component="img"
                       image={
                         product.main_image
-                          ? `http://localhost:5000/${product.main_image}`
+                          ? `${base_uri}${product.main_image}`
                           : "/images/no-image.jpg"
                       }
                       alt={product.product_name}

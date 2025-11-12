@@ -1,4 +1,5 @@
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -32,7 +33,7 @@ function Categories() {
 
   const loadCategories = () => {
     
-      axios.post("http://localhost:5000/api/category/view")
+  axios.post(`${api_uri}category/view`)
 
       .then((response) => {
         setCategories(response.data.categories);
@@ -49,8 +50,7 @@ function Categories() {
   const deleteCategory = () => {
     if (!selectedCategory) return;
 
-    axios
-      .post("http://localhost:5000/api/category/delete", { id: selectedCategory })
+    axios.post(`${api_uri}category/delete`, { id: selectedCategory })
       .then((response) => {
         toast.success("Category deleted successfully!");
         setCategories((prev) =>
@@ -66,8 +66,7 @@ function Categories() {
 
   // Search category by name
   const searchCategory = (data) => {
-    axios
-      .post("http://localhost:5000/api/category/search", data)
+    axios.post(`${api_uri}category/search`, data)
       .then((response) => {
         setCategories(response.data);
       })
@@ -150,7 +149,7 @@ function Categories() {
                     <tr key={cat._id}>
                       <td>
                         <Image
-                          src={`http://localhost:5000/${cat.category_image}`}
+                          src={cat.category_image ? `${base_uri}${cat.category_image}` : "/images/no-image.jpg"}
                           alt={cat.category_name}
                           height="70"
                           width="70"

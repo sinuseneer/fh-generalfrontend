@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import { useForm } from "react-hook-form";
 import {
   Table,
@@ -37,7 +38,7 @@ function Products() {
   // ✅ Fetch all categories
   const loadCategories = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/category/view");
+  const res = await axios.post(`${api_uri}category/view`);
       if (res.data.success) {
         setCategories(res.data.categories);
       }
@@ -49,9 +50,7 @@ function Products() {
 
   const loadProducts = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/product/viewallProducts"
-      );
+      const res = await axios.get(`${api_uri}product/viewallProducts`);
       const productsData = res.data.products || res.data; // support both formats
 
       if (Array.isArray(productsData) && productsData.length > 0) {
@@ -73,10 +72,7 @@ function Products() {
         CAT_ID: selectedCategory || "",
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/product/search",
-        payload
-      );
+      const res = await axios.post(`${api_uri}product/search`, payload);
       if (res.data.success) {
         setProducts(res.data.products);
         toast.info(`${res.data.products.length} products found`);
@@ -98,12 +94,7 @@ function Products() {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/product/view-by-category",
-        {
-          CAT_ID: catId,
-        }
-      );
+      const res = await axios.post(`${api_uri}product/view-by-category`, { CAT_ID: catId });
       if (res.data.success) {
         setProducts(res.data.products);
       }
@@ -128,9 +119,7 @@ function Products() {
   const deleteProduct = async () => {
     if (!selectedProduct) return;
     try {
-      const res = await axios.post("http://localhost:5000/api/product/delete", {
-        id: selectedProduct,
-      });
+      const res = await axios.post(`${api_uri}product/delete`, { id: selectedProduct });
       if (res.data.success) {
         toast.success("Product deleted successfully");
         setProducts((prev) => prev.filter((p) => p._id !== selectedProduct));
@@ -210,7 +199,7 @@ function Products() {
                 <td>
                   {p.main_image ? (
                     <Image
-                      src={`http://localhost:5000/${p.main_image}`}
+                      src={p.main_image ? `${base_uri}${p.main_image}` : "/images/no-image.jpg"}
                       alt="product"
                       height="80"
                       width="80"
