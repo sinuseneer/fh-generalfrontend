@@ -194,3 +194,17 @@ button:focus,
     margin: 0 -5px;
   }
 }
+
+/* Mobile alignment with navbar logo */
+@media (max-width: 991px) {
+  .product-carousel-section .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 100%;
+  }
+  
+  .product-carousel-section h2 {
+    margin-left: 0;
+    text-align: left;
+  }
+}

@@ -120,16 +120,27 @@ export default function FeatureProducts() {
               Discover our featured products designed with precision and care.
             </p>
           </Col>
-          <Col xs={12} md={4} className="text-end text-md-end text-center">
-            <Button variant="dark" className="view-all-btn px-4 py-2">
-              VIEW ALL
-            </Button>
-          </Col>
+          {/* Show button on desktop only */}
+          {!isMobile && (
+            <Col xs={12} md={4} className="text-end text-md-end text-center">
+              <Button variant="dark" className="view-all-btn px-4 py-2">
+                VIEW ALL
+              </Button>
+            </Col>
+          )}
         </Row>
 
         {/* Conditional Rendering: Custom Mobile Slider or Slick Slider */}
         {isMobile ? (
-          <CustomMobileSlider products={products} />
+          <>
+            <CustomMobileSlider products={products} />
+            {/* Show button below products on mobile */}
+            <div className="text-center mt-4">
+              <Button variant="dark" className="view-all-btn px-4 py-2">
+                VIEW ALL
+              </Button>
+            </div>
+          </>
         ) : (
           <Slider {...settings}>
             {products.map((product, index) => (

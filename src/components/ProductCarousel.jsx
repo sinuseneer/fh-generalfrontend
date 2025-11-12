@@ -17,12 +17,12 @@ export default function ProductCarousel() {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: false,
     arrows: true,
     responsive: [
-      { breakpoint: 1200, settings: { slidesToShow: 3 } },
+      { breakpoint: 1200, settings: { slidesToShow: 4 } },
       { breakpoint: 992, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
       {

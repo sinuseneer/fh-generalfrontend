@@ -21,13 +21,13 @@ export default function AboutSection() {
         {/* Right Content */}
         <Col
           md={6}
-          className="bg-dark text-light d-flex flex-column justify-content-center px-5"
+          className="bg-dark text-light d-flex flex-column justify-content-center px-4"
         >
-          <h2 className=" mb-4 mt-5  about-title">
+          <h1 className=" mb-4 mt-5  about-title">
             About <span className="text-success">FH</span>
             <br />
             General Equipment
-          </h2>
+          </h1>
           <p className="text-white-50 mb-4">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text

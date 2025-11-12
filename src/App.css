@@ -244,6 +244,13 @@ body, html {
   }
 }
 
+/* Ensure about title stays left-aligned even on smaller screens */
+@media (max-width: 576px) {
+  .about-title h2 {
+    text-align: left !important;
+  }
+}
+
 
 
 
@@ -361,7 +368,11 @@ body, html {
 .latest-news-section {
   background-color: #f4fafa;
 }
-
+@media (max-width: 576px) {
+  .about-title h1 {
+    text-align: left !important;
+  }
+}
 @media (max-width: 576px) {
   h2 {
     text-align: center !important;

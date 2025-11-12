@@ -75,6 +75,12 @@
 
 /* ========== MOBILE VIEW ========== */
 @media (max-width: 991px) {
+  /* Reduce container width in mobile */
+  .nav-container {
+    max-width: 100%;
+    padding: 0 2rem;
+  }
+  
   /* Fullscreen overlay when menu opens */
   .navbar-collapse {
     position: fixed;
