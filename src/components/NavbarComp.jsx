@@ -45,6 +45,14 @@ export default function NavbarComp() {
 
         {/* Center: Navigation Links */}
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
+          {/* ✅ Header row for mobile: logo + close button */}
+          <div className="mobile-header d-lg-none">
+            <img src={logo} alt="Logo" className="mobile-logo" />
+            <button className="close-btn" onClick={() => setExpanded(false)}>
+              &times;
+            </button>
+          </div>
+
           <ul className="navbar-nav custom-nav-links">
             <li>
               <NavLink to="/" end onClick={handleNavClick}>

@@ -162,3 +162,98 @@
     }
   }
 }
+
+
+/* Close button styling for mobile navbar
+.close-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem 0 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #007b5e; /* change color on hover */
+
+
+  /* Header row inside mobile expanded menu */
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem 0.5rem 1.25rem;
+  border-bottom: 1px solid #eee;
+}
+
+/* Mobile logo styling */
+.mobile-logo {
+  width: 120px;
+  height: auto;
+}
+
+/* Close button styling */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin-top: -5px;
+}
+
+.close-btn:hover {
+  color: #007b5e; /* hover color */
+}
+
+/* Optional: adjust spacing for nav links below header */
+.navbar-nav.custom-nav-links {
+  padding-top: 0.5rem;
+}
+
+/* =================== */
+/* Header row inside mobile expanded menu */
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem 0.5rem 1.25rem;
+  border-bottom: 1px solid #eee;
+  width: 100%;
+  margin: 0;
+  /* box-sizing: border-box; */
+}
+
+/* Force logo + close button to stick to edges */
+.mobile-header img.mobile-logo {
+  margin-left: 0; /* keep logo on left */
+}
+
+.mobile-header .close-btn {
+  margin-right: 0; /* keep close on right */
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+}
+
+.mobile-header .close-btn:hover {
+  color: #007b5e; /* hover effect */
+}
+
+/* Optional: smaller mobile logo for balance */
+.mobile-logo {
+  width: 110px;
+  height: auto;
+}

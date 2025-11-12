@@ -21,7 +21,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
-import "../../../App.css"
+import "../../../App.css";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -63,6 +63,12 @@ const Sidebar = () => {
       ],
       key: "posts",
     },
+    {
+      text: "Banner Settings",
+      icon: <MediaIcon />, // or use another icon you like
+      path: "/admin/banner",
+    },
+
     { text: "Logout", icon: <LogoutIcon />, path: "/login" },
   ];
 
@@ -111,9 +117,9 @@ const Sidebar = () => {
           sx={{
             fontWeight: 400,
             color: "#ffffffff",
-            textAlign:"start",
-            fontSize:"19px"
-            
+            textAlign: "start",
+            fontSize: "19px",
+
             // letterSpacing: 1,
           }}
         >
