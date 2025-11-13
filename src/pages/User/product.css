@@ -33,6 +33,62 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Mobile responsive adjustments */
+@media (max-width: 600px) {
+  .MuiCard-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .MuiCardMedia-root {
+    height: 150px !important;
+  }
+  
+  .MuiGrid-item {
+    padding: 4px !important;
+  }
+  
+  .MuiCardContent-root {
+    padding: 8px !important;
+  }
+}
+
+/* Ensure grid items don't overflow */
+.MuiGrid-item {
+  box-sizing: border-box;
+}
+
+/* Custom products grid layout */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.product-grid-item {
+  width: 100%;
+}
+
+/* Tablet layout - 2 columns */
+@media (min-width: 601px) and (max-width: 960px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Desktop layout - 4 columns */
+@media (min-width: 961px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    justify-items: center;
+  }
+}
+
+
 /* Pagination Style */
 .pagination .page-item .page-link {
   border-radius: 50%;

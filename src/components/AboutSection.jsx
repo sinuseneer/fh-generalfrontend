@@ -11,7 +11,7 @@ export default function AboutSection() {
         {/* Left Image */}
         <Col md={6} className="d-flex">
           <img
-            src="/images/Aboutsectionimg.svg"
+            src="/images/about-fh.jpg"
             alt="About FH General Equipment"
             className="w-100 object-fit-cover"
             style={{ height: "100%" }}

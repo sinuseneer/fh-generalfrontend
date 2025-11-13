@@ -2,21 +2,19 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
   TextField,
   Pagination,
   CircularProgress,
   Box,
   Button,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
 import { toast } from "react-toastify";
 import Banner from "../../components/Banner";
 import ProductCarousel from "../../components/ProductCarousel";
+import ProductCard from "../../components/ProductCard";
 import "./product.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -163,117 +161,16 @@ export default function Product() {
             <Typography mt={2}>Loading products...</Typography>
           </Box>
         ) : currentProducts.length > 0 ? (
-          <Grid
-            container
-            spacing={2}
-            justifyContent="center"
-            alignItems="stretch"
-            sx={{ textAlign: "center" }}
-          >
+          <div className="products-grid">
             {currentProducts.map((product) => (
-              <Grid
-                item
-                key={product._id}
-                xs={6}
-                sm={6}
-                md={3}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Card
-                  onClick={() => handleProductClick(product)}
-                  sx={{
-                    cursor: "pointer",
-                    border: "1px solid #f0ececff",
-                    borderRadius: 3,
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.03)",
-                      boxShadow: "0px 6px 12px rgba(0,0,0,0.18)",
-                    },
-                    height: 370,
-                    width: 275,
-                    backgroundColor: "#fff",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      height: 275,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "#fff",
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={
-                        product.main_image
-                          ? `${base_uri}${product.main_image}`
-                          : "/images/no-image.jpg"
-                      }
-                      alt={product.product_name}
-                      sx={{
-                        height: "100%",
-                        width: "100%",
-                        objectFit: "contain",
-                        backgroundColor: "#fff",
-                        p: 1,
-                      }}
-                    />
-                  </Box>
-
-                  <CardContent
-                    sx={{
-                      flexGrow: 1,
-                      textAlign: "center",
-                      px: 1.5,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      fontWeight="bold"
-                      sx={{
-                        textTransform: "capitalize",
-                        fontSize: "1rem",
-                        lineHeight: "1.1rem",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "normal",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        mb: 1,
-                      }}
-                    >
-                      {product.product_name}
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        fontSize: "0.9rem",
-                        mt: 1,
-                        mb: 1,
-                        lineHeight: "1rem",
-                      }}
-                    >
-                      {product.prod_id}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+              <div key={product._id} className="product-grid-item">
+                <ProductCard
+                  product={product}
+                  onClick={handleProductClick}
+                />
+              </div>
             ))}
-          </Grid>
+          </div>
         ) : (
           <Typography variant="body1" align="center" sx={{ mt: 5 }}>
             No products found.

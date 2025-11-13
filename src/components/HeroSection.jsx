@@ -16,12 +16,12 @@ export default function HeroSection() {
             <div 
               className="hero-background"
               style={{
-                backgroundImage: `url(${baseURL}images/Bannerofheroslide.jpg)`,
+                backgroundImage: `url(/images/Group 35.jpg)`,
               }}
             />
             <Container className="hero-content-wrapper">
               <Row className="h-100">
-                <Col lg={5} md={6} sm={12} className="d-flex align-items-center">
+                <Col lg={5} md={6} sm={12} className="d-flex align-items-start align-items-md-center">
                   <div className="hero-text-content text-white">
                     <h1 className="fw-bold mb-3">
                       Innovation Meets <br /> Excellence
@@ -45,12 +45,12 @@ export default function HeroSection() {
             <div 
               className="hero-background"
               style={{
-                backgroundImage: `url(${baseURL}images/frames/fhEquipmentsBanner.jpg)`,
+                backgroundImage: `/images/frames/Group 35.jpg)`,
               }}
             />
             <Container className="hero-content-wrapper">
               <Row className="h-100">
-                <Col lg={5} md={6} sm={12} className="d-flex align-items-center">
+                <Col lg={5} md={6} sm={12} className="d-flex align-items-start align-items-md-center">
                   <div className="hero-text-content text-dark">
                     <h1 className="fw-bold mb-3">
                       Precision & <br /> Performance

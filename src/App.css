@@ -129,7 +129,7 @@ body, html {
   
   .hero-text-content {
     padding: 0 20px;
-    text-align: left !important;
+    text-align: start !important;
   }
   
   .hero-text-content h1 {
@@ -161,7 +161,7 @@ body, html {
   }
   
   .hero-text-content {
-    padding: 0 25px;
+    padding: 35px 25px;
   }
   
   .hero-text-content h1 {
