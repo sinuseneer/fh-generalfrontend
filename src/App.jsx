@@ -37,6 +37,7 @@ import FeatureProducts from "./components/FeatureProducts";
 import WhyChooseUs from "./components/WhyChooseUs";
 import LatestNews from "./components/LatestNews";
 import PartnerSection from "./components/PartnerSection";
+import BannerSettings from "./pages/Admin/BannerSettings.jsx";
 
 function App() {
   return (
@@ -121,6 +122,8 @@ function App() {
           <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
           <Route path="/admin/product-images/:productId" element={<ProductImages />} />
           <Route path="/admin/settings" element={<AccountSettings />} />
+          <Route path="/admin/banner" element={<BannerSettings/>}/>
+          
 
         </Route>
 
