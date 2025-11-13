@@ -1,73 +1,118 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Container, Row, Col, Button, Form, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import emailjs from "emailjs-com";
 import { Box, IconButton, Card as MuiCard, CardMedia } from "@mui/material";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
-import "./ProductDetails.css"
+import "./ProductDetails.css";
+import api_uri, { base_uri } from "../../config/api";
 
 export default function ProductDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const thumbRef = useRef(null); // ✅ reference for thumbnail scroll
+  const thumbRef = useRef(null);
 
   const passedProduct = location.state?.product;
   const [product, setProduct] = useState(passedProduct || null);
   const [loading, setLoading] = useState(!passedProduct);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
-    caption: "",
     message: "",
   });
 
-  // ✅ Fetch product data
-useEffect(() => {
-  const fetchProduct = async () => {
-    try {
-      const res = await axios.get(`${api_uri}product/userview/${id}`);
-      if (res.data.success) {
-        setProduct(res.data.product);
-        // prefix image path with base_uri so image URLs resolve correctly
-        if (res.data.product.main_image) {
-          setSelectedImage(`${base_uri}${res.data.product.main_image}`);
-        }
-      } else {
-        setProduct(null);
-      }
-    } catch (err) {
-      console.error("❌ Error loading product:", err);
-      setProduct(null);
-    } finally {
-      setLoading(false);
+  // ✅ Normalize image URLs
+  const normalizeImg = (img) =>
+    img ? (img.startsWith("http") ? img : `${base_uri}${img}`) : null;
+
+  // ✅ Handle case when product is already passed via router
+  useEffect(() => {
+    if (passedProduct) {
+      const mainImg = normalizeImg(passedProduct.main_image);
+      const galleryImgs = (passedProduct.gallery || [])
+        .filter(Boolean)
+        .map(normalizeImg);
+      const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
+      setSelectedImage(firstImg);
     }
-  };
+  }, [passedProduct]);
 
-  if (!product) {
-    fetchProduct();
-  }
-}, [id]); // ✅ only depend on id
+  // ✅ Fetch product from API if not passed via navigation
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`${api_uri}product/userview/${id}`);
+        const data = await res.json();
+        if (data.success) {
+          setProduct(data.product);
 
+          const mainImg = normalizeImg(data.product.main_image);
+          const galleryImgs = (data.product.gallery || [])
+            .filter(Boolean)
+            .map(normalizeImg);
 
+          // ✅ First available image as default
+          const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
+          setSelectedImage(firstImg);
+        } else {
+          setProduct(null);
+        }
+      } catch (err) {
+        console.error("❌ Error loading product:", err);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!passedProduct && id) fetchProduct();
+  }, [id]);
+
+  // ✅ Handle form change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  // ✅ Send Email using EmailJS
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(
-      `Message sent!\nName: ${formData.name}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nMessage: ${formData.message}`
-    );
-    setFormData({ name: "", phone: "", email: "", caption: "", message: "" });
+    const toastId = toast.info("Sending message...", { autoClose: false });
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+      product_name: product?.name || "Unknown Product",
+    };
+
+    try {
+      await emailjs.send(
+        "service_lk58uuc", // EmailJS service ID
+        "template_h4n8zbn", // Template ID
+        templateParams,
+        "Gc1PPygtgpQKGULIe" // Public key
+      );
+
+      toast.dismiss(toastId);
+      toast.success("✅ Message sent successfully!");
+      setFormData({ name: "", phone: "", email: "", message: "" });
+    } catch (err) {
+      console.error("❌ Email send failed:", err);
+      toast.dismiss(toastId);
+      toast.error("⚠️ Failed to send message. Please try again.");
+    }
   };
 
+  // ✅ Handle loading and error states
   if (loading) {
     return (
       <Container className="text-center my-5">
@@ -88,21 +133,18 @@ useEffect(() => {
     );
   }
 
-  // ✅ Prepare all images (main + gallery)
-  // ensure gallery images are full URLs
-  const normalizeImg = (img) => (img && img.startsWith("http") ? img : `${base_uri}${img}`);
+  // ✅ Collect all images
   const allImages = [product.main_image, ...(product.gallery || [])]
     .filter(Boolean)
     .map(normalizeImg);
-  console.log("✅ allImages array:", allImages);
-  console.log("✅ selectedImage:", selectedImage);
 
   return (
     <Container className="my-5">
+      <ToastContainer position="top-center" />
+
       <Row className="align-items-start g-4">
-        {/* 🖼️ Left Column - Horizontal Image Gallery */}
+        {/* ---------- Left Image Section ---------- */}
         <Col md={6} className="text-center">
-          {/* Main Image */}
           <Box
             sx={{
               display: "flex",
@@ -138,9 +180,8 @@ useEffect(() => {
             </MuiCard>
           </Box>
 
-          {/* Horizontal Thumbnails */}
+          {/* ---------- Thumbnails ---------- */}
           <Box sx={{ position: "relative", width: "100%", maxWidth: 480, mx: "auto" }}>
-            {/* Left arrow */}
             <IconButton
               sx={{
                 position: "absolute",
@@ -149,15 +190,15 @@ useEffect(() => {
                 transform: "translateY(-50%)",
                 zIndex: 2,
                 backgroundColor: "white",
-                border:1,
+                border: 1,
+                boxShadow: "0 0 4px rgba(0,0,0,0.2)",
                 "&:hover": { backgroundColor: "#f0f0f0" },
               }}
-              onClick={() => (thumbRef.current.scrollLeft -= 100)}
+              onClick={() => (thumbRef.current.scrollLeft -= 150)}
             >
               <ArrowBackIosNew fontSize="small" />
             </IconButton>
 
-            {/* Scrollable Thumbnails */}
             <Box
               ref={thumbRef}
               sx={{
@@ -166,7 +207,6 @@ useEffect(() => {
                 overflowX: "auto",
                 scrollBehavior: "smooth",
                 p: 1,
-                
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
@@ -178,14 +218,14 @@ useEffect(() => {
                     flex: "0 0 auto",
                     width: 80,
                     height: 80,
-                    border:
-                      selectedImage === img
-                        ? "2px solid #2EA898"
-                        : "1px solid #ddd",
+                    border: selectedImage === img ? "2px solid #2EA898" : "1px solid #ddd",
                     borderRadius: 1,
                     cursor: "pointer",
                     transition: "0.3s",
-                    "&:hover": { border: "2px solid #37b24d" },
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                      border: "2px solid #37b24d",
+                    },
                   }}
                 >
                   <CardMedia
@@ -204,7 +244,6 @@ useEffect(() => {
               ))}
             </Box>
 
-            {/* Right arrow */}
             <IconButton
               sx={{
                 position: "absolute",
@@ -216,35 +255,25 @@ useEffect(() => {
                 boxShadow: 1,
                 "&:hover": { backgroundColor: "#f0f0f0" },
               }}
-              onClick={() => (thumbRef.current.scrollLeft += 100)}
+              onClick={() => (thumbRef.current.scrollLeft += 150)}
             >
               <ArrowForwardIos fontSize="small" />
             </IconButton>
           </Box>
         </Col>
 
-        {/* 📋 Right Column - Product Info & Inquiry Form */}
+        {/* ---------- Product Details + Inquiry Form ---------- */}
         <Col md={6}>
           <Card className="p-4 shadow-sm border-0">
             <h2 className="mb-3">{product.name}</h2>
-            <p>
-              <strong>Product ID:</strong> {product.prod_id}
-            </p>
-            <p>
-              <strong>Category:</strong> {product.category}
-            </p>
+            <p><strong>Product ID:</strong> {product.prod_id}</p>
+            <p><strong>Category:</strong> {product.category}</p>
             <p>{product.description}</p>
-
-            {product.product_info && (
-              <p className="text-muted">
-                <strong>More Info:</strong> {product.product_info}
-              </p>
-            )}
 
             <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
               <Button
                 className="whatsapp1-btn btn-sm d-flex align-items-center"
-                href={`https://wa.me/91xxxxxxxx?text=Hi, I’d like to know more about ${product.name}`}
+                href={`https://wa.me/9188850311?text=Hi Sabitha,%0AI'm interested in your product:%0A👉 Name: ${product.name}%0A🆔 Product ID: ${product.prod_id}%0ACould you please share more details?`}
                 target="_blank"
                 variant="success"
               >
