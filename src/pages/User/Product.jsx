@@ -94,7 +94,7 @@ export default function Product() {
     <>
       <Banner />
 
-      <Container sx={{ my: 5 }}>
+      <Container sx={{ my: 0 }}>
         {/* 🧭 Category Carousel */}
         <ProductCarousel />
 

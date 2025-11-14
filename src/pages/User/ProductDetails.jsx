@@ -142,9 +142,23 @@ export default function ProductDetails() {
     <Container className="my-5">
       <ToastContainer position="top-center" />
 
-      <Row className="align-items-start g-4">
-        {/* ---------- Left Image Section ---------- */}
-        <Col md={6} className="text-center">
+      {/* ---------- Back Button ---------- */}
+      <Row className="mb-3">
+        <Col xs={12}>
+          <Button 
+            variant="" 
+            onClick={() => navigate("/product")}
+            className="d-flex align-items-center"
+          >
+            <i className="bi bi-arrow-left me-2"></i>
+            Back to Products
+          </Button>
+        </Col>
+      </Row>
+
+      {/* ---------- Full Width Image Section ---------- */}
+      <Row className="mb-4">
+        <Col xs={12} className="text-center">
           <Box
             sx={{
               display: "flex",
@@ -162,7 +176,6 @@ export default function ProductDetails() {
                 borderRadius: 3,
                 overflow: "hidden",
                 width: "100%",
-                maxWidth: 550,
               }}
             >
               <CardMedia
@@ -182,22 +195,24 @@ export default function ProductDetails() {
 
           {/* ---------- Thumbnails ---------- */}
           <Box sx={{ position: "relative", width: "100%", maxWidth: 480, mx: "auto" }}>
-            <IconButton
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: 0,
-                transform: "translateY(-50%)",
-                zIndex: 2,
-                backgroundColor: "white",
-                border: 1,
-                boxShadow: "0 0 4px rgba(0,0,0,0.2)",
-                "&:hover": { backgroundColor: "#f0f0f0" },
-              }}
-              onClick={() => (thumbRef.current.scrollLeft -= 150)}
-            >
-              <ArrowBackIosNew fontSize="small" />
-            </IconButton>
+            {allImages.length > 6 && (
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: 0,
+                  transform: "translateY(-50%)",
+                  zIndex: 2,
+                  backgroundColor: "white",
+                  border: 1,
+                  boxShadow: "0 0 4px rgba(0,0,0,0.2)",
+                  "&:hover": { backgroundColor: "#f0f0f0" },
+                }}
+                onClick={() => (thumbRef.current.scrollLeft -= 150)}
+              >
+                <ArrowBackIosNew fontSize="small" />
+              </IconButton>
+            )}
 
             <Box
               ref={thumbRef}
@@ -244,35 +259,37 @@ export default function ProductDetails() {
               ))}
             </Box>
 
-            <IconButton
-              sx={{
-                position: "absolute",
-                top: "50%",
-                right: 0,
-                transform: "translateY(-50%)",
-                zIndex: 2,
-                backgroundColor: "white",
-                boxShadow: 1,
-                "&:hover": { backgroundColor: "#f0f0f0" },
-              }}
-              onClick={() => (thumbRef.current.scrollLeft += 150)}
-            >
-              <ArrowForwardIos fontSize="small" />
-            </IconButton>
+            {allImages.length > 6 && (
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  right: 0,
+                  transform: "translateY(-50%)",
+                  zIndex: 2,
+                  backgroundColor: "white",
+                  boxShadow: 1,
+                  "&:hover": { backgroundColor: "#f0f0f0" },
+                }}
+                onClick={() => (thumbRef.current.scrollLeft += 150)}
+              >
+                <ArrowForwardIos fontSize="small" />
+              </IconButton>
+            )}
           </Box>
         </Col>
 
         {/* ---------- Product Details + Inquiry Form ---------- */}
         <Col md={6}>
           <Card className="p-4 shadow-sm border-0">
-            <h2 className="mb-3">{product.name}</h2>
-            <p><strong>Product ID:</strong> {product.prod_id}</p>
+            <h2 className="mb-3 text-start">{product.name}</h2>
+            <p><strong>ID:</strong> {product.prod_id}</p>
             <p><strong>Category:</strong> {product.category}</p>
             <p>{product.description}</p>
 
             <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
               <Button
-                className="whatsapp1-btn btn-sm d-flex align-items-center"
+                className="whatsapp1-btn d-flex align-items-center justify-content-center px-5"
                 href={`https://wa.me/9188850311?text=Hi Sabitha,%0AI'm interested in your product:%0A👉 Name: ${product.name}%0A🆔 Product ID: ${product.prod_id}%0ACould you please share more details?`}
                 target="_blank"
                 variant="success"
