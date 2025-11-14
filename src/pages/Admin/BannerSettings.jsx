@@ -9,291 +9,255 @@ import {
   Card,
   CardMedia,
   TextField,
-  CircularProgress,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { toast } from "react-toastify";
 
-const BannerSettings = () => {
+export default function BannerSettings() {
   const [banners, setBanners] = useState([]);
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+
+  // Image Inputs
+  const [desktopImage, setDesktopImage] = useState(null);
+  const [desktopPreview, setDesktopPreview] = useState(null);
+
+  const [mobileImage, setMobileImage] = useState(null);
+  const [mobilePreview, setMobilePreview] = useState(null);
+
+  // Shared Text
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
+
+  // Text mode toggle (true = light text, false = dark text)
+  const [lightText, setLightText] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch existing banners
-  const fetchBanners = async () => {
-    try {
-      const res = await axios.get(`${api_uri}banners`);
-      setBanners(res.data);
-    } catch (error) {
-      toast.error("Failed to load banners");
-    }
+  // Fetch banners
+  const fetchBanners = () => {
+    axios
+      .get(`${api_uri}banners`)
+      .then((res) => setBanners(res.data))
+      .catch(() => toast.error("Failed to load banners"));
   };
 
   useEffect(() => {
     fetchBanners();
   }, []);
 
-  // ✅ Handle image selection + preview
-  const handleFileChange = (e) => {
-    const selected = e.target.files[0];
-    if (selected) {
-      setFile(selected);
-      setPreview(URL.createObjectURL(selected));
+  // Desktop image preview
+  function handleDesktopChange(e) {
+    const f = e.target.files[0];
+    if (f) {
+      setDesktopImage(f);
+      setDesktopPreview(URL.createObjectURL(f));
     }
-  };
+  }
 
-  // ✅ Upload new banner
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      toast.warning("Please select an image to upload");
-      return;
+  // Mobile image preview
+  function handleMobileChange(e) {
+    const f = e.target.files[0];
+    if (f) {
+      setMobileImage(f);
+      setMobilePreview(URL.createObjectURL(f));
     }
+  }
+
+  // Upload banner
+  async function handleUpload(e) {
+    e.preventDefault();
+
+    if (!desktopImage) return toast.warning("Please upload desktop image");
+    if (!mobileImage) return toast.warning("Please upload mobile image");
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("desktopImage", desktopImage);
+    formData.append("mobileImage", mobileImage);
+
     formData.append("title", title);
     formData.append("subtitle", subtitle);
 
+    formData.append("textMode", lightText ? "light" : "dark"); // TEXT MODE ONLY
+
+    setLoading(true);
+
     try {
-      setLoading(true);
-      await axios.post(`${api_uri}banners`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      toast.success("Banner uploaded successfully!");
-      setFile(null);
-      setPreview(null);
+      await axios.post(`${api_uri}banners`, formData);
+      toast.success("Banner uploaded");
+
+      setDesktopImage(null);
+      setMobileImage(null);
+      setDesktopPreview(null);
+      setMobilePreview(null);
       setTitle("");
       setSubtitle("");
+      setLightText(false);
+
       fetchBanners();
     } catch (error) {
-      toast.error("Failed to upload banner");
-    } finally {
-      setLoading(false);
+      toast.error("Upload failed");
     }
-  };
-
-  // ✅ Activate banner
-  const handleActivate = async (id) => {
-    try {
-      const activeCount = banners.filter((b) => b.active).length;
-      if (activeCount >= 2) {
-        toast.warning("Only 2 banners can be active at a time");
-        return;
-      }
-
-      await axios.put(`${api_uri}banners/${id}/activate`);
-      toast.success("Banner activated!");
-      fetchBanners();
-    } catch (error) {
-      toast.error("Failed to activate banner");
-    }
-  };
-
-  // ✅ Deactivate banner
-  const handleDeactivate = async (id) => {
-    try {
-      await axios.put(`${api_uri}banners/${id}/deactivate`);
-      toast.info("Banner deactivated");
-      fetchBanners();
-    } catch (error) {
-      toast.error("Failed to deactivate banner");
-    }
-  };
-
-  // ✅ Delete banner
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this banner?")) return;
-    try {
-      await axios.delete(`${api_uri}banners/${id}`);
-      toast.info("Banner deleted");
-      fetchBanners();
-    } catch (error) {
-      toast.error("Failed to delete banner");
-    }
-  };
+    setLoading(false);
+  }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-        🖼️ Banner Settings
+    <Box sx={{ p: 3, color: "#fff" }}>
+      <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold" }}>
+        🖼 Banner Settings
       </Typography>
 
-      {/* ===================== Upload Section ===================== */}
-      {/* ===================== Upload Section ===================== */}
-<Box
-  component="form"
-  onSubmit={handleUpload}
-  sx={{
-    mb: 5,
-    p: 4,
-    border: "1px solid #2a2a2a",
-    borderRadius: 3,
-    backgroundColor: "#111",
-    boxShadow: "0 0 12px rgba(0,0,0,0.4)",
-  }}
->
-  <Typography
-    variant="h6"
-    sx={{
-      mb: 3,
-      color: "#f0f0f0",
-      display: "flex",
-      alignItems: "center",
-      gap: 1,
-      fontWeight: 600,
-    }}
-  >
-    <span style={{ fontSize: "22px" }}>➕</span> Upload New Banner
-  </Typography>
-
-  <Grid container spacing={3} alignItems="center">
-    {/* Left side - Image Preview */}
-    <Grid item xs={12} md={4} sx={{ textAlign: "center" }}>
-      <Button
-        variant="contained"
-        component="label"
+      {/* ===== UPLOAD FORM ===== */}
+      <Box
+        component="form"
+        onSubmit={handleUpload}
         sx={{
-          backgroundColor: "#37b24d",
-          color: "#fff",
-          px: 3,
-          py: 1.5,
-          fontWeight: 600,
-          "&:hover": { backgroundColor: "#2f9e44" },
+          p: 3,
+          mb: 5,
+          border: "1px solid #333",
+          borderRadius: 2,
+          background: "#111",
         }}
       >
-        Choose Image
-        <input type="file" hidden accept="image/*" onChange={handleFileChange} />
-      </Button>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Add New Banner
+        </Typography>
 
-      {preview && (
-        <Box
-          sx={{
-            mt: 3,
-            border: "1px solid #333",
-            borderRadius: 2,
-            overflow: "hidden",
-            width: "100%",
-            maxWidth: "280px",
-            mx: "auto",
-          }}
-        >
-          <img
-            src={preview}
-            alt="preview"
-            style={{
-              width: "100%",
-              height: "200px",
-              objectFit: "cover",
-              borderRadius: "10px",
-            }}
-          />
-        </Box>
-      )}
-    </Grid>
+        <Grid container spacing={4}>
+          {/* LEFT SIDE (images) */}
+          <Grid item xs={12} md={6}>
+            {/* Desktop */}
+            <Button
+              component="label"
+              fullWidth
+              variant="contained"
+              sx={{ background: "#37b24d", mb: 2 }}
+            >
+              Upload Desktop Image
+              <input hidden type="file" accept="image/*" onChange={handleDesktopChange} />
+            </Button>
 
-    {/* Right side - Inputs */}
-    <Grid item xs={12} md={8}>
-      <TextField
-        label="Title"
-        variant="outlined"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        fullWidth
-        sx={{
-          mb: 3,
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#1c1c1c",
-            color: "#f5f5f5",
-            "& fieldset": { borderColor: "#444" },
-            "&:hover fieldset": { borderColor: "#37b24d" },
-            "&.Mui-focused fieldset": { borderColor: "#37b24d" },
-          },
-          "& .MuiInputLabel-root": { color: "#bbb" },
-        }}
-      />
+            {desktopPreview && (
+              <img
+                src={desktopPreview}
+                style={{
+                  width: "100%",
+                  height: 220,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                  marginBottom: 20,
+                }}
+              />
+            )}
 
-      <TextField
-        label="Subtitle"
-        variant="outlined"
-        value={subtitle}
-        onChange={(e) => setSubtitle(e.target.value)}
-        fullWidth
-        sx={{
-          mb: 3,
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#1c1c1c",
-            color: "#f5f5f5",
-            "& fieldset": { borderColor: "#444" },
-            "&:hover fieldset": { borderColor: "#37b24d" },
-            "&.Mui-focused fieldset": { borderColor: "#37b24d" },
-          },
-          "& .MuiInputLabel-root": { color: "#bbb" },
-        }}
-      />
+            {/* Mobile */}
+            <Button
+              component="label"
+              fullWidth
+              variant="contained"
+              sx={{ background: "#6c5ce7", mt: 3, mb: 2 }}
+            >
+              Upload Mobile Image
+              <input hidden type="file" accept="image/*" onChange={handleMobileChange} />
+            </Button>
 
-      <Button
-        type="submit"
-        variant="contained"
-        disabled={loading}
-        sx={{
-          backgroundColor: "#00b894",
-          fontWeight: 600,
-          fontSize: "16px",
-          px: 4,
-          py: 1.5,
-          width: "100%",
-          "&:hover": { backgroundColor: "#009e7e" },
-        }}
-      >
-        {loading ? "Uploading..." : "Upload Banner"}
-      </Button>
-    </Grid>
-  </Grid>
-</Box>
+            {mobilePreview && (
+              <img
+                src={mobilePreview}
+                style={{
+                  width: 220,
+                  height: 400,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                  margin: "auto",
+                  display: "block",
+                }}
+              />
+            )}
+          </Grid>
 
+          {/* RIGHT SIDE (inputs) */}
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              sx={{ mb: 2, background: "#fff", borderRadius: 1 }}
+            />
 
-      {/* ===================== Banner List ===================== */}
-      <Grid container spacing={3}>
-        {banners.map((banner) => (
-          <Grid item xs={12} sm={6} md={4} key={banner._id}>
-            <Card
+            <TextField
+              fullWidth
+              label="Subtitle"
+              value={subtitle}
+              onChange={(e) => setSubtitle(e.target.value)}
+              sx={{ mb: 2, background: "#fff", borderRadius: 1 }}
+            />
+
+            {/* TEXT MODE TOGGLE */}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={lightText}
+                  onChange={() => setLightText(!lightText)}
+                  color="success"
+                />
+              }
+              label={lightText ? "Light Text" : "Dark Text"}
+              sx={{ mt: 2 }}
+            />
+
+            {/* Upload button */}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
               sx={{
-                border: banner.active ? "3px solid #37b24d" : "1px solid #333",
-                backgroundColor: "#1a1a1a",
-                color: "#fff",
+                mt: 4,
+                background: "#00b894",
+                py: 1.2,
+                fontWeight: 600,
+                fontSize: 16,
               }}
             >
-              <CardMedia
-                component="img"
-                height="200"
-                image={`${base_uri}${banner.image}`}
-                alt="Banner"
-              />
+              {loading ? "Uploading..." : "Upload Banner"}
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+
+      {/* ===== EXISTING BANNERS ===== */}
+      <Grid container spacing={3}>
+        {banners.map((b) => (
+          <Grid item xs={12} md={4} key={b._id}>
+            <Card sx={{ background: "#111", color: "#fff" }}>
+              <CardMedia height="200" component="img" image={`${base_uri}${b.image}`} />
+
               <Box sx={{ p: 2 }}>
-                <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                  {banner.title || "Untitled Banner"}
-                </Typography>
+                <Typography sx={{ fontWeight: 600 }}>{b.title}</Typography>
+
                 <Button
-                  variant="contained"
-                  color={banner.active ? "error" : "success"}
                   fullWidth
-                  sx={{ mb: 1 }}
+                  variant="contained"
+                  sx={{ mt: 1 }}
+                  color={b.active ? "error" : "success"}
                   onClick={() =>
-                    banner.active
-                      ? handleDeactivate(banner._id)
-                      : handleActivate(banner._id)
+                    b.active
+                      ? axios.put(`${api_uri}banners/${b._id}/deactivate`).then(fetchBanners)
+                      : axios.put(`${api_uri}banners/${b._id}/activate`).then(fetchBanners)
                   }
                 >
-                  {banner.active ? "Deactivate" : "Set Active"}
+                  {b.active ? "Deactivate" : "Activate"}
                 </Button>
+
                 <Button
+                  fullWidth
                   variant="outlined"
                   color="error"
-                  fullWidth
-                  onClick={() => handleDelete(banner._id)}
+                  sx={{ mt: 1 }}
+                  onClick={() =>
+                    window.confirm("Delete banner?") &&
+                    axios.delete(`${api_uri}banners/${b._id}`).then(fetchBanners)
+                  }
                 >
                   Delete
                 </Button>
@@ -304,6 +268,4 @@ const BannerSettings = () => {
       </Grid>
     </Box>
   );
-};
-
-export default BannerSettings;
+}

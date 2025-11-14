@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
+
 
 // Layouts
 import UserLayout from "./layouts/UserLayout";
@@ -30,7 +30,7 @@ import AccountSettings from "./pages/Admin/AccountSettings.jsx";
 
 
 // Components (for Home)
-import HeroSection from "./components/HeroSection";
+import HeroSection from "./components/HeroSection.jsx";
 import ProductCarousel from "./components/ProductCarousel";
 import AboutSection from "./components/AboutSection";
 import FeatureProducts from "./components/FeatureProducts";
