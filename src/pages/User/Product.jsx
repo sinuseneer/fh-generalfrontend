@@ -114,6 +114,7 @@ export default function Product() {
                 sx={{
                   textTransform: "capitalize",
                   color: selectedCategory ? "#000000ff" : "inherit",
+                  marginBottom:"8px"
                 }}
               >
                 {selectedCategory ? selectedCategory : "All Products"}

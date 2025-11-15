@@ -21,6 +21,10 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(!passedProduct);
   const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
+  // Touch/swipe state for mobile
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -79,6 +83,41 @@ export default function ProductDetails() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // ✅ Handle touch/swipe for mobile image navigation
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (allImages) => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(distance) < minSwipeDistance) return;
+
+    const currentIndex = allImages.findIndex(img => img === selectedImage);
+    
+    if (distance > 0) {
+      // Swipe left - next image
+      if (currentIndex < allImages.length - 1) {
+        setSelectedImage(allImages[currentIndex + 1]);
+      }
+    } else {
+      // Swipe right - previous image
+      if (currentIndex > 0) {
+        setSelectedImage(allImages[currentIndex - 1]);
+      }
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
   };
 
   // ✅ Send Email using EmailJS
@@ -209,6 +248,9 @@ export default function ProductDetails() {
               mb: 2,
               p: 1,
             }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={() => handleTouchEnd(allImages)}
           >
             <MuiCard
               elevation={3}
@@ -237,7 +279,7 @@ export default function ProductDetails() {
           </Box>
 
           {/* Thumbnails */}
-          <Box className="thumbnail-container" sx={{ position: "relative", width: "100%", maxWidth: 560, mx: "auto" }}>
+          <Box className="thumbnail-container" sx={{ position: "relative", width: "100%", maxWidth: 560, mr: "auto" }}>
             {allImages.length > 4 && (
               <IconButton
                 sx={{

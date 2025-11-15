@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import "../App.css";
 import "./Footer.css";
@@ -10,10 +11,41 @@ import {
   FaEnvelope,
 } from "react-icons/fa6";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
+import axios from "axios";
+import api_uri, { base_uri } from "../config/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Footer() {
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(`${api_uri}category/userview`);
+        if (res.data && res.data.success) {
+          setCategories(res.data.categories || []);
+        }
+      } catch (err) {
+        // ignore silently; keep fallback list
+        console.error("Error fetching footer categories:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleContactClick = () => {
+    // `setExpanded` is not defined in this component; it causes a runtime
+    // ReferenceError when clicking the button. Only navigate to contact here.
+    navigate("/contact");
+  };
+
   return (
-    <footer className="bg-light text-dark pt-5 pb-0 m-0">
+    <footer className="bg-light text-dark mt-5 pt-2 pb-0 m-0">
       <Container>
         <Row className="gy-4 my-4">
           {/* Logo */}
@@ -27,11 +59,11 @@ export default function Footer() {
             </div>
 
             <h6 className="fw-bold mb-3">Follow Us</h6>
-            <div className="d-flex gap-3">
-              <FaFacebookF />
-              <FaInstagram />
-              <FaXTwitter />
-              <FaLinkedinIn />
+            <div className="d-flex gap-3 align-items-center footer-social-icons">
+              <FaFacebookF size={24} />
+              <FaInstagram size={24} />
+              <FaXTwitter size={24} />
+              <FaLinkedinIn size={24} />
             </div>
           </Col>
 
@@ -67,24 +99,63 @@ export default function Footer() {
             </ul>
           </Col>
 
-          {/* Products */}
+          {/* Products / Categories */}
           <Col md={4}>
             <h5 className="fw-bold mb-3">Categories</h5>
             <Row>
               <Col xs={6}>
                 <ul className="list-unstyled">
-                  <li className="my-1">Hospital Bed</li>
-                  <li className="my-1">Exam Table</li>
-                  <li className="my-1">Operation Table</li>
-                  <li className="my-1">Operation Lamp</li>
+                  {loading ? (
+                    <li className="my-1">Loading...</li>
+                  ) : categories && categories.length > 0 ? (
+                    categories.slice(0, Math.ceil(categories.length / 2)).map((cat) => (
+                      <li key={cat._id} className="my-1">
+                        <a
+                          href={`/product?category=${encodeURIComponent(cat.category_name)}`}
+                          className="footer-link"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/product", { state: { category: cat.category_name } });
+                          }}
+                        >
+                          {cat.category_name}
+                        </a>
+                      </li>
+                    ))
+                  ) : (
+                    // Fallback static list if API empty / fails
+                    <>
+                      <li className="my-1">Hospital Bed</li>
+                      <li className="my-1">Exam Table</li>
+                    </>
+                  )}
                 </ul>
               </Col>
               <Col xs={6}>
                 <ul className="list-unstyled">
-                  <li className="my-1">Pendant</li>
-                  <li className="my-1">Stretcher</li>
-                  <li className="my-1">Medical Chair</li>
-                  <li className="my-1">Medical Trolley</li>
+                  {loading ? (
+                    <li className="my-1">&nbsp;</li>
+                  ) : categories && categories.length > 0 ? (
+                    categories.slice(Math.ceil(categories.length / 2)).map((cat) => (
+                      <li key={cat._id} className="my-1">
+                        <a
+                          href={`/product?category=${encodeURIComponent(cat.category_name)}`}
+                          className="footer-link"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/product", { state: { category: cat.category_name } });
+                          }}
+                        >
+                          {cat.category_name}
+                        </a>
+                      </li>
+                    ))
+                  ) : (
+                    <>
+                      <li className="my-1">Operation Table</li>
+                      <li className="my-1">Operation Lamp</li>
+                    </>
+                  )}
                 </ul>
               </Col>
             </Row>
@@ -103,7 +174,7 @@ export default function Footer() {
               <FiMapPin className="me-2" />
               Lot 45 Brickdam, Stabroek Georgetown, Guyana, South America
             </p>
-            <Button className="rounded-1 mt-3 custom-btn px-4 py-2">
+            <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={handleContactClick}>
               Get in Touch
             </Button>
           </Col>

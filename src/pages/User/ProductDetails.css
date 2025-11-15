@@ -41,6 +41,13 @@
     max-height: 400px !important;
   }
 
+  /* Enable smooth touch interaction for image */
+  .text-center > div:first-child {
+    touch-action: pan-x;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
   /* Hide thumbnails and navigation arrows on mobile */
   .thumbnail-container {
     display: none !important;
