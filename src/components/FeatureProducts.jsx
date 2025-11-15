@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,9 +11,22 @@ import { useNavigate } from "react-router-dom";
 
 // Custom Mobile Slider Component
 const CustomMobileSlider = ({ products }) => {
+  const containerRef = useRef(null);
+
+  // Ensure the scroll position is at the start when products change/mount
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    // small timeout to ensure layout/paint has occurred
+    const t = setTimeout(() => {
+      el.scrollLeft = 0;
+    }, 0);
+    return () => clearTimeout(t);
+  }, [products]);
+
   return (
     <div className="custom-mobile-slider">
-      <div className="slider-container">
+      <div className="slider-container" ref={containerRef}>
         <div className="slider-track">
           {products.map((product, index) => (
             <div key={index} className="mobile-slide">
@@ -21,12 +34,11 @@ const CustomMobileSlider = ({ products }) => {
                 <div className="feature-image-wrapper">
                   <img
                     src={`${base_uri}/${product.main_image}`}
-                    alt={product.name}
-                    className="img-fluid"
+                    alt={product.product_name}
                   />
                 </div>
-                <h6 className="fw-semibold mt-3">{product.name}</h6>
-                <p className="text-muted small">{product.code}</p>
+                <h6 className="fw-semibold mt-3">{product.product_name}</h6>
+                <p className="text-muted small">{product.prod_id}</p>
               </div>
             </div>
           ))}
@@ -70,9 +82,13 @@ export default function FeatureProducts() {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 50000,
     slidesToShow: 4,
     slidesToScroll: 1,
+    centerMode: false,
+    centerPadding: "0px",
+    variableWidth: false,
+    initialSlide: 0,
     arrows: true,
     autoplay: true,
     autoplaySpeed: 3000,
@@ -127,16 +143,17 @@ export default function FeatureProducts() {
         ) : (
           <Slider {...settings}>
             {products.map((product, index) => (
-              <div key={index} className="feature-card text-center p-3">
-                <div className="feature-image-wrapper">
-                  <img
-                    src={`${base_uri}/${product.main_image}`}
-                    alt={product.name}
-                    className="img-fluid"
-                  />
+              <div key={product.prod_id } className="text-center">
+                <div className="feature-card">
+                  <div className="feature-image-wrapper">
+                    <img
+                      src={`${base_uri}/${product.main_image}`}
+                      alt={product.product_name}
+                    />
+                  </div>
+                  <h6 className="fw-semibold mt-3">{product.product_name}</h6>
+                  <p className="text-muted small">{product.prod_id}</p>
                 </div>
-                <h6 className="fw-semibold mt-3">{product.name}</h6>
-                <p className="text-muted small">{product.code}</p>
               </div>
             ))}
           </Slider>
