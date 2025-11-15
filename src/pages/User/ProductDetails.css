@@ -1,7 +1,21 @@
-/* 🌿 Custom placeholder styling */
+in /* 🌿 Custom placeholder styling */
 .form-control::placeholder {
   font-size: 0.8rem;   /* Change placeholder font size */
   color: #aeb1b4;      /* Optional: slightly gray placeholder text */
   opacity: 1;          /* Ensure color applies consistently */
  
+}
+
+/* On desktop, vertically center details instead of forcing top padding */
+@media (min-width: 768px) {
+  .product-details-card {
+    padding-top: 0; /* reset top padding so card can be vertically centered by the row */
+  }
+}
+
+/* Slight top padding on small screens to keep compact spacing */
+@media (max-width: 767.98px) {
+  .product-details-card {
+    padding-top: 1rem;
+  }
 }

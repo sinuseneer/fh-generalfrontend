@@ -156,9 +156,10 @@ export default function ProductDetails() {
         </Col>
       </Row>
 
-      {/* ---------- Full Width Image Section ---------- */}
-      <Row className="mb-4">
-        <Col xs={12} className="text-center">
+  {/* ---------- Image (left) and Product Details + Inquiry Form (right) ---------- */}
+  <Row className="mb-4 align-items-center">
+        {/* Left: Main Image + Thumbnails */}
+        <Col xs={12} md={6} className="text-center">
           <Box
             sx={{
               display: "flex",
@@ -176,6 +177,7 @@ export default function ProductDetails() {
                 borderRadius: 3,
                 overflow: "hidden",
                 width: "100%",
+                maxHeight: 560,
               }}
             >
               <CardMedia
@@ -184,7 +186,7 @@ export default function ProductDetails() {
                 alt={product.name}
                 sx={{
                   width: "100%",
-                  height: "auto",
+                  height: "100%",
                   objectFit: "contain",
                   transition: "0.3s ease",
                 }}
@@ -193,8 +195,8 @@ export default function ProductDetails() {
             </MuiCard>
           </Box>
 
-          {/* ---------- Thumbnails ---------- */}
-          <Box sx={{ position: "relative", width: "100%", maxWidth: 480, mx: "auto" }}>
+          {/* Thumbnails */}
+          <Box sx={{ position: "relative", width: "100%", maxWidth: 560, mx: "auto" }}>
             {allImages.length > 6 && (
               <IconButton
                 sx={{
@@ -279,9 +281,9 @@ export default function ProductDetails() {
           </Box>
         </Col>
 
-        {/* ---------- Product Details + Inquiry Form ---------- */}
-        <Col md={6}>
-          <Card className="p-4 shadow-sm border-0">
+        {/* Right: Product Details (without enquiry) */}
+        <Col xs={12} md={6}>
+          <Card className="product-details-card p-4 shadow-sm border-0">
             <h2 className="mb-3 text-start">{product.name}</h2>
             <p><strong>ID:</strong> {product.prod_id}</p>
             <p><strong>Category:</strong> {product.category}</p>
@@ -297,8 +299,14 @@ export default function ProductDetails() {
                 <i className="bi bi-whatsapp me-2"></i> WhatsApp Now
               </Button>
             </div>
+          </Card>
+        </Col>
+      </Row>
 
-            <hr />
+      {/* ---------- Inquiry Form (full-width, below the product row) ---------- */}
+      <Row className="mt-4">
+        <Col xs={12} md={8} className="mx-auto">
+          <Card className="p-4 shadow-sm border-0">
             <h5 className="mb-3">Submit your inquiry to know more.</h5>
 
             <Form onSubmit={handleSubmit}>

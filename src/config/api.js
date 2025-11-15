@@ -1,6 +1,6 @@
 // central API URI for the frontend to call backend endpoints
-const api_uri = "http://localhost:5000/api/";
-// const api_uri = "http://fhgeneralequipment.com/api/";
+// const api_uri = "http://localhost:5000/api/";
+const api_uri = "http://fhgeneralequipment.com/api/";
 
 // base URI for static assets (images, uploads) — remove the trailing `/api/`
 const base_uri = api_uri.replace(/\/api\/?$/, "/");
