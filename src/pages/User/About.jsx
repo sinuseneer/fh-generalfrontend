@@ -1,32 +1,32 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container, Row, Col, Image, Button } from "react-bootstrap";
 import "./About.css";
 import WhyChooseUs from "../../components/WhyChooseUs";
+import { useNavigate } from "react-router-dom";
+
 
 export default function About() {
   const [activeTab, setActiveTab] = useState("story");
+  const navigate = useNavigate();
+
 
   const content = {
     story: {
-      title: "Redefining Healthcare Convenience",
+      title: "About Us",
       text: `
-       lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-       Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+       FH General Equipment is a trusted provider of medical, industrial, and general equipment solutions in Guyana, USA. We are committed to delivering reliable, high-quality products that support healthcare institutions, industries, and professional environments. Our focus on quality, innovation, and service excellence ensures that every solution we provide meets international standards. By working closely with our customers, we deliver equipment that enhances safety, efficiency, and long-term performance. With a growing portfolio and a dedication to continuous improvement, we strive to be a dependable partner for organizations seeking durable and high-standard equipment solutions across Guyana and beyond.
       `,
     },
     mission: {
-      title: "Empowering Wellness for Every Individual",
+      title: "Our Mission",
       text: `
-        Our mission at MediPlus is to make healthcare accessible and affordable for everyone.
-        We aim to bridge the gap between patients and quality healthcare products by delivering
-        trusted medicines and wellness essentials right to your doorstep.
+        To supply high-quality, dependable equipment solutions that enhance efficiency, safety, and performance across healthcare and industrial sectors. We are dedicated to offering products that meet international standards, ensuring long-term value and reliability for every client. Through strong customer support, continuous improvement, and a commitment to innovation, we aim to empower organizations in Guyana and beyond with equipment that drives better outcomes and sustained operational excellence.
       `,
     },
     vision: {
-      title: "Shaping the Future of Healthcare",
+      title: "Our Vision",
       text: `
-        Our vision is to revolutionize healthcare by becoming the leading online pharmacy,
-        known for exceptional service, genuine products, and a commitment to improving lives globally.
+        To become a leading global provider of medical and general equipment solutions, recognized for our unwavering reliability, commitment to innovation, and strong customer trust. We aim to set new standards in quality and service excellence, empowering institutions in Guyana and around the world with equipment that supports growth, safety, and long-term success.
       `,
     },
   };
@@ -42,7 +42,7 @@ export default function About() {
               alt="About image"
               fluid
               rounded
-              className="w-100"
+              className="w-64"
             />
           </Col>
 
@@ -53,24 +53,27 @@ export default function About() {
                 className={`tab ${activeTab === "story" ? "active" : ""}`}
                 onClick={() => setActiveTab("story")}
               >
-                OUR STORY
+                ABOUT
               </span>
               <span
                 className={`tab ${activeTab === "mission" ? "active" : ""}`}
                 onClick={() => setActiveTab("mission")}
               >
-                OUR MISSION
+                MISSION
               </span>
               <span
                 className={`tab ${activeTab === "vision" ? "active" : ""}`}
                 onClick={() => setActiveTab("vision")}
               >
-                OUR VISION
+                VISION
               </span>
             </div>
 
-            <h3 className="fw-bold mb-3">{content[activeTab].title}</h3>
+            <h3 className="fw-bold mb-1">{content[activeTab].title}</h3>
             <p className="about-text">{content[activeTab].text}</p>
+        <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={() => navigate("/contact")}>
+              Get in Touch
+            </Button>
           </Col>
         </Row>
       </Container>

@@ -20,7 +20,7 @@ const CustomMobileSlider = ({ products }) => {
               <div className="feature-card text-center">
                 <div className="feature-image-wrapper">
                   <img
-                    src={`${base_uri}uploads/${product.image}`}
+                    src={`${base_uri}/${product.main_image}`}
                     alt={product.name}
                     className="img-fluid"
                   />
@@ -56,6 +56,7 @@ export default function FeatureProducts() {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(`${api_uri}product/latest?limit=10`);
+        console.log(res)
         setProducts(res.data.products || []);
       } catch (error) {
         console.error("Error fetching latest products:", error);
@@ -129,7 +130,7 @@ export default function FeatureProducts() {
               <div key={index} className="feature-card text-center p-3">
                 <div className="feature-image-wrapper">
                   <img
-                    src={`${base_uri}uploads/${product.image}`}
+                    src={`${base_uri}/${product.main_image}`}
                     alt={product.name}
                     className="img-fluid"
                   />

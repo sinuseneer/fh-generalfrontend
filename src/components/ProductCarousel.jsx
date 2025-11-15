@@ -67,7 +67,7 @@ export default function ProductCarousel() {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 5,
     slidesToScroll: 1,
     autoplay: false,
     arrows: true,
@@ -75,7 +75,7 @@ export default function ProductCarousel() {
       { 
         breakpoint: 1200, 
         settings: { 
-          slidesToShow: 4,
+          slidesToShow: 5,
           slidesToScroll: 1,
         } 
       },

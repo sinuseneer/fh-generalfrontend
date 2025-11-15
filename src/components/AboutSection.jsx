@@ -24,17 +24,12 @@ export default function AboutSection() {
           className="bg-dark text-light d-flex flex-column justify-content-center px-4"
         >
           <h1 className=" mb-4 mt-5  about-title">
-            About <span className="text-success">FH</span>
+            About <span className="text-success">Us</span>
             <br />
             General Equipment
           </h1>
           <p className="text-white-50 mb-4">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged.
+            FH General Equipment is a trusted provider of medical, industrial, and general equipment solutions in Guyana, USA. We are committed to delivering reliable, high-quality products that support healthcare institutions, industries, and professional environments. Our focus on quality, innovation, and service excellence ensures that every solution we provide meets international standards. By working closely with our customers, we deliver equipment that enhances safety, efficiency, and long-term performance. With a growing portfolio and a dedication to continuous improvement, we strive to be a dependable partner for organizations seeking durable and high-standard equipment solutions across Guyana and beyond.
           </p>
           <Button
             variant="success"
