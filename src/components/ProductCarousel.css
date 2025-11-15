@@ -72,14 +72,14 @@
   display: flex !important;
   justify-content: center;
   align-items: flex-start;
-  margin: 0 10px;
+  margin: 0 4px;
   flex: 0 0 auto !important;
   height: auto !important;
 }
 
 .slick-list {
   overflow: hidden !important;
-  margin: 0 -10px;
+  margin: 0 -4px;
 }
 
 /* 🧩 Prevent right-side clipping in full-width screens */
@@ -87,7 +87,7 @@
   overflow-x: auto !important; /* allow horizontal scroll if needed */
   overflow-y: hidden;
   scroll-behavior: smooth;
-  padding-right: 10px; /* small breathing space at the end */
+  padding-right: 4px; /* small breathing space at the end */
 }
 
 /* Hide scrollbar for a clean look */
@@ -109,6 +109,19 @@
 .slick-next:before {
   color: #000;
   font-size: 20px;
+}
+
+/* Position adjustment for arrows */
+.slick-prev,
+.slick-next {
+  z-index: 3; /* ensure arrows sit above slides */
+}
+
+/* Move left arrow slightly more to the left on desktop */
+@media (min-width: 769px) {
+  .slick-prev {
+    left: -14px;
+  }
 }
 
 /* Remove focus outlines */
@@ -169,10 +182,10 @@ button:focus,
     max-width: 200px;
   }
   .slick-slide {
-    margin: 0 8px;
+    margin: 0 4px;
   }
   .slick-list {
-    margin: 0 -8px;
+    margin: 0 -4px;
   }
 }
 

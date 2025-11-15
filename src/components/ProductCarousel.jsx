@@ -129,7 +129,7 @@ export default function ProductCarousel() {
   }, []);
 
   return (
-    <div className="product-carousel-section mt-1 mb-5">
+    <div className="product-carousel-section mt-1 mb-1">
       <Container style={{ paddingRight: 0 }}>
         <div className="mb-4">
           <h2 className="fw-bold text-start">Categories</h2>

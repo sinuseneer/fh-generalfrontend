@@ -109,7 +109,7 @@
 }
 
 .slide-text-wrapper {
-  max-width: 650px;
+  max-width: 500px;
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
@@ -139,7 +139,7 @@
   line-height: 1.6;
   margin-bottom: 2rem;
   /* text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); */
-  max-width: 550px;
+  max-width:465px;
 }
 
 .slide-button {
@@ -179,29 +179,31 @@
   position: relative;
   top: auto;
   transform: none;
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   border: none;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  display: flex;
+  width: auto;
+  height: auto;
+  padding: 6px;
+  border-radius: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  pointer-events: auto; /* re-enable button clicks */
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .carousel-nav:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.06);
+  opacity: 0.95;
 }
 
 .carousel-nav svg {
-  color: #333;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
 }
 
 
@@ -297,8 +299,9 @@
   }
 
   .carousel-nav {
-    width: 45px;
-    height: 45px;
+    width: auto;
+    height: auto;
+    padding: 6px;
   }
   
 }
@@ -345,8 +348,9 @@
   }
 
   .carousel-nav {
-    width: 40px;
-    height: 40px;
+    width: auto;
+    height: auto;
+    padding: 6px;
   }
 
   .carousel-nav svg {
@@ -391,8 +395,9 @@
   }
 
   .carousel-nav {
-    width: 35px;
-    height: 35px;
+    width: auto;
+    height: auto;
+    padding: 6px;
   }
 }
 
