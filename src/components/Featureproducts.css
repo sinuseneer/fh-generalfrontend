@@ -226,10 +226,10 @@
   }
   
   .view-all-btn {
-    width: 100%;
+    width: auto;
     max-width: 200px;
-    margin: 20px auto 0 auto;
-    display: block;
+    margin: 20px 0 0 0; /* left-align on mobile */
+    display: inline-block;
   }
   
   /* Move button below content in mobile */

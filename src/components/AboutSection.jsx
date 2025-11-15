@@ -21,7 +21,7 @@ export default function AboutSection() {
         {/* Right Content */}
         <Col
           md={6}
-          className="bg-dark text-light d-flex flex-column justify-content-center px-4"
+          className="bg-dark text-light d-flex flex-column justify-content-center px-4 px-md-5"
         >
           <h1 className=" mb-4 mt-5  about-title">
             About <span className="text-success">Us</span>

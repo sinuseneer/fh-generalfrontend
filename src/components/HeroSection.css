@@ -17,35 +17,29 @@
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  transition: transform 0.6s ease-in-out;
 }
 
 /* Individual Slide */
 .carousel-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-  transform: scale(1.05);
-}
-
-.carousel-slide.active {
   opacity: 1;
   visibility: visible;
-  transform: scale(1);
-  z-index: 2;
+  transform: none;
 }
 
 /* Slide Animation Directions */
-.carousel-slide.active.next {
-  animation: slideInFromRight 0.6s ease-in-out forwards;
+/* legacy animation classes left for compatibility (not required for flex slider) */
+.carousel-slide.next {
+  will-change: transform, opacity;
 }
 
-.carousel-slide.active.prev {
-  animation: slideInFromLeft 0.6s ease-in-out forwards;
+.carousel-slide.prev {
+  will-change: transform, opacity;
 }
 
 @keyframes slideInFromRight {

@@ -7,7 +7,7 @@ import "../App.css";
 import "./Featureproducts.css";
 import axios from "axios";
 import api_uri, { base_uri } from "../config/api"; // ✅ adjust path if needed
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 // Custom Mobile Slider Component
 const CustomMobileSlider = ({ products }) => {
@@ -28,18 +28,20 @@ const CustomMobileSlider = ({ products }) => {
     <div className="custom-mobile-slider">
       <div className="slider-container" ref={containerRef}>
         <div className="slider-track">
-          {products.map((product, index) => (
-            <div key={index} className="mobile-slide">
-              <div className="feature-card text-center">
-                <div className="feature-image-wrapper">
-                  <img
-                    src={`${base_uri}/${product.main_image}`}
-                    alt={product.product_name}
-                  />
+          {products.map((product) => (
+            <div key={product.prod_id} className="mobile-slide">
+              <Link to={`/product/${product._id}`} className="text-decoration-none">
+                <div className="feature-card text-center">
+                  <div className="feature-image-wrapper">
+                    <img
+                      src={`${base_uri}/${product.main_image}`}
+                      alt={product.product_name}
+                    />
+                  </div>
+                  <h6 className="fw-semibold mt-3">{product.product_name}</h6>
+                  <p className="text-muted small">{product.prod_id}</p>
                 </div>
-                <h6 className="fw-semibold mt-3">{product.product_name}</h6>
-                <p className="text-muted small">{product.prod_id}</p>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
@@ -82,7 +84,7 @@ export default function FeatureProducts() {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 50000,
+    speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
     centerMode: false,
@@ -90,7 +92,8 @@ export default function FeatureProducts() {
     variableWidth: false,
     initialSlide: 0,
     arrows: true,
-    autoplay: true,
+    // Do not autoplay on desktop; slides should change only via buttons
+    autoplay: false,
     autoplaySpeed: 3000,
     responsive: [
       { breakpoint: 1200, settings: { slidesToShow: 3, arrows: true } },
@@ -134,28 +137,30 @@ export default function FeatureProducts() {
         ) : isMobile ? (
           <>
             <CustomMobileSlider products={products} />
-            <div className="text-center mt-4">
-              <Button variant="dark" className="view-all-btn px-4 py-2">
-                VIEW ALL
-              </Button>
-            </div>
+              <div className="text-start mt-4">
+                <Button variant="dark" className="view-all-btn px-4 py-2">
+                  VIEW ALL
+                </Button>
+              </div>
           </>
         ) : (
           <Slider {...settings}>
-            {products.map((product, index) => (
-              <div key={product.prod_id } className="text-center">
-                <div className="feature-card">
-                  <div className="feature-image-wrapper">
-                    <img
-                      src={`${base_uri}/${product.main_image}`}
-                      alt={product.product_name}
-                    />
-                  </div>
-                  <h6 className="fw-semibold mt-3">{product.product_name}</h6>
-                  <p className="text-muted small">{product.prod_id}</p>
+              {products.map((product) => (
+                <div key={product.prod_id} className="text-center">
+                  <Link to={`/product/${product._id}`} className="text-decoration-none">
+                    <div className="feature-card">
+                      <div className="feature-image-wrapper">
+                        <img
+                          src={`${base_uri}/${product.main_image}`}
+                          alt={product.product_name}
+                        />
+                      </div>
+                      <h6 className="fw-semibold mt-3">{product.product_name}</h6>
+                      <p className="text-muted small">{product.prod_id}</p>
+                    </div>
+                  </Link>
                 </div>
-              </div>
-            ))}
+              ))}
           </Slider>
         )}
       </Container>

@@ -78,7 +78,10 @@ export default function HeroSection() {
   return (
     <Container fluid className="p-0 custom-hero-wrapper">
       <div className="custom-carousel">
-        <div className="carousel-slides">
+        <div
+          className="carousel-slides"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
           {slides.map((slide, index) => {
             const colors = getTextColors(slide.textMode || "dark");
             const image = isMobile ? slide.mobileImage : slide.desktopImage;
@@ -87,10 +90,7 @@ export default function HeroSection() {
             const isNext = index === (currentSlide + 1) % slides.length;
 
             return (
-              <div
-                key={index}
-                className={`carousel-slide ${isActive ? 'active' : ''} ${isPrev ? 'prev' : ''} ${isNext ? 'next' : ''} ${isTransitioning ? direction : ''}`}
-              >
+              <div key={index} className={`carousel-slide ${isTransitioning ? direction : ''}`}>
                 <div 
                   className="slide-image"
                   style={{ backgroundImage: `url(${image})` }}

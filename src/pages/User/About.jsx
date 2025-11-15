@@ -36,7 +36,7 @@ export default function About() {
       <Container>
         <Row className="align-items-center">
           {/* Left Side Image */}
-          <Col xs={12} md={6} className="mb-4 mb-md-0">
+          <Col xs={12} md={6} className="mb-4 mb-md-5">
             <Image
               src="/images/about/about-hero.webp"
               alt="About image"
