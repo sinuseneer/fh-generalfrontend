@@ -218,7 +218,7 @@ function Products() {
                   <Button
                     variant="warning"
                     size="sm"
-                    href={`/admin/edit-product/${p._id}`}
+                    href={`/admin/products/edit/${p._id}`}
                     className="me-2"
                   >
                     <FaEdit /> Edit

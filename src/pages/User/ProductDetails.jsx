@@ -138,6 +138,45 @@ export default function ProductDetails() {
     .filter(Boolean)
     .map(normalizeImg);
 
+  // Parse backend description into a heading + bullet items
+  const parseDescription = (desc) => {
+    if (!desc || typeof desc !== "string") return { heading: null, items: [] };
+
+    // Normalize line endings
+    let s = desc.replace(/\r/g, "").trim();
+
+    // If description contains explicit newlines, prefer those as separators
+    // Otherwise split by common bullet symbols like ► • • or hyphen
+    const bulletChars = /[►•\u2022\-]/;
+    const firstBulletIndex = s.search(bulletChars);
+
+    let heading = null;
+    let rest = s;
+
+    // If there's text before the first bullet and it looks like a heading (ends with ':'), keep it
+    if (firstBulletIndex > 0) {
+      const possibleHeading = s.slice(0, firstBulletIndex).trim();
+      if (possibleHeading.endsWith(":")) {
+        heading = possibleHeading;
+        rest = s.slice(firstBulletIndex);
+      }
+    }
+
+    let parts = [];
+    if (rest.includes("\n")) {
+      parts = rest.split("\n");
+    } else {
+      // Split by any of the bullet characters
+      parts = rest.split(/[►•\u2022]/);
+    }
+
+    const items = parts
+      .map((p) => p.replace(/^[:\s\-–—]+/, "").trim())
+      .filter(Boolean);
+
+    return { heading, items };
+  };
+
   return (
     <Container className="my-5">
       <ToastContainer position="top-center" />
@@ -156,8 +195,8 @@ export default function ProductDetails() {
         </Col>
       </Row>
 
-  {/* ---------- Image (left) and Product Details + Inquiry Form (right) ---------- */}
-  <Row className="mb-4 align-items-center">
+      {/* ---------- Image (left) and Product Details + Inquiry Form (right) ---------- */}
+      <Row className="mb-4">
         {/* Left: Main Image + Thumbnails */}
         <Col xs={12} md={6} className="text-center">
           <Box
@@ -178,6 +217,8 @@ export default function ProductDetails() {
                 overflow: "hidden",
                 width: "100%",
                 maxHeight: 560,
+                /* use a very light border instead of a colored shadow */
+                border: "1px solid #fcfcfc",
               }}
             >
               <CardMedia
@@ -196,13 +237,13 @@ export default function ProductDetails() {
           </Box>
 
           {/* Thumbnails */}
-          <Box sx={{ position: "relative", width: "100%", maxWidth: 560, mx: "auto" }}>
-            {allImages.length > 6 && (
+          <Box className="thumbnail-container" sx={{ position: "relative", width: "100%", maxWidth: 560, mx: "auto" }}>
+            {allImages.length > 4 && (
               <IconButton
                 sx={{
                   position: "absolute",
                   top: "50%",
-                  left: 0,
+                  left: -10,
                   transform: "translateY(-50%)",
                   zIndex: 2,
                   backgroundColor: "white",
@@ -220,11 +261,15 @@ export default function ProductDetails() {
               ref={thumbRef}
               sx={{
                 display: "flex",
-                gap: 1,
+                gap: 1.5,
                 overflowX: "auto",
                 scrollBehavior: "smooth",
                 p: 1,
-                "&::-webkit-scrollbar": { display: "none" },
+                "&::-webkit-scrollbar": { height: "6px" },
+                "&::-webkit-scrollbar-thumb": { 
+                  backgroundColor: "#2EA898",
+                  borderRadius: "3px"
+                },
               }}
             >
               {allImages.map((img, index) => (
@@ -233,7 +278,7 @@ export default function ProductDetails() {
                   onClick={() => setSelectedImage(img)}
                   sx={{
                     flex: "0 0 auto",
-                    width: 80,
+                    width: 120,
                     height: 80,
                     border: selectedImage === img ? "2px solid #2EA898" : "1px solid #ddd",
                     borderRadius: 1,
@@ -261,16 +306,17 @@ export default function ProductDetails() {
               ))}
             </Box>
 
-            {allImages.length > 6 && (
+            {allImages.length > 4 && (
               <IconButton
                 sx={{
                   position: "absolute",
                   top: "50%",
-                  right: 0,
+                  right: -10,
                   transform: "translateY(-50%)",
                   zIndex: 2,
                   backgroundColor: "white",
-                  boxShadow: 1,
+                  border: 1,
+                  boxShadow: "0 0 4px rgba(0,0,0,0.2)",
                   "&:hover": { backgroundColor: "#f0f0f0" },
                 }}
                 onClick={() => (thumbRef.current.scrollLeft += 150)}
@@ -279,15 +325,25 @@ export default function ProductDetails() {
               </IconButton>
             )}
           </Box>
+
+          {/* Mobile Dots Pagination */}
+          <div className="mobile-dots-container" style={{ display: 'none' }}>
+            {allImages.map((img, index) => (
+              <div
+                key={index}
+                className={`mobile-dot ${selectedImage === img ? 'active' : ''}`}
+                onClick={() => setSelectedImage(img)}
+              />
+            ))}
+          </div>
         </Col>
 
         {/* Right: Product Details (without enquiry) */}
         <Col xs={12} md={6}>
-          <Card className="product-details-card p-4 shadow-sm border-0">
+          <Card className="p-4 border-0">
             <h2 className="mb-3 text-start">{product.name}</h2>
             <p><strong>ID:</strong> {product.prod_id}</p>
-            <p><strong>Category:</strong> {product.category}</p>
-            <p>{product.description}</p>
+            {product.product_info?<p><strong>Product Info:</strong> {product.product_info}</p>:""}
 
             <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
               <Button
@@ -300,13 +356,8 @@ export default function ProductDetails() {
               </Button>
             </div>
           </Card>
-        </Col>
-      </Row>
-
-      {/* ---------- Inquiry Form (full-width, below the product row) ---------- */}
-      <Row className="mt-4">
-        <Col xs={12} md={8} className="mx-auto">
-          <Card className="p-4 shadow-sm border-0">
+          {/* Inquiry form placed under the details on the right column */}
+          <Card className="pt-0 p-4 shadow-sm border-0 mt-0">
             <h5 className="mb-3">Submit your inquiry to know more.</h5>
 
             <Form onSubmit={handleSubmit}>
@@ -368,12 +419,47 @@ export default function ProductDetails() {
                 />
               </Form.Group>
 
-              <div className="text-center">
-                <Button type="submit" className="custom-btn px-5">
+              <div className="text-end">
+                <Button type="submit" className="custom-btn px-4">
                   Send Message
                 </Button>
               </div>
             </Form>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* ---------- Product Description (below the inquiry form) ---------- */}
+      <Row className="mt-4">
+        <Col xs={12} md={8} className="ml-auto">
+          <Card className="p-4 border-0">
+            <h5 className="mb-3">Product Description</h5>
+
+            {(() => {
+              const { heading, items } = parseDescription(product.description);
+              if (items.length > 0) {
+                return (
+                  <div>
+                    {heading && <p><strong>{heading}</strong></p>}
+                    <ul className="product-bullets" style={{ paddingLeft: 0 }}>
+                      {items.map((it, idx) => {
+                        const [label, ...rest] = it.split(":");
+                        if (rest.length > 0) {
+                          return (
+                            <li key={idx}>
+                              <strong>{label.trim()}:</strong> {rest.join(":").trim()}
+                            </li>
+                          );
+                        }
+                        return <li key={idx}>{it}</li>;
+                      })}
+                    </ul>
+                  </div>
+                );
+              }
+
+              return <p>{product.description}</p>;
+            })()}
           </Card>
         </Col>
       </Row>

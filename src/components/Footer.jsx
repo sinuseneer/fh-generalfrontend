@@ -37,29 +37,29 @@ export default function Footer() {
 
           {/* Quick Links */}
           <Col md={2}>
-            <h6 className="fw-bold mb-3">Quick Link</h6>
+            <h5 className="fw-bold mb-3">Quick Link</h5>
             <ul className="list-unstyled">
-              <li>
+              <li className="my-1">
                 <a href="/" className="footer-link">
                   Home
                 </a>
               </li>
-              <li>
+              <li className="my-1">
                 <a href="/about" className="footer-link">
                   About Us
                 </a>
               </li>
-              <li>
+              <li className="my-1">
                 <a href="/product" className="footer-link">
                   Products
                 </a>
               </li>
-              <li>
+              <li className="my-1">
                 <a href="/blog" className="footer-link">
                   Blog
                 </a>
               </li>
-              <li>
+              <li className="my-1">
                 <a href="/contact" className="footer-link">
                   Contact Us
                 </a>
@@ -69,22 +69,22 @@ export default function Footer() {
 
           {/* Products */}
           <Col md={4}>
-            <h6 className="fw-bold mb-3">Categories</h6>
+            <h5 className="fw-bold mb-3">Categories</h5>
             <Row>
               <Col xs={6}>
                 <ul className="list-unstyled">
-                  <li>Hospital Bed</li>
-                  <li>Exam Table</li>
-                  <li>Operation Table</li>
-                  <li>Operation Lamp</li>
+                  <li className="my-1">Hospital Bed</li>
+                  <li className="my-1">Exam Table</li>
+                  <li className="my-1">Operation Table</li>
+                  <li className="my-1">Operation Lamp</li>
                 </ul>
               </Col>
               <Col xs={6}>
                 <ul className="list-unstyled">
-                  <li>Pendant</li>
-                  <li>Stretcher</li>
-                  <li>Medical Chair</li>
-                  <li>Medical Trolley</li>
+                  <li className="my-1">Pendant</li>
+                  <li className="my-1">Stretcher</li>
+                  <li className="my-1">Medical Chair</li>
+                  <li className="my-1">Medical Trolley</li>
                 </ul>
               </Col>
             </Row>
@@ -92,7 +92,7 @@ export default function Footer() {
 
           {/* Contact */}
           <Col md={3}>
-            <h6 className="fw-bold mb-3">Contact Us</h6>
+            <h5 className="fw-bold mb-3">Contact Us</h5>
             <p className="mb-2">
               <FiPhone className="me-2" /> (323) 576-1942
             </p>
