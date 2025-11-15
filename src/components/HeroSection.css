@@ -221,6 +221,16 @@
   .carousel-controls-container .carousel-nav-next {
     margin-right: -55px;
   }
+
+  /* Increase carousel and hero heights on large screens so images show fully */
+  .custom-carousel {
+    height: 800px;
+  }
+
+  .hero-banner-wrapper,
+  .hero-background {
+    min-height: 800px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -389,7 +399,7 @@
 /* Old styles - keeping for compatibility if needed elsewhere */
 .hero-banner-wrapper {
   width: 100%;
-  height: 430px;
+  min-height: 600px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top center;
@@ -399,7 +409,7 @@
 
 .hero-background {
   width: 100%;
-  height: 430px;
+  min-height: 600px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
