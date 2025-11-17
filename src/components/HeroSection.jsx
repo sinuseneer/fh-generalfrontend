@@ -107,11 +107,8 @@ export default function HeroSection() {
                       {slide.subtitle}
                     </p>
                     <button
-                      className="slide-button text-dark"
-                      style={{
-                        backgroundColor: "#fff",
-                        color: "#000",
-                      }}
+                      className="slide-button learn-more-btn "
+                      
                     >
                       Learn More
                     </button>
@@ -136,7 +133,7 @@ export default function HeroSection() {
           </button>
 
           <button
-            className="carousel-nav carousel-nav-next"
+            className="carousel-nav carousel-nav-next "
             onClick={nextSlide}
             aria-label="Next slide"
           >

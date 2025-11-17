@@ -383,7 +383,7 @@ export default function ProductDetails() {
         {/* Right: Product Details (without enquiry) */}
         <Col xs={12} md={6}>
           <Card className="p-4 border-0">
-            <h2 className="mb-3 text-start">{product.name}</h2>
+            <h2 className="mb-3 text-start fw-bold">{product.name}</h2>
             <p><strong>ID:</strong> {product.prod_id}</p>
             {product.product_info?<p><strong>Product Info:</strong> {product.product_info}</p>:""}
 

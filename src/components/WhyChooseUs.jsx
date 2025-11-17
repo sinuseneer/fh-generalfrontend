@@ -49,6 +49,7 @@ const WhyChooseUs = () => {
                     src={item.img}
                     alt={item.title}
                     className="icon-img"
+                    
                   />
                 </div>
                 <Card.Body>

@@ -33,7 +33,7 @@ export default function AboutSection() {
           </p>
           <Button
             variant="success"
-            className="learn-btn mb-5"
+            className="learn-btn mb-5 custom-btn"
             size="sm"
             style={{ width: "150px" }}
             onClick={() => navigate("/about")}

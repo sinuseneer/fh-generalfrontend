@@ -32,54 +32,57 @@ export default function About() {
   };
 
   return (
-    <Container fluid className="about-section py-5">
-      <Container>
-        <Row className="align-items-center">
-          {/* Left Side Image */}
-          <Col xs={12} md={6} className="mb-4 mb-md-5">
-            <Image
-              src="/images/about/about-hero.jpg"
-              alt="About image"
-              fluid
-              rounded
-              className="w-64"
-            />
-          </Col>
-
-          {/* Right Side Content */}
-          <Col xs={12} md={6}>
-            <div className="tabs mb-3">
-              <span
-                className={`tab ${activeTab === "story" ? "active" : ""}`}
-                onClick={() => setActiveTab("story")}
-              >
-                ABOUT
-              </span>
-              <span
-                className={`tab ${activeTab === "mission" ? "active" : ""}`}
-                onClick={() => setActiveTab("mission")}
-              >
-                MISSION
-              </span>
-              <span
-                className={`tab ${activeTab === "vision" ? "active" : ""}`}
-                onClick={() => setActiveTab("vision")}
-              >
-                VISION
-              </span>
-            </div>
-
-            <h3 className="fw-bold mb-1">{content[activeTab].title}</h3>
-            <p className="about-text">{content[activeTab].text}</p>
-        <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={() => navigate("/contact")}>
-              Get in Touch
-            </Button>
-          </Col>
-        </Row>
+  <>
+      <Container fluid className="about-section py-5">
+        <Container>
+          <Row className="align-items-center">
+            {/* Left Side Image */}
+            <Col xs={12} md={6} className="mb-4 mb-md-5">
+              <Image
+                src="/images/about/about-hero.jpg"
+                alt="About image"
+                fluid
+                rounded
+                className="w-64"
+              />
+            </Col>
+  
+            {/* Right Side Content */}
+            <Col xs={12} md={6}>
+              <div className="tabs mb-3">
+                <span
+                  className={`tab ${activeTab === "story" ? "active" : ""}`}
+                  onClick={() => setActiveTab("story")}
+                >
+                  ABOUT
+                </span>
+                <span
+                  className={`tab ${activeTab === "mission" ? "active" : ""}`}
+                  onClick={() => setActiveTab("mission")}
+                >
+                  MISSION
+                </span>
+                <span
+                  className={`tab ${activeTab === "vision" ? "active" : ""}`}
+                  onClick={() => setActiveTab("vision")}
+                >
+                  VISION
+                </span>
+              </div>
+  
+              <h3 className="fw-bold mb-1">{content[activeTab].title}</h3>
+              <p className="about-text">{content[activeTab].text}</p>
+          <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={() => navigate("/contact")}>
+                Get in Touch
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+        
+        {/* Why Choose Us Section */}
+        
       </Container>
-      
-      {/* Why Choose Us Section */}
       <WhyChooseUs />
-    </Container>
+  </>
   );
 }
