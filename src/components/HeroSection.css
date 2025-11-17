@@ -136,7 +136,7 @@
   max-width:465px;
 }
 
-/* .slide-button {
+.slide-button {
   padding: 14px 40px;
   font-size: 1rem;
   font-weight: 600;
@@ -146,29 +146,15 @@
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); */
-  /* color: #ffffff;
-} */ */
-
-
-
-.slide-button {
-  background-color: #ffffff;     /* white by default */
-  color: #000000;                /* black text */
-  padding: 12px 32px;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+  color: #ffffff;
 }
 
-.slide-button:hover {
-  background-color: #2da797;     /* hover color */
-  color: #ffffff;                /* white text on hover */
-  transform: translateY(-2px);
-}
+
+
+
+
+
 
 
 

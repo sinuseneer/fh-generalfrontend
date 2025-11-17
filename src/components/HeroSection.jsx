@@ -107,7 +107,7 @@ export default function HeroSection() {
                       {slide.subtitle}
                     </p>
                     <button
-                      className="slide-button text-dark"
+                      className="slide-button text-dark custom-btn"
                       style={{
                         backgroundColor: "#fff",
                         color: "#000",
