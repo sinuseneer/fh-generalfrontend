@@ -38,7 +38,7 @@ export default function About() {
           {/* Left Side Image */}
           <Col xs={12} md={6} className="mb-4 mb-md-5">
             <Image
-              src="/images/about/about-hero.webp"
+              src="/images/about/about-hero.jpg"
               alt="About image"
               fluid
               rounded

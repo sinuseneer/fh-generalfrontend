@@ -26,7 +26,7 @@ export default function Product() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const productsPerPage = 8;
+  const productsPerPage = 12;
 
   // ✅ Handle selected category
   const [selectedCategory, setSelectedCategory] = useState(

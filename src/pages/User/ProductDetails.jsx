@@ -390,7 +390,7 @@ export default function ProductDetails() {
             <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
               <Button
                 className="whatsapp1-btn d-flex align-items-center justify-content-center px-5"
-                href={`https://wa.me/9188850311?text=Hi Sabitha,%0AI'm interested in your product:%0A👉 Name: ${product.name}%0A🆔 Product ID: ${product.prod_id}%0ACould you please share more details?`}
+                href={`https://wa.me/9188850311?text=Hi Madam,%0AI'm interested in your product:%0A👉 Name: ${product.name}%0A🆔 Product ID: ${product.prod_id}%0ACould you please share more details?`}
                 target="_blank"
                 variant="success"
               >
@@ -461,7 +461,7 @@ export default function ProductDetails() {
                 />
               </Form.Group>
 
-              <div className="text-end">
+              <div className="text-start">
                 <Button type="submit" className="custom-btn px-4">
                   Send Message
                 </Button>
