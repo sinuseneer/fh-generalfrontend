@@ -67,12 +67,12 @@ export default function Contact() {
     {
       icon: <Phone size={40} color="#fff" />,
       title: "Phone Number",
-      text: "+86 15150227928",
+      text: "+1 (347) 869‑4095",
     },
     {
       icon: <Mail size={40} color="#fff" />,
       title: "E-mail",
-      text: "Leon@yanmedical.cn",
+      text: "info@fhgeneralequipment.com",
     },
   ];
 

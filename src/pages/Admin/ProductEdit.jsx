@@ -3,8 +3,17 @@ import axios from "axios";
 import api_uri, { base_uri } from "../../config/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Container, Form, Button, Card, Row, Col, Image } from "react-bootstrap";
-import { FaSave, FaUpload } from "react-icons/fa";
+import {
+  Container,
+  Form,
+  Button,
+  Card,
+  Row,
+  Col,
+  Image,
+  Spinner,
+} from "react-bootstrap";
+import { FaSave, FaUpload, FaTrashAlt } from "react-icons/fa";
 
 function ProductEdit() {
   const { id } = useParams(); // product ID from URL
@@ -19,8 +28,12 @@ function ProductEdit() {
   });
 
   const [categories, setCategories] = useState([]);
-  const [images, setImages] = useState([]);
+  const [productImages, setProductImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [editingImageId, setEditingImageId] = useState(null);
+  const [replaceImage, setReplaceImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // ✅ Load product details + categories
   useEffect(() => {
@@ -30,7 +43,7 @@ function ProductEdit() {
 
   const loadCategories = async () => {
     try {
-  const res = await axios.post(`${api_uri}category/view`);
+      const res = await axios.post(`${api_uri}category/view`);
       if (res.data.success) setCategories(res.data.categories);
     } catch {
       toast.error("Failed to load categories");
@@ -39,7 +52,7 @@ function ProductEdit() {
 
   const loadProduct = async () => {
     try {
-  const res = await axios.get(`${api_uri}product/${id}`);
+      const res = await axios.get(`${api_uri}product/${id}`);
       if (res.data.success) {
         const product = res.data.product;
         setFormData({
@@ -51,11 +64,16 @@ function ProductEdit() {
         });
 
         if (product.images?.length > 0) {
-          setPreviewUrls(product.images.map((img) => `${base_uri}${img.image_path}`));
+          setProductImages(product.images);
+          setPreviewUrls(
+            product.images.map((img) => `${base_uri}${img.image_path}`)
+          );
         }
       }
     } catch {
       toast.error("Failed to fetch product");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,44 +82,84 @@ function ProductEdit() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle image selection (new uploads)
-  const handleImageChange = (e) => {
+  // ✅ Handle multiple new images
+  const handleNewImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files);
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setPreviewUrls(previews);
+    setNewImages(files);
   };
 
-  // ✅ Submit update
+  // ✅ Replace single image in an existing slot
+  const handleReplaceImage = (e) => {
+    setReplaceImage(e.target.files[0]);
+  };
+
+  // ✅ Delete single image
+  const handleDeleteImage = async (imageId) => {
+    if (!window.confirm("Are you sure you want to delete this image?")) return;
+
+    try {
+      const res = await axios.delete(`${api_uri}product/image/${imageId}`);
+      if (res.data.success) {
+        toast.success("Image deleted successfully");
+        loadProduct();
+      }
+    } catch {
+      toast.error("Failed to delete image");
+    }
+  };
+
+  // ✅ Submit Update
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // 1️⃣ Update text details
+      // 1️⃣ Update product text fields
       const res = await axios.put(`${api_uri}product/update/${id}`, formData);
 
       if (res.data.success) {
-        // 2️⃣ Upload images (optional)
-        if (images.length > 0) {
+        // 2️⃣ Replace single image slot (if selected)
+        if (editingImageId && replaceImage) {
           const imgForm = new FormData();
-          images.forEach((file) => imgForm.append("images", file));
-          await axios.post(
-            `${api_uri}product/upload-images/${id}`,
+          imgForm.append("image", replaceImage);
+          await axios.put(
+            `${api_uri}product/replace-image/${editingImageId}`,
             imgForm,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
+          toast.success("Image slot replaced successfully!");
         }
+
+        // 3️⃣ Upload new images (if selected)
+        if (newImages.length > 0) {
+          const imgForm = new FormData();
+          newImages.forEach((file) => imgForm.append("images", file));
+          await axios.post(`${api_uri}product/upload-images/${id}`, imgForm, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          toast.success("New images added successfully!");
+        }
+
+        // ✅ Reset fields and refresh
+        setEditingImageId(null);
+        setReplaceImage(null);
+        setNewImages([]);
+        loadProduct();
 
         toast.success("✅ Product updated successfully!");
         setTimeout(() => navigate("/admin/products/list"), 1500);
-      } else {
-        toast.error("Failed to update product");
       }
     } catch (error) {
       console.error("❌ Error updating product:", error);
       toast.error("Server error while updating");
     }
   };
+
+  if (loading)
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" variant="info" />
+      </div>
+    );
 
   return (
     <Container className="mt-5" style={{ maxWidth: "900px" }}>
@@ -111,6 +169,7 @@ function ProductEdit() {
         </h3>
 
         <Form onSubmit={handleSubmit}>
+          {/* ✅ Product Info */}
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
@@ -125,7 +184,6 @@ function ProductEdit() {
                 />
               </Form.Group>
             </Col>
-
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Product Name *</Form.Label>
@@ -172,32 +230,53 @@ function ProductEdit() {
             />
           </Form.Group>
 
-          <Form.Group className="mb-4">
-            <Form.Label>Additional Info</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={2}
-              name="product_info"
-              value={formData.product_info}
-              onChange={handleChange}
-              className="bg-secondary bg-opacity-25 text-light border-secondary"
-            />
-          </Form.Group>
-
           {/* 🖼 Current Images */}
           <div className="mb-4">
             <Form.Label>Current Images</Form.Label>
             <div className="d-flex flex-wrap gap-3">
-              {previewUrls.length > 0 ? (
-                previewUrls.map((url, idx) => (
-                  <Image
-                    key={idx}
-                    src={url}
-                    height="100"
-                    width="100"
-                    rounded
-                    className="border border-info"
-                  />
+              {productImages.length > 0 ? (
+                productImages.map((img, idx) => (
+                  <div
+                    key={img._id}
+                    className="p-2 rounded position-relative bg-dark"
+                    style={{
+                      border:
+                        editingImageId === img._id
+                          ? "3px solid #ff4d4f"
+                          : "1px solid #0dcaf0",
+                      width: "120px",
+                    }}
+                  >
+                    <Image
+                      src={`${base_uri}${img.image_path}`}
+                      height="100"
+                      width="100"
+                      rounded
+                      className="mb-2"
+                    />
+                    <div className="d-flex justify-content-between">
+                      <Button
+                        size="sm"
+                        variant={
+                          editingImageId === img._id ? "danger" : "warning"
+                        }
+                        onClick={() =>
+                          setEditingImageId(
+                            editingImageId === img._id ? null : img._id
+                          )
+                        }
+                      >
+                        {editingImageId === img._id ? "Cancel" : "Replace"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => handleDeleteImage(img._id)}
+                      >
+                        <FaTrashAlt />
+                      </Button>
+                    </div>
+                  </div>
                 ))
               ) : (
                 <span className="text-muted">No images available</span>
@@ -205,15 +284,42 @@ function ProductEdit() {
             </div>
           </div>
 
-          {/* 🖼 Upload new images */}
+          {/* Replace selected image slot */}
+          {editingImageId && (
+            <Form.Group className="mb-4">
+              <Form.Label>Replace Selected Image</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={handleReplaceImage}
+                className="bg-secondary bg-opacity-25 text-light border-secondary"
+              />
+            </Form.Group>
+          )}
+
+          {/* Add new images */}
           <Form.Group className="mb-4">
-            <Form.Label>Upload New Images (optional)</Form.Label>
+            <Form.Label>Add New Images</Form.Label>
             <Form.Control
               type="file"
               multiple
-              onChange={handleImageChange}
+              accept="image/*"
+              onChange={handleNewImageChange}
               className="bg-secondary bg-opacity-25 text-light border-secondary"
             />
+            {newImages.length > 0 && (
+              <div className="d-flex flex-wrap gap-3 mt-3">
+                {newImages.map((file, idx) => (
+                  <Image
+                    key={idx}
+                    src={URL.createObjectURL(file)}
+                    height="80"
+                    width="80"
+                    rounded
+                    className="border border-warning"
+                  />
+                ))}
+              </div>
+            )}
           </Form.Group>
 
           <Button type="submit" variant="info" className="w-100 fw-semibold py-2">

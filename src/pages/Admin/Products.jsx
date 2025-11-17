@@ -11,6 +11,7 @@ import {
   Modal,
   Row,
   Col,
+  Spinner,
 } from "react-bootstrap";
 import { FaSearch, FaEdit, FaTrash, FaTag } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -29,7 +30,9 @@ function Products() {
   const [show, setShow] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Load categories and products when component mounts
+  // 🌀 NEW: Loading state
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     loadCategories();
     loadProducts();
@@ -38,7 +41,7 @@ function Products() {
   // ✅ Fetch all categories
   const loadCategories = async () => {
     try {
-  const res = await axios.post(`${api_uri}category/view`);
+      const res = await axios.post(`${api_uri}category/view`);
       if (res.data.success) {
         setCategories(res.data.categories);
       }
@@ -48,63 +51,74 @@ function Products() {
     }
   };
 
+  // ✅ Load all products
   const loadProducts = async () => {
+    setLoading(true); // start loading
     try {
       const res = await axios.get(`${api_uri}product/viewallProducts`);
-      const productsData = res.data.products || res.data; // support both formats
-
+      const productsData = res.data.products || res.data;
       if (Array.isArray(productsData) && productsData.length > 0) {
         setProducts(productsData);
       } else {
+        setProducts([]); // ensure empty list if none
         toast.warning("No products found");
       }
     } catch (error) {
       console.error("❌ Error loading products:", error);
       toast.error("Failed to load products");
+    } finally {
+      setLoading(false); // stop loading
     }
   };
 
-  // ✅ Search products by name or category
+  // ✅ Search products
   const searchProducts = async (data) => {
+    setLoading(true);
     try {
       const payload = {
         product_name: data.product_name || "",
         CAT_ID: selectedCategory || "",
       };
-
-      const res = await axios.post(`${api_uri}product/search`, payload);
+      const res = await axios.post(`${api_uri}product/searchProducts`, payload);
       if (res.data.success) {
         setProducts(res.data.products);
         toast.info(`${res.data.products.length} products found`);
       } else {
+        setProducts([]);
         toast.warning("No matching products found");
       }
     } catch (error) {
       console.error("❌ Search error:", error);
       toast.error("Search failed");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Filter products by selected category only
+  // ✅ Filter by category
   const filterByCategory = async (catId) => {
     setSelectedCategory(catId);
     if (!catId) {
-      loadProducts(); // if no category, load all products
+      loadProducts();
       return;
     }
-
+    setLoading(true);
     try {
-      const res = await axios.post(`${api_uri}product/view-by-category`, { CAT_ID: catId });
+      const res = await axios.post(`${api_uri}product/view-by-category`, {
+        CAT_ID: catId,
+      });
       if (res.data.success) {
         setProducts(res.data.products);
       }
     } catch (error) {
       console.error("❌ Error filtering by category:", error);
       toast.error("Failed to filter products");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Open delete modal
+  // ✅ Delete modal
   const handleShow = (pid) => {
     setSelectedProduct(pid);
     setShow(true);
@@ -119,7 +133,9 @@ function Products() {
   const deleteProduct = async () => {
     if (!selectedProduct) return;
     try {
-      const res = await axios.post(`${api_uri}product/delete`, { id: selectedProduct });
+      const res = await axios.post(`${api_uri}product/delete`, {
+        id: selectedProduct,
+      });
       if (res.data.success) {
         toast.success("Product deleted successfully");
         setProducts((prev) => prev.filter((p) => p._id !== selectedProduct));
@@ -173,84 +189,95 @@ function Products() {
         </Row>
       </Form>
 
-      {/* 📋 Products Table */}
-      <Table
-        striped
-        bordered
-        hover
-        responsive
-        className="mt-4 bg-white text-center"
-      >
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Product ID</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Product Info</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.length > 0 ? (
-            products.map((p) => (
-              <tr key={p._id}>
-                <td>
-                  {p.main_image ? (
-                    <Image
-                      src={p.main_image ? `${base_uri}${p.main_image}` : "/images/no-image.jpg"}
-                      alt="product"
-                      height="80"
-                      width="80"
-                      rounded
-                    />
-                  ) : (
-                    <span className="text-muted">No Image</span>
-                  )}
-                </td>
-                <td>{p.prod_id}</td>
-                <td>{p.product_name}</td>
-                <td>{p.CAT_ID?.category_name || "—"}</td>
-                <td>{p.description}</td>
-                <td>{p.product_info || "—"}</td>
-                <td>
-                  <Button
-                    variant="warning"
-                    size="sm"
-                    href={`/admin/products/edit/${p._id}`}
-                    className="me-2"
-                  >
-                    <FaEdit /> Edit
-                  </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleShow(p._id)}
-                    className="me-2"
-                  >
-                    <FaTrash /> Delete
-                  </Button>
-                  <Button
-                    variant="info"
-                    size="sm"
-                    href={`/admin/product-images/${p._id}`} // 🔹 redirect to ProductImages page
-                    className="me-2"
-                  >
-                    <FaTag /> Set Thumbnail
-                  </Button>
+      {/* 🌀 Show loading spinner when data fetching */}
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center py-5">
+          <Spinner animation="border" variant="primary" role="status" />
+          <span className="ms-2 fw-semibold text-primary">Loading products...</span>
+        </div>
+      ) : (
+        <Table
+          striped
+          bordered
+          hover
+          responsive
+          className="mt-4 bg-white text-center"
+        >
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Product ID</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Product Info</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.length > 0 ? (
+              products.map((p) => (
+                <tr key={p._id}>
+                  <td>
+                    {p.main_image ? (
+                      <Image
+                        src={
+                          p.main_image
+                            ? `${base_uri}${p.main_image}`
+                            : "/images/no-image.jpg"
+                        }
+                        alt="product"
+                        height="80"
+                        width="80"
+                        rounded
+                      />
+                    ) : (
+                      <span className="text-muted">No Image</span>
+                    )}
+                  </td>
+                  <td>{p.prod_id}</td>
+                  <td>{p.product_name}</td>
+                  <td>{p.CAT_ID?.category_name || "—"}</td>
+                  <td>{p.description}</td>
+                  <td>{p.product_info || "—"}</td>
+                  <td>
+                    <Button
+                      variant="warning"
+                      size="sm"
+                      href={`/admin/products/edit/${p._id}`}
+                      className="me-2"
+                    >
+                      <FaEdit /> Edit
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleShow(p._id)}
+                      className="me-2"
+                    >
+                      <FaTrash /> Delete
+                    </Button>
+                    <Button
+                      variant="info"
+                      size="sm"
+                      href={`/admin/product-images/${p._id}`}
+                      className="me-2"
+                    >
+                      <FaTag /> Set Thumbnail
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center text-muted">
+                  No products found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="7" className="text-center text-muted">
-                No products found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            )}
+          </tbody>
+        </Table>
+      )}
 
       {/* 🗑️ Delete Confirmation Modal */}
       <Modal show={show} onHide={handleClose} centered>
