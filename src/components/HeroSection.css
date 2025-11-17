@@ -152,26 +152,24 @@
 
 
 
-.slide-button {
-  padding: 14px 40px;
+.learn-more-btn {
+  background-color: #ffffff;     /* white by default */
+  color: #000000;                /* black text */
+  padding: 12px 32px;
   font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 50px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background-color: #ffffff;  /* default */
-  color: #000000;             /* default */
+  transition: all 0.25s ease;
 }
 
-.slide-button:hover {
-  background-color: #2da797 !important;
-  color: #ffffff !important;
+.learn-more-btn:hover {
+  background-color: #2da797;     /* hover color */
+  color: #ffffff;                /* white text on hover */
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
+
 
 
 
