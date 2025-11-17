@@ -340,6 +340,23 @@
   }
 }
 
+/* iPhone shrink fix */
+.slider-track {
+  display: flex;
+  flex-wrap: nowrap; /* prevents Safari collapsing items */
+}
+
+.mobile-slide {
+  flex: 0 0 280px !important;  /* exact card width */
+  min-width: 280px !important;
+  max-width: 280px !important;
+  flex-shrink: 0 !important;   /* HUGE FIX */
+}
+
+.feature-card {
+  flex-shrink: 0 !important;   /* prevents image collapse */
+}
+
 @media (max-width: 480px) {
   .feature-products-section h2 {
     font-size: 1.4rem;
@@ -442,7 +459,12 @@
   /* snap slides to start so the first card is fully visible initially */
   scroll-snap-align: start;
 }
-
+.mobile-slide {
+  flex: 0 0 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  flex-shrink: 0 !important;   /* 🔥 MOST IMPORTANT FIX */
+}
 .mobile-slide .feature-card {
   width: 100%;
   margin: 0;
@@ -477,7 +499,7 @@
   
   .mobile-slide .feature-card {
     padding: 12px;
-    height: 340px;
+    height: 410px;
   }
 }
 
