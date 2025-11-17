@@ -8,6 +8,16 @@
   padding: 40px 0;
 }
 
+/* Prevent iOS Safari from auto-resizing text which can cause clipping */
+.feature-products-section,
+.feature-card,
+.feature-card h6,
+.custom-mobile-slider,
+.slider-container {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 /* Feature Card */
 .feature-card {
   background-color: #fff;
