@@ -450,3 +450,23 @@
   font-weight: 600;
   padding: 10px 22px;
 }
+
+
+.learn-more-btn {
+  background-color: #ffffff;   /* default white */
+  color: #000000;              /* default dark text */
+  padding: 14px 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.learn-more-btn:hover {
+  background-color: #2da797;   /* greenish teal */
+  color: #ffffff;              /* white text */
+  transform: translateY(-2px);
+}
