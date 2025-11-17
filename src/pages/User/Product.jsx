@@ -37,7 +37,7 @@ export default function Product() {
   useEffect(() => {
     if (location.state?.category) {
       setSelectedCategory(location.state.category);
-      console.log("location.state.category",location.state.category)
+      console.log("location.state.category", location.state.category);
     } else {
       setSelectedCategory(null);
     }
@@ -52,7 +52,9 @@ export default function Product() {
 
         if (selectedCategory) {
           // 🔍 Fetch only products for this category
-          res = await axios.get(`${api_uri}product/category/${selectedCategory}`);
+          res = await axios.get(
+            `${api_uri}product/category/${selectedCategory}`
+          );
         } else {
           // 🔍 Otherwise, fetch all products
           res = await axios.get(`${api_uri}product/userview`);
@@ -106,7 +108,7 @@ export default function Product() {
           sx={{ mb: 3 }}
         >
           {/* 🏷️ Left: Heading with Category Name */}
-          <Grid  size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Box display="flex" alignItems="center" gap={1}>
               <Typography
                 variant="h5"
@@ -114,7 +116,7 @@ export default function Product() {
                 sx={{
                   textTransform: "capitalize",
                   color: selectedCategory ? "#000000ff" : "inherit",
-                  marginBottom:"8px"
+                  marginBottom: "8px",
                 }}
               >
                 {selectedCategory ? selectedCategory : "All Products"}
@@ -142,7 +144,7 @@ export default function Product() {
           </Grid>
 
           {/* 🔎 Right: Search Box */}
-          <Grid  size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <TextField
               className="search-products"
               fullWidth
@@ -165,10 +167,7 @@ export default function Product() {
           <div className="products-grid">
             {currentProducts.map((product) => (
               <div key={product._id} className="product-grid-item">
-                <ProductCard
-                  product={product}
-                  onClick={handleProductClick}
-                />
+                <ProductCard product={product} onClick={handleProductClick} />
               </div>
             ))}
           </div>
@@ -185,8 +184,19 @@ export default function Product() {
               count={totalPages}
               page={currentPage}
               onChange={handlePageChange}
-              color="success"
               size="large"
+              sx={{
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "#2da797",
+                  color: "#fff",
+                },
+                "& .MuiPaginationItem-root.Mui-selected:hover": {
+                  backgroundColor: "#249f89",
+                },
+                "& .MuiPaginationItem-root:hover": {
+                  backgroundColor: "rgba(45,167,151,0.15)",
+                },
+              }}
             />
           </Box>
         )}

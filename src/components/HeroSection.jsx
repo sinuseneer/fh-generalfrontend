@@ -136,7 +136,7 @@ export default function HeroSection() {
           </button>
 
           <button
-            className="carousel-nav carousel-nav-next"
+            className="carousel-nav carousel-nav-next custom-btn"
             onClick={nextSlide}
             aria-label="Next slide"
           >
