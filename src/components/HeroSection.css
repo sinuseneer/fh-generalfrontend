@@ -152,7 +152,7 @@
 
 
 
-.learn-more-btn {
+.slide-button {
   background-color: #ffffff;     /* white by default */
   color: #000000;                /* black text */
   padding: 12px 32px;
@@ -164,7 +164,7 @@
   transition: all 0.25s ease;
 }
 
-.learn-more-btn:hover {
+.slide-button:hover {
   background-color: #2da797;     /* hover color */
   color: #ffffff;                /* white text on hover */
   transform: translateY(-2px);
