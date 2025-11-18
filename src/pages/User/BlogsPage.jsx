@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
 import axios from "axios";
-import "./BlogsPage.css";
+import "./Blog.css";
 
 function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
