@@ -1,0 +1,131 @@
+/* Blogs Page Wrapper */
+.blogs-page-wrapper {
+  background-color: #f4fafa;
+  padding: 50px 0;
+}
+
+/* Blog Card Style */
+.blog-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Blog Image */
+.blog-card img {
+  height: 180px;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Title */
+.blog-card .card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 5px;
+  color: #222;
+}
+
+/* Read More link */
+.blog-card a {
+  color: #2da797;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ============================
+      RESPONSIVE GRID FIX
+=============================== */
+
+/* Mobile (<576px) – 2 cards per row */
+@media (max-width: 576px) {
+  .blogs-grid > .col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* Tablet (576px–768px) – Also 2 per row */
+@media (min-width: 576px) and (max-width: 768px) {
+  .blogs-grid > .col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+
+/* Pagination Theme */
+.custom-pagination {
+  color: #2da797 !important;
+  font-weight: 600;
+  border-radius: 8px;
+  margin: 0 4px;
+  padding: 6px 12px;
+}
+
+.custom-pagination.active {
+  background-color: #2da797 !important;
+  border-color: #2da797 !important;
+  color: white !important;
+}
+
+.custom-pagination:hover {
+  background-color: #2da797 !important;
+  color: white !important;
+}
+
+/* Pagination Container */
+.pagination-wrapper .pagination {
+  display: flex;
+  gap: 5px;
+}
+
+
+/* ============================
+   MOBILE RESPONSIVE (≤ 576px)
+============================ */
+
+/* 2 posts per row on mobile */
+@media (max-width: 576px) {
+  .blogs-grid > .col {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+
+  /* Blog Card */
+  .blog-card {
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+
+  /* Blog image resizing */
+  .blog-card img {
+    height: 150px !important;
+  }
+
+  /* Blog title sizing */
+  .blog-card .card-title {
+    font-size: 14px !important;
+  }
+
+  /* Read more text */
+  .blog-card a {
+    font-size: 12px !important;
+  }
+
+  /* Pagination spacing */
+  .pagination-wrapper {
+    margin-top: 25px !important;
+  }
+
+  .custom-pagination {
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+  }
+}

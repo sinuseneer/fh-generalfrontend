@@ -33,6 +33,10 @@ import ProductAdd from "./pages/Admin/ProductAdd";
 import ProductEdit from "./pages/Admin/ProductEdit";
 import ProductImages from "./pages/Admin/ProductImages";
 import AccountSettings from "./pages/Admin/AccountSettings.jsx";
+import AddPost from "./pages/Admin/AddPost.jsx";
+import PostsList from "./pages/Admin/PostsList.jsx";
+import BannerSettings from "./pages/Admin/BannerSettings.jsx";
+
 
 // Components (for Home)
 import HeroSection from "./components/HeroSection.jsx";
@@ -42,7 +46,6 @@ import FeatureProducts from "./components/FeatureProducts";
 import WhyChooseUs from "./components/WhyChooseUs";
 import LatestNews from "./components/LatestNews";
 import PartnerSection from "./components/PartnerSection";
-import BannerSettings from "./pages/Admin/BannerSettings.jsx";
 
 function App() {
   return (
@@ -135,6 +138,9 @@ function App() {
           />
           <Route path="/admin/settings" element={<AccountSettings />} />
           <Route path="/admin/banner" element={<BannerSettings />} />
+          <Route path="/admin/posts/add" element={<AddPost />} />
+<Route path="/admin/posts/list" element={<PostsList />} />
+
         </Route>
 
         {/* ========== Fallback ========== */}

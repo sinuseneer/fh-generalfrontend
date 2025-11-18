@@ -94,65 +94,72 @@ function ProductEdit() {
   };
 
   // ✅ Delete single image
-  const handleDeleteImage = async (imageId) => {
-    if (!window.confirm("Are you sure you want to delete this image?")) return;
+const handleDeleteImage = async (imageId) => {
+  if (!window.confirm("Are you sure you want to delete this image?")) return;
 
-    try {
-      const res = await axios.delete(`${api_uri}product/image/${imageId}`);
-      if (res.data.success) {
-        toast.success("Image deleted successfully");
-        loadProduct();
-      }
-    } catch {
-      toast.error("Failed to delete image");
+  try {
+    const res = await axios.delete(`${api_uri}product/delete-image/${imageId}`);
+    if (res.data.success) {
+      toast.success("Image deleted successfully");
+      loadProduct();
     }
-  };
+  } catch {
+    toast.error("Failed to delete image");
+  }
+};
+
 
   // ✅ Submit Update
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      // 1️⃣ Update product text fields
-      const res = await axios.put(`${api_uri}product/update/${id}`, formData);
+  try {
+    // 1️⃣ Update product text fields
+    const res = await axios.put(`${api_uri}product/update/${id}`, formData);
 
-      if (res.data.success) {
-        // 2️⃣ Replace single image slot (if selected)
-        if (editingImageId && replaceImage) {
-          const imgForm = new FormData();
-          imgForm.append("image", replaceImage);
-          await axios.put(
-            `${api_uri}product/replace-image/${editingImageId}`,
-            imgForm,
-            { headers: { "Content-Type": "multipart/form-data" } }
-          );
-          toast.success("Image slot replaced successfully!");
-        }
+    if (res.data.success) {
+      // 2️⃣ Replace single image slot (if selected)
+      if (editingImageId && replaceImage) {
+        const imgForm = new FormData();
+        imgForm.append("image", replaceImage);
 
-        // 3️⃣ Upload new images (if selected)
-        if (newImages.length > 0) {
-          const imgForm = new FormData();
-          newImages.forEach((file) => imgForm.append("images", file));
-          await axios.post(`${api_uri}product/upload-images/${id}`, imgForm, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-          toast.success("New images added successfully!");
-        }
+        await axios.put(
+          `${api_uri}product/replace-image/${editingImageId}`,
+          imgForm,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
 
-        // ✅ Reset fields and refresh
-        setEditingImageId(null);
-        setReplaceImage(null);
-        setNewImages([]);
-        loadProduct();
-
-        toast.success("✅ Product updated successfully!");
-        setTimeout(() => navigate("/admin/products/list"), 1500);
+        toast.success("Image slot replaced successfully!");
       }
-    } catch (error) {
-      console.error("❌ Error updating product:", error);
-      toast.error("Server error while updating");
+
+      // 3️⃣ Upload new images (if selected)
+      if (newImages.length > 0) {
+        const imgForm = new FormData();
+        newImages.forEach((file) => imgForm.append("images", file));
+
+        await axios.post(`${api_uri}product/upload-images/${id}`, imgForm, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        toast.success("New images added successfully!");
+      }
+
+      // Reset
+      setEditingImageId(null);
+      setReplaceImage(null);
+      setNewImages([]);
+
+      loadProduct();
+      toast.success("✅ Product updated successfully!");
+
+      setTimeout(() => navigate("/admin/products/list"), 1500);
     }
-  };
+  } catch (error) {
+    console.error("❌ Error updating product:", error);
+    toast.error("Server error while updating");
+  }
+};
+
 
   if (loading)
     return (
@@ -322,7 +329,11 @@ function ProductEdit() {
             )}
           </Form.Group>
 
-          <Button type="submit" variant="info" className="w-100 fw-semibold py-2">
+          <Button
+            type="submit"
+            variant="info"
+            className="w-100 fw-semibold py-2"
+          >
             <FaSave className="me-2" /> Update Product
           </Button>
         </Form>

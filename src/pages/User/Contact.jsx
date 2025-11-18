@@ -175,7 +175,7 @@ export default function Contact() {
           </Col>
 
           {/* Map Section */}
-          <Col md={6}>
+          {/* <Col md={6}>
             <iframe
               title="Google Map"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.404249786726!2d-58.16169922517304!3d6.806268220631946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8dbf29c1c2a2bfb1%3A0x8b2a99a9cfcd64f2!2sLot%2045%20Brickdam%2C%20Stabroek%2C%20Georgetown%2C%20Guyana!5e0!3m2!1sen!2sin!4v1730622451729!5m2!1sen!2sin"
@@ -186,7 +186,7 @@ export default function Contact() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </div>

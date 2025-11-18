@@ -1,0 +1,117 @@
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Card,
+  CardContent,
+} from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const apiBase = "/api"; // your backend path
+
+export default function AddPost() {
+  const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [longDescription, setLongDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [image, setImage] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!title || !shortDescription || !longDescription || !date || !image) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("shortDescription", shortDescription);
+    formData.append("longDescription", longDescription);
+    formData.append("date", date);
+    formData.append("image", image);
+
+    try {
+      await axios.post(`${apiBase}/blogs`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert("Post added successfully!");
+      navigate("/admin/posts/list");
+    } catch (error) {
+      console.log(error);
+      alert("Failed to add post!");
+    }
+  };
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Card sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
+        <CardContent>
+          <Typography variant="h5" mb={2}>
+            Add New Post
+          </Typography>
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Title"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
+            <TextField
+              label="Short Description"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={shortDescription}
+              onChange={(e) => setShortDescription(e.target.value)}
+            />
+
+            <TextField
+              label="Long Description"
+              fullWidth
+              multiline
+              rows={6}
+              sx={{ mb: 2 }}
+              value={longDescription}
+              onChange={(e) => setLongDescription(e.target.value)}
+            />
+
+            <TextField
+              label="Date (e.g. DEC 24 2024)"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+
+            <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
+              Upload Image
+              <input
+                hidden
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
+            </Button>
+
+            {image && (
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                Selected: {image.name}
+              </Typography>
+            )}
+
+            <Button type="submit" variant="contained" color="success" fullWidth>
+              Add Post
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+}
