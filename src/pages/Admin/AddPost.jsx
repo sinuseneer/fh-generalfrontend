@@ -9,8 +9,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api_uri from "../../../config/api";
 
-const apiBase = "/api"; // your backend path
+
 
 export default function AddPost() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export default function AddPost() {
     formData.append("image", image);
 
     try {
-      await axios.post(`${apiBase}/blogs`, formData, {
+      await axios.post(`${api_uri}/blogs`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
