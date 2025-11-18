@@ -35,7 +35,7 @@ export default function AddPost() {
     formData.append("image", image);
 
     try {
-      await axios.post(`${api_uri}/blogs`, formData, {
+      await axios.post(`${api_uri}blogs`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

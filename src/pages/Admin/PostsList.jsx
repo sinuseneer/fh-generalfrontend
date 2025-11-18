@@ -14,8 +14,8 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
+import api_uri from "../../config/api";
 
-const apiBase = "/api";
 
 export default function PostsList() {
   const [posts, setPosts] = useState([]);
@@ -43,7 +43,7 @@ export default function PostsList() {
   const deletePost = async (id) => {
     if (!window.confirm("Delete this post?")) return;
 
-    await axios.delete(`${apiBase}/blogs/${id}`);
+    await axios.delete(`${api_uri}blogs/${id}`);
     fetchPosts();
   };
 
@@ -75,7 +75,7 @@ export default function PostsList() {
       formData.append("image", newImage);
     }
 
-    await axios.put(`${apiBase}/blogs/${editPost._id}`, formData, {
+    await axios.put(`${api_uri}blogs/${editPost._id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
