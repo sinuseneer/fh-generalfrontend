@@ -21,7 +21,6 @@ import Contact from "./pages/User/Contact";
 import ProductDetails from "./pages/User/ProductDetails";
 import BlogDetail from "./pages/User/BlogDetail";
 
-
 // Admin Pages
 import Login from "./pages/Admin/Login";
 import Dashboard from "./pages/Admin/Dashboard";
@@ -36,7 +35,6 @@ import AccountSettings from "./pages/Admin/AccountSettings.jsx";
 import AddPost from "./pages/Admin/AddPost.jsx";
 import PostsList from "./pages/Admin/PostsList.jsx";
 import BannerSettings from "./pages/Admin/BannerSettings.jsx";
-
 
 // Components (for Home)
 import HeroSection from "./components/HeroSection.jsx";
@@ -139,8 +137,7 @@ function App() {
           <Route path="/admin/settings" element={<AccountSettings />} />
           <Route path="/admin/banner" element={<BannerSettings />} />
           <Route path="/admin/posts/add" element={<AddPost />} />
-<Route path="/admin/posts/list" element={<PostsList />} />
-
+          <Route path="/admin/posts/list" element={<PostsList />} />
         </Route>
 
         {/* ========== Fallback ========== */}
