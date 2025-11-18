@@ -1,9 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 
 // Layouts
 import UserLayout from "./layouts/UserLayout";
@@ -15,6 +19,8 @@ import Product from "./pages/User/Product";
 import BlogsPage from "./pages/User/BlogsPage";
 import Contact from "./pages/User/Contact";
 import ProductDetails from "./pages/User/ProductDetails";
+import BlogDetail from "./pages/User/BlogDetail";
+
 
 // Admin Pages
 import Login from "./pages/Admin/Login";
@@ -27,7 +33,6 @@ import ProductAdd from "./pages/Admin/ProductAdd";
 import ProductEdit from "./pages/Admin/ProductEdit";
 import ProductImages from "./pages/Admin/ProductImages";
 import AccountSettings from "./pages/Admin/AccountSettings.jsx";
-
 
 // Components (for Home)
 import HeroSection from "./components/HeroSection.jsx";
@@ -48,7 +53,6 @@ function App() {
           path="/"
           element={
             <UserLayout>
-            
               <HeroSection />
               <ProductCarousel />
               <AboutSection />
@@ -60,7 +64,6 @@ function App() {
           }
         />
 
-        
         <Route
           path="/about"
           element={
@@ -69,9 +72,6 @@ function App() {
             </UserLayout>
           }
         />
-
-     
-
 
         <Route
           path="/product"
@@ -101,6 +101,15 @@ function App() {
         />
 
         <Route
+          path="/blog/:id"
+          element={
+            <UserLayout>
+              <BlogDetail />
+            </UserLayout>
+          }
+        />
+
+        <Route
           path="/contact"
           element={
             <UserLayout>
@@ -120,11 +129,12 @@ function App() {
           <Route path="/admin/products/list" element={<Products />} />
           <Route path="/admin/products/add" element={<ProductAdd />} />
           <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
-          <Route path="/admin/product-images/:productId" element={<ProductImages />} />
+          <Route
+            path="/admin/product-images/:productId"
+            element={<ProductImages />}
+          />
           <Route path="/admin/settings" element={<AccountSettings />} />
-          <Route path="/admin/banner" element={<BannerSettings/>}/>
-          
-
+          <Route path="/admin/banner" element={<BannerSettings />} />
         </Route>
 
         {/* ========== Fallback ========== */}
@@ -132,7 +142,11 @@ function App() {
       </Routes>
 
       {/* Global Toast Notifications */}
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+      />
     </Router>
   );
 }
