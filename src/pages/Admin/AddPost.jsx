@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import api_uri from "../../../config/api";
+import api_uri from "../config/api";
 
 
 
