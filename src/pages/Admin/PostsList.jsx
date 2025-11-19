@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import api_uri from "../../config/api";
+import api_uri, { base_uri } from "../../config/api";
 
 
 export default function PostsList() {
@@ -96,7 +96,7 @@ export default function PostsList() {
               <CardMedia
                 component="img"
                 height="180"
-                image={post.image}
+                image={`${base_uri}${post.image}`}
                 alt={post.title}
               />
               <CardContent>
@@ -190,7 +190,7 @@ export default function PostsList() {
               Current Image:
             </Typography>
             <img
-              src={editPost.image}
+              src={`${base_uri}${editPost.image}`}
               width="100"
               style={{ borderRadius: 8, marginTop: 8 }}
               alt=""
