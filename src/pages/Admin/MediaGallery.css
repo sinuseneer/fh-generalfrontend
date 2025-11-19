@@ -1,0 +1,177 @@
+.media-wrapper {
+  padding: 20px;
+  color: white;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Filters */
+.media-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.media-filters input,
+.media-filters select {
+  padding: 8px;
+  border-radius: 6px;
+  background: #111;
+  border: 1px solid #333;
+  color: white;
+  min-width: 170px;
+  flex: 1;
+}
+
+/* GRID — responsive for all screens */
+.media-grid {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 40px;
+  /* Default desktop */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+/* --- MOBILE FIX: Always minimum 3 per row --- */
+@media (max-width: 600px) {
+  .media-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Card */
+.media-card {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* perfect square */
+  background: #1b1b1b;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #2da79745;
+  transition: 0.2s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-4px);
+  border-color: #2da797;
+}
+
+.media-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Load More button */
+.load-more-wrap {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.btn {
+  padding: 8px 14px;
+  background: #2da797;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn.danger {
+  background: #b33939;
+}
+
+/* --- Modal --- */
+.media-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  padding: 10px;
+}
+
+.modal-inner {
+  background: #111;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 8px;
+  gap: 20px;
+  width: min(1100px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Left side image */
+.modal-left img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Right side form */
+.modal-right {
+  flex: 1 1 300px;
+}
+
+.modal-right label {
+  margin-top: 10px;
+  display: block;
+  color: #bbb;
+  font-size: 12px;
+}
+
+.modal-right input,
+.modal-right textarea {
+  width: 100%;
+  padding: 8px;
+  background: #1a1a1a;
+  color: white;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
+
+.modal-right textarea {
+  min-height: 70px;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+/* Tablet tweak */
+@media (max-width: 900px) {
+  .modal-inner {
+    flex-direction: column;
+    align-items: center;
+  }
+}
