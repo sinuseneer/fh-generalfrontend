@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri, { base_uri } from "../config/api"
 
 const LatestNews = () => {
   const [news, setNews] = useState([]);
