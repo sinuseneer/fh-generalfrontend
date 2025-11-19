@@ -11,18 +11,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import api_uri from "../../config/api";
 
-
 export default function AddPost() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [shortDescription, setShortDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
-  const [date, setDate] = useState("");
   const [image, setImage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !shortDescription || !longDescription || !date || !image) {
+
+    // ❌ FIX HERE — removed date from validation
+    if (!title || !shortDescription || !longDescription || !image) {
       alert("Please fill all fields");
       return;
     }
@@ -31,7 +31,6 @@ export default function AddPost() {
     formData.append("title", title);
     formData.append("shortDescription", shortDescription);
     formData.append("longDescription", longDescription);
-    formData.append("date", date);
     formData.append("image", image);
 
     try {
@@ -73,24 +72,30 @@ export default function AddPost() {
             />
 
             <TextField
-              label="Long Description"
+              label="Long Description (HTML Supported)"
               fullWidth
               multiline
-              rows={6}
+              rows={10}
               sx={{ mb: 2 }}
               value={longDescription}
               onChange={(e) => setLongDescription(e.target.value)}
+              placeholder="<p>Write HTML here...</p>"
+              slotProps={{
+                textarea: {
+                  style: {
+                    padding: "14px",
+                    lineHeight: "1.6",
+                  },
+                },
+              }}
             />
 
-            <TextField
-              label="Date (e.g. DEC 24 2024)"
+            <Button
+              variant="contained"
+              component="label"
               fullWidth
               sx={{ mb: 2 }}
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-
-            <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
+            >
               Upload Image
               <input
                 hidden

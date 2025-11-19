@@ -1,9 +1,8 @@
 // src/components/blog/BlogDetail.jsx
 import React from "react";
 import "./Blogdet.css";
-import api_uri, { base_uri } from "../../config/api";
-// If you want to sanitize HTML, uncomment the next line and install dompurify:
-// import DOMPurify from "dompurify";
+import { base_uri } from "../../config/api";
+import DOMPurify from "dompurify";
 
 export default function BlogDetail({ blog }) {
   if (!blog) return null;
@@ -11,25 +10,16 @@ export default function BlogDetail({ blog }) {
   // Current page URL (encoded for share links)
   const pageUrl = encodeURIComponent(window.location.href);
 
-  // Convert plain text → HTML with paragraphs + line breaks
-  const formatContent = (text) => {
-    if (!text) return "";
-    return text
-      .split("\n\n")
-      .map((para) => `<p>${para.replace(/\n/g, "<br/>")}</p>`)
-      .join("");
-  };
-
   // If server returns a full URL (starts with http) use it; otherwise prefix base_uri
   const getImageUrl = (img) => {
     if (!img) return "";
     return img.startsWith("http") ? img : `${base_uri}${img}`;
   };
 
-  // prepare HTML (sanitization recommended)
-  let html = formatContent(blog.longDescription || "");
-  // If you install dompurify:
-  // html = DOMPurify.sanitize(html);
+  // Use the HTML stored in blog.longDescription.
+  // Sanitize with DOMPurify to prevent XSS.
+  const rawHtml = blog.longDescription || "";
+  const html = DOMPurify.sanitize(rawHtml);
 
   return (
     <div className="blog-detail-layout">
@@ -83,6 +73,16 @@ export default function BlogDetail({ blog }) {
 
       {/* RIGHT CONTENT */}
       <div className="blog-detail-wrapper">
+        {/* META */}
+        <div className="blog-meta">
+          <span>{blog.date}</span>
+          <span className="dot-separator"> • </span>
+          <span>Post by {blog.author || "Admin"}</span>
+        </div>
+
+        {/* TITLE */}
+        <h1 className="blog-title">{blog.title}</h1>
+
         {/* HERO IMAGE */}
         <div className="blog-hero-section">
           <img
@@ -96,17 +96,7 @@ export default function BlogDetail({ blog }) {
           />
         </div>
 
-        {/* META */}
-        <div className="blog-meta">
-          <span>{blog.date}</span>
-          <span className="dot-separator"> • </span>
-          <span>Post by {blog.author || "Admin"}</span>
-        </div>
-
-        {/* TITLE */}
-        <h1 className="blog-title">{blog.title}</h1>
-
-        {/* CONTENT */}
+        {/* CONTENT (sanitized HTML) */}
         <div
           className="blog-content"
           dangerouslySetInnerHTML={{ __html: html }}

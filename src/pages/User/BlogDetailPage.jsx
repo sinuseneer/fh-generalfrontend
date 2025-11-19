@@ -1,9 +1,27 @@
-// src/pages/blog/BlogDetailPage.jsx
+// src/pages/User/BlogDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import BlogDetail from "../User/BlogDetail.jsx";
-import api_uri from "../../config/api";
+import BlogDetail from "./BlogDetail.jsx"; 
+import api_uri, { base_uri } from "../../config/api";
+
+/**
+ * Convert timestamp → "DEC 24 2024"
+ */
+const formatDate = (ts) => {
+  if (!ts) return "";
+  const date = new Date(ts);
+
+  if (isNaN(date.getTime())) return "";
+
+  return date
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    })
+    .toUpperCase();
+};
 
 export default function BlogDetailPage() {
   const { id } = useParams();
@@ -12,11 +30,27 @@ export default function BlogDetailPage() {
 
   const fetchBlog = async () => {
     setLoading(true);
+
     try {
       const res = await axios.get(`${api_uri}posts/${id}`);
-      // Expect the API to return the blog object with .image being either
-      // a path (e.g. "/uploads/abc.jpg") or a full URL.
-      setBlog(res.data);
+      const data = res.data || {};
+
+      // Fix image URL (if not full URL)
+      const fixedImage =
+        data.image && !data.image.startsWith("http")
+          ? `${base_uri}${data.image}`
+          : data.image || "";
+
+      // Format date using createdAt (from Mongoose timestamps)
+      const formatted = formatDate(data.createdAt);
+
+      const finalBlog = {
+        ...data,
+        image: fixedImage,
+        date: formatted, // BlogDetail.jsx expects blog.date
+      };
+
+      setBlog(finalBlog);
     } catch (error) {
       console.error("❌ Error fetching blog:", error);
       setBlog(null);
@@ -27,7 +61,6 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     fetchBlog();
-    // if you want to re-fetch when id changes, the dependency already includes id via route
   }, [id]);
 
   if (loading) {
