@@ -21,7 +21,6 @@ import Contact from "./pages/User/Contact";
 import ProductDetails from "./pages/User/ProductDetails";
 import BlogDetailPage from "./pages/User/BlogDetailPage.jsx";
 
-
 // Admin Pages
 import Login from "./pages/Admin/Login";
 import Dashboard from "./pages/Admin/Dashboard";
@@ -45,6 +44,7 @@ import FeatureProducts from "./components/FeatureProducts";
 import WhyChooseUs from "./components/WhyChooseUs";
 import LatestNews from "./components/LatestNews";
 import PartnerSection from "./components/PartnerSection";
+import MediaGallery from "./pages/Admin/MediaGallery.jsx";
 
 function App() {
   return (
@@ -139,6 +139,7 @@ function App() {
           <Route path="/admin/banner" element={<BannerSettings />} />
           <Route path="/admin/posts/add" element={<AddPost />} />
           <Route path="/admin/posts/list" element={<PostsList />} />
+          <Route path="/admin/media" element={<MediaGallery />} />
         </Route>
 
         {/* ========== Fallback ========== */}
