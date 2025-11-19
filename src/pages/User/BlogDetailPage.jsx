@@ -1,8 +1,9 @@
+// src/pages/blog/BlogDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import BlogDetail from "./BlogDetail";
-import api_uri, { base_uri } from "../../config/api";
+import BlogDetail from "../../components/blog/BlogDetail";
+import api_uri from "../../config/api";
 
 export default function BlogDetailPage() {
   const { id } = useParams();
@@ -10,18 +11,15 @@ export default function BlogDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchBlog = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(`${api_uri}posts/${id}`);
-
-      // Ensure correct image URL
-      const blogData = {
-        ...res.data,
-        image: `${base_uri}${res.data.image}`
-      };
-
-      setBlog(blogData);
+      // Expect the API to return the blog object with .image being either
+      // a path (e.g. "/uploads/abc.jpg") or a full URL.
+      setBlog(res.data);
     } catch (error) {
       console.error("❌ Error fetching blog:", error);
+      setBlog(null);
     } finally {
       setLoading(false);
     }
@@ -29,6 +27,7 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     fetchBlog();
+    // if you want to re-fetch when id changes, the dependency already includes id via route
   }, [id]);
 
   if (loading) {

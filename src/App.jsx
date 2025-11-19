@@ -19,7 +19,8 @@ import Product from "./pages/User/Product";
 import BlogsPage from "./pages/User/BlogsPage";
 import Contact from "./pages/User/Contact";
 import ProductDetails from "./pages/User/ProductDetails";
-import BlogDetail from "./pages/User/BlogDetail";
+import BlogDetailPage from "./pages/User/BlogDetailPage.jsx";
+
 
 // Admin Pages
 import Login from "./pages/Admin/Login";
@@ -105,7 +106,7 @@ function App() {
           path="/blog/:id"
           element={
             <UserLayout>
-              <BlogDetail />
+              <BlogDetailPage />
             </UserLayout>
           }
         />
