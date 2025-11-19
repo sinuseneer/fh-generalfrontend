@@ -1,7 +1,7 @@
 // src/components/blog/BlogDetail.jsx
 import React from "react";
 import "./Blogdet.css";
-import { base_uri } from "../../config/api";
+import api_uri, { base_uri } from "../../config/api";
 // If you want to sanitize HTML, uncomment the next line and install dompurify:
 // import DOMPurify from "dompurify";
 

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import BlogDetail from "../../components/blog/BlogDetail";
+import BlogDetail from "../User/BlogDetail.jsx";
 import api_uri from "../../config/api";
 
 export default function BlogDetailPage() {
