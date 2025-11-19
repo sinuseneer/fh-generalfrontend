@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
 import axios from "axios";
+import api_uri, { base_uri } from "../../config/api";
 import "./Blog.css";
 
 function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 8; // You can change to 6, 12, etc.
+  const postsPerPage = 8;
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("/api/blogs");
+      const res = await axios.get(`${api_uri}posts`);
       const sorted = res.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
@@ -24,7 +25,6 @@ function BlogsPage() {
     fetchBlogs();
   }, []);
 
-  // Pagination Logic
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
   const currentPosts = blogs.slice(indexOfFirst, indexOfLast);
@@ -42,19 +42,24 @@ function BlogsPage() {
           <div>
             <h2 className="fw-bold mb-2">Blogs</h2>
             <p className="text-muted mb-0">
-              Discover our Feature products designed to fuel your fitness journey.
+              Discover our latest posts & updates.
             </p>
           </div>
         </div>
 
-        {/* Blog Grid */}
         <Row className="g-4 blogs-grid">
           {currentPosts.map((item, index) => (
             <Col key={index} xs={12} sm={6} md={6} lg={3} className="col">
               <Card className="blog-card">
-                <Card.Img variant="top" src={item.image} alt={item.title} />
+                <Card.Img
+                  variant="top"
+                  src={`${base_uri}${item.image}`}
+                  alt={item.title}
+                />
+
                 <Card.Body className="text-start">
                   <small className="text-muted mb-2">{item.date}</small>
+
                   <Card.Title>{item.title}</Card.Title>
 
                   <a href={`/blog/${item._id}`} className="text-success">
@@ -66,7 +71,6 @@ function BlogsPage() {
           ))}
         </Row>
 
-        {/* Pagination */}
         <div className="pagination-wrapper mt-5 d-flex justify-content-center">
           <Pagination>
             {[...Array(totalPages).keys()].map((num) => (
