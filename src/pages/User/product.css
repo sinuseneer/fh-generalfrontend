@@ -265,7 +265,7 @@ button {
 }
 
 
-.icon-box {
+/* .icon-box {
   width: 60px;
   height: 60px;
   border-radius: 12px;
@@ -273,9 +273,21 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;  /* icon size */
-  color: #2da797;   /* WhatsApp green or any theme color */
+  font-size: 32px;  
+  color: #2b988a;   
+} */
+.icon-box {
+  width: 60px;
+  height: 60px;
+  background: rgba(45, 167, 151, 0.12);  /* subtle transparent mint */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px; /* keep your current corner radius */
+  font-size: 32px;
+  color: #2da797;
 }
+
 
 
 /* Force horizontal layout for these contact cards and center vertically */
@@ -348,7 +360,7 @@ button {
   width: 60px;
   height: 60px;
   border-radius: 12px;
-  background: #e3f7f1;
+  background: #3b846e;
   display: flex;
   align-items: center;
   justify-content: center;
