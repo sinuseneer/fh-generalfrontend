@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Box, useMediaQuery } from "@mui/material";
 import Sidebar from "../pages/Admin/components/Sidebar";
-import TopBar from "../pages/Admin/components/TopBar";
+import Topbar from "../pages/Admin/components/Topbar";
+
 
 const AdminLayout = () => {
   const isMobile = useMediaQuery("(max-width:900px)");
@@ -43,7 +44,7 @@ const AdminLayout = () => {
       >
         {/* TopBar: clicking hamburger toggles mobile on small screens,
             and toggles desktop collapse on larger screens */}
-        <TopBar
+        <Topbar
           isMobile={isMobile}
           toggleMobile={toggleMobile}
           collapsed={collapsed}
