@@ -276,3 +276,87 @@ button {
   font-size: 32px;  /* icon size */
   color: #2da797;   /* WhatsApp green or any theme color */
 }
+
+
+/* Force horizontal layout for these contact cards and center vertically */
+.contact-card.horizontal {
+  flex-direction: row !important;    /* override earlier column rule */
+  align-items: center !important;
+  text-align: left;                  /* make text align left beside the icon */
+  gap: 16px;                         /* spacing between icon and text */
+  padding: 1.25rem;                  /* keep comfortable padding */
+}
+
+/* Ensure icon keeps fixed size and won't shrink */
+.contact-card.horizontal .icon-box {
+  flex: 0 0 60px;  /* fixed 60px box */
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 32px;
+  background: #e3f7f1;
+  color: #2da797;
+}
+
+/* Content area grows to fill remaining width */
+.contact-card.horizontal .contact-content {
+  flex: 1 1 auto;
+}
+
+/* Title & text alignment — keep compact spacing */
+.contact-card.horizontal .contact-content h5 {
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+}
+
+.contact-card.horizontal .contact-content p {
+  margin: 0;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 600px) {
+  .contact-card.horizontal {
+    flex-direction: column !important;
+    text-align: center;
+    gap: 10px;
+  }
+  .contact-card.horizontal .icon-box {
+    margin: 0 auto;
+  }
+  .contact-card.horizontal .contact-content {
+    width: 100%;
+  }
+}
+
+
+/* Force horizontal alignment for the contact cards */
+.contact-card.horizontal {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  text-align: left !important;
+  gap: 18px;
+  min-height: 160px; /* optional: shorter, looks cleaner */
+}
+
+/* Icon box styling */
+.contact-card.horizontal .icon-box {
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: #e3f7f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #2da797;
+}
+
+/* Content area */
+.contact-card.horizontal .contact-content {
+  flex: 1;
+}

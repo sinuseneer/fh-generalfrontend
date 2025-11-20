@@ -83,16 +83,17 @@ export default function Contact() {
             <Row className="g-4">
               {contactDetails.map((item, index) => (
                 <Col md={12} key={index}>
-                  <Card className="contact-card border-1 p-4 d-flex align-items-center">
-  <div className="icon-box me-4">
+  <Card className="contact-card horizontal border-1 p-4">
+  <div className="icon-box">
     {item.icon}
   </div>
 
-  <div className="d-flex flex-column">
+  <div className="contact-content ms-3">
     <h5 className="fw-bold mb-1">{item.title}</h5>
     <p className="text-muted mb-0">{item.text}</p>
   </div>
 </Card>
+
 
                 </Col>
               ))}
