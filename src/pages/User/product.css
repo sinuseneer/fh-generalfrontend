@@ -266,8 +266,13 @@ button {
 
 
 .icon-box {
-  font-size: 32px; /* or your icon size */
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: #e3f7f1;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 32px;  /* icon size */
+  color: #2da797;   /* WhatsApp green or any theme color */
 }
