@@ -33,14 +33,13 @@ export default function MediaGallery() {
 
   const [selected, setSelected] = useState(null);
   const [multiSelect, setMultiSelect] = useState([]);
-
   const [showUnusedOnly, setShowUnusedOnly] = useState(false);
 
   const dropRef = useRef(null);
   const [dragging, setDragging] = useState(false);
 
   /* -----------------------------------------
-     Load media (with usage check)
+     Load media (with optional usage check)
   ------------------------------------------*/
   const loadMedia = async (pageNum = 1, reset = false) => {
     setLoading(true);
@@ -52,23 +51,39 @@ export default function MediaGallery() {
 
       let items = res.data.items || [];
 
-      // Fetch usage count for each item if unused filter ON
+      // If the unused-only toggle is on, check usage for each item and keep only unused
       if (showUnusedOnly && items.length > 0) {
-        const withUsage = await Promise.all(
+        const checks = await Promise.all(
           items.map(async (it) => {
             try {
-              const u = await axios.get(
+              const r = await axios.get(
                 `/api/media/usage/${encodeURIComponent(it.folder)}/${encodeURIComponent(it.name)}`
               );
-              return { ...it, usage: u.data.usage };
-            } catch {
-              return { ...it, usage: { count: 1 } }; // assume used
+              // backend returns object with 'inUse' or lists — normalize to boolean
+              const inUse =
+                typeof r.data.inUse === "boolean"
+                  ? r.data.inUse
+                  : // fallback: any arrays returned
+                    (Array.isArray(r.data.products) && r.data.products.length > 0) ||
+                    (Array.isArray(r.data.product_sub_images) &&
+                      r.data.product_sub_images.length > 0) ||
+                    (Array.isArray(r.data.categories) && r.data.categories.length > 0) ||
+                    (Array.isArray(r.data.posts) && r.data.posts.length > 0) ||
+                    (Array.isArray(r.data.banners) && r.data.banners.length > 0);
+
+              return { ...it, inUse };
+            } catch (e) {
+              // On error assume inUse true (safer)
+              return { ...it, inUse: true };
             }
           })
         );
 
-        // keep only unused
-        items = withUsage.filter((i) => i.usage.count === 0);
+        items = checks.filter((i) => !i.inUse).map((i) => {
+          // remove inUse property for rendering consistency
+          const { inUse, ...rest } = i;
+          return rest;
+        });
       }
 
       if (reset) setMedia(items);
@@ -76,7 +91,9 @@ export default function MediaGallery() {
 
       setTotal(res.data.total || 0);
     } catch (err) {
+      // avoid throwing toast when ToastContainer not ready — but we add it, so safe
       toast.error("Failed to load media", { style: toastStyle });
+      console.error("loadMedia error", err);
     } finally {
       setLoading(false);
     }
@@ -87,6 +104,7 @@ export default function MediaGallery() {
     setPage(1);
     setMultiSelect([]);
     setSelected(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, category, showUnusedOnly]);
 
   const loadMore = () => {
@@ -105,12 +123,13 @@ export default function MediaGallery() {
     Array.from(files).forEach((f) => form.append("media", f));
 
     try {
-      await axios.post(`/api/media/upload?cat=${uploadFolder}`, form, {
+      await axios.post(`/api/media/upload?cat=${encodeURIComponent(uploadFolder)}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Uploaded successfully!", { style: toastStyle });
       loadMedia(1, true);
-    } catch {
+    } catch (err) {
+      console.error("uploadFiles error", err);
       toast.error("Upload failed", { style: toastStyle });
     }
   };
@@ -118,7 +137,10 @@ export default function MediaGallery() {
   const onDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-    uploadFiles(e.dataTransfer.files);
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      uploadFiles(e.dataTransfer.files);
+      e.dataTransfer.clearData();
+    }
   };
 
   const onDragOver = (e) => {
@@ -141,17 +163,19 @@ export default function MediaGallery() {
 
   const deleteSelectedFiles = async () => {
     if (multiSelect.length === 0) return;
-
     if (!window.confirm(`Delete ${multiSelect.length} files permanently?`)) return;
 
     try {
-      for (const f of multiSelect) {
-        await axios.delete(`/api/media/${encodeURIComponent(f.name)}?cat=${encodeURIComponent(f.folder)}`);
-      }
+      await Promise.all(
+        multiSelect.map((f) =>
+          axios.delete(`/api/media/${encodeURIComponent(f.name)}?cat=${encodeURIComponent(f.folder)}`)
+        )
+      );
       toast.success("Deleted selected files", { style: toastStyle });
       setMultiSelect([]);
       loadMedia(1, true);
-    } catch {
+    } catch (err) {
+      console.error("deleteSelectedFiles error", err);
       toast.error("Failed to delete files", { style: toastStyle });
     }
   };
@@ -166,8 +190,10 @@ export default function MediaGallery() {
         `/api/media/favorite/${encodeURIComponent(item.name)}?cat=${encodeURIComponent(item.folder)}`,
         { favorite: newState }
       );
+      // reload first page to reflect favorite change
       loadMedia(1, true);
-    } catch {
+    } catch (err) {
+      console.error("toggleFavorite", err);
       toast.error("Failed to update favorite", { style: toastStyle });
     }
   };
@@ -194,7 +220,8 @@ export default function MediaGallery() {
       toast.success("Updated successfully!", { style: toastStyle });
       setSelected(null);
       loadMedia(1, true);
-    } catch {
+    } catch (err) {
+      console.error("saveMeta error", err);
       toast.error("Failed to update", { style: toastStyle });
     }
   };
@@ -212,62 +239,100 @@ export default function MediaGallery() {
       toast.success("Deleted", { style: toastStyle });
       setSelected(null);
       loadMedia(1, true);
-    } catch {
+    } catch (err) {
+      console.error("deleteFile error", err);
       toast.error("Delete failed", { style: toastStyle });
     }
   };
 
   return (
     <div className="media-wrapper">
-      <ToastContainer />
+      {/* ToastContainer configured safely */}
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
 
       <h2 className="page-title">Media Library</h2>
 
-      {/* Filters */}
-      <div className="media-filters">
-        <input
-          type="text"
-          placeholder="Search media..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="all">All Images</option>
-          <option value="products">Products</option>
-          <option value="posts">Posts</option>
-          <option value="banners">Banners</option>
-          <option value="categories">Categories</option>
-        </select>
-
-        {/* Upload Folder */}
-        <select value={uploadFolder} onChange={(e) => setUploadFolder(e.target.value)}>
-          {UPLOAD_FOLDERS.map((f) => (
-            <option key={f.key} value={f.key}>
-              Upload to: {f.label}
-            </option>
-          ))}
-        </select>
-
-        {/* Show only unused */}
-        <label className="unused-toggle">
+      {/* Toolbar */}
+      <div className="media-toolbar">
+        <div className="toolbar-item full">
           <input
-            type="checkbox"
-            checked={showUnusedOnly}
-            onChange={() => setShowUnusedOnly(!showUnusedOnly)}
+            className="toolbar-input"
+            type="text"
+            placeholder="Search media..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
-          Show only unused
-        </label>
+        </div>
 
-        {/* Delete selected */}
+        <div className="toolbar-item">
+          <select
+            className="toolbar-select"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="all">All Images</option>
+            <option value="products">Products</option>
+            <option value="posts">Posts</option>
+            <option value="banners">Banners</option>
+            <option value="categories">Categories</option>
+          </select>
+        </div>
+
+        <div className="toolbar-item">
+          <select
+            className="toolbar-select"
+            value={uploadFolder}
+            onChange={(e) => setUploadFolder(e.target.value)}
+          >
+            {UPLOAD_FOLDERS.map((f) => (
+              <option key={f.key} value={f.key}>
+                Upload to: {f.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="toolbar-item toggle-box">
+          <label>
+            <input
+              type="checkbox"
+              checked={showUnusedOnly}
+              onChange={() => setShowUnusedOnly(!showUnusedOnly)}
+            />
+            <span style={{ marginLeft: 8 }}>Show only unused</span>
+          </label>
+        </div>
+
+        <div className="toolbar-item">
+          <label className="file-btn">
+            Choose files
+            <input
+              type="file"
+              multiple
+              onChange={(e) => uploadFiles(e.target.files)}
+            />
+          </label>
+        </div>
+
         {multiSelect.length > 0 && (
-          <button className="btn danger" onClick={deleteSelectedFiles}>
-            Delete Selected ({multiSelect.length})
-          </button>
+          <div className="toolbar-item">
+            <button className="btn danger" onClick={deleteSelectedFiles}>
+              Delete Selected ({multiSelect.length})
+            </button>
+          </div>
         )}
-
-        {/* File input */}
-        <input type="file" multiple onChange={(e) => uploadFiles(e.target.files)} />
       </div>
 
       {/* Drag & Drop */}
@@ -281,7 +346,7 @@ export default function MediaGallery() {
         Drag & Drop files here
       </div>
 
-      {/* Media Grid */}
+      {/* Grid */}
       <div className="media-grid">
         {media.map((item) => (
           <div

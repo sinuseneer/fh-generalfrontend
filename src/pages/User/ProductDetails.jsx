@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Row, Col, Button, Form, Card, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Form,
+  Card,
+  Spinner,
+} from "react-bootstrap";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import emailjs from "emailjs-com";
 import { Box, IconButton, Card as MuiCard, CardMedia } from "@mui/material";
@@ -96,14 +104,14 @@ export default function ProductDetails() {
 
   const handleTouchEnd = (allImages) => {
     if (!touchStart || !touchEnd) return;
-    
+
     const distance = touchStart - touchEnd;
     const minSwipeDistance = 50;
 
     if (Math.abs(distance) < minSwipeDistance) return;
 
-    const currentIndex = allImages.findIndex(img => img === selectedImage);
-    
+    const currentIndex = allImages.findIndex((img) => img === selectedImage);
+
     if (distance > 0) {
       // Swipe left - next image
       if (currentIndex < allImages.length - 1) {
@@ -223,8 +231,8 @@ export default function ProductDetails() {
       {/* ---------- Back Button ---------- */}
       <Row className="mb-3">
         <Col xs={12}>
-          <Button 
-            variant="" 
+          <Button
+            variant=""
             onClick={() => navigate("/product")}
             className="d-flex align-items-center"
           >
@@ -279,7 +287,15 @@ export default function ProductDetails() {
           </Box>
 
           {/* Thumbnails */}
-          <Box className="thumbnail-container" sx={{ position: "relative", width: "100%", maxWidth: 560, mr: "auto" }}>
+          <Box
+            className="thumbnail-container"
+            sx={{
+              position: "relative",
+              width: "100%",
+              maxWidth: 560,
+              mr: "auto",
+            }}
+          >
             {allImages.length > 4 && (
               <IconButton
                 sx={{
@@ -308,9 +324,9 @@ export default function ProductDetails() {
                 scrollBehavior: "smooth",
                 p: 1,
                 "&::-webkit-scrollbar": { height: "6px" },
-                "&::-webkit-scrollbar-thumb": { 
+                "&::-webkit-scrollbar-thumb": {
                   backgroundColor: "#2EA898",
-                  borderRadius: "3px"
+                  borderRadius: "3px",
                 },
               }}
             >
@@ -322,7 +338,10 @@ export default function ProductDetails() {
                     flex: "0 0 auto",
                     width: 120,
                     height: 80,
-                    border: selectedImage === img ? "2px solid #2EA898" : "1px solid #ddd",
+                    border:
+                      selectedImage === img
+                        ? "2px solid #2EA898"
+                        : "1px solid #ddd",
                     borderRadius: 1,
                     cursor: "pointer",
                     transition: "0.3s",
@@ -369,11 +388,13 @@ export default function ProductDetails() {
           </Box>
 
           {/* Mobile Dots Pagination */}
-          <div className="mobile-dots-container" style={{ display: 'none' }}>
+          <div className="mobile-dots-container" style={{ display: "none" }}>
             {allImages.map((img, index) => (
               <div
                 key={index}
-                className={`mobile-dot ${selectedImage === img ? 'active' : ''}`}
+                className={`mobile-dot ${
+                  selectedImage === img ? "active" : ""
+                }`}
                 onClick={() => setSelectedImage(img)}
               />
             ))}
@@ -384,13 +405,21 @@ export default function ProductDetails() {
         <Col xs={12} md={6}>
           <Card className="p-4 border-0">
             <h2 className="mb-3 text-start fw-bold">{product.name}</h2>
-            <p><strong>ID:</strong> {product.prod_id}</p>
-            {product.product_info?<p><strong>Product Info:</strong> {product.product_info}</p>:""}
+            <p>
+              <strong>ID:</strong> {product.prod_id}
+            </p>
+            {product.product_info ? (
+              <p>
+                <strong>Product Info:</strong> {product.product_info}
+              </p>
+            ) : (
+              ""
+            )}
 
             <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
               <Button
                 className="whatsapp1-btn d-flex align-items-center justify-content-center px-5"
-                href={`https://wa.me/9188850311?text=Hi Madam,%0AI'm interested in your product:%0A👉 Name: ${product.name}%0A🆔 Product ID: ${product.prod_id}%0ACould you please share more details?`}
+                href={`https://wa.me/13478604095?text=Hi%20Madam,%0AI'm%20interested%20in%20your%20product:%0A👉%20Name:%20${product.name}%0A🆔%20Product%20ID:%20${product.prod_id}%0ACould%20you%20please%20share%20more%20details?`}
                 target="_blank"
                 variant="success"
               >
@@ -482,14 +511,19 @@ export default function ProductDetails() {
               if (items.length > 0) {
                 return (
                   <div>
-                    {heading && <p><strong>{heading}</strong></p>}
+                    {heading && (
+                      <p>
+                        <strong>{heading}</strong>
+                      </p>
+                    )}
                     <ul className="product-bullets" style={{ paddingLeft: 0 }}>
                       {items.map((it, idx) => {
                         const [label, ...rest] = it.split(":");
                         if (rest.length > 0) {
                           return (
                             <li key={idx}>
-                              <strong>{label.trim()}:</strong> {rest.join(":").trim()}
+                              <strong>{label.trim()}:</strong>{" "}
+                              {rest.join(":").trim()}
                             </li>
                           );
                         }

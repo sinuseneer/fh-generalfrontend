@@ -377,3 +377,125 @@
     right: 2px;
   }
 }
+
+
+
+/* ---------- Toolbar (responsive) ---------- */
+.media-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+  align-items: center;
+}
+
+.toolbar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-item.full {
+  flex: 1 1 100%;
+}
+
+.toolbar-input,
+.toolbar-select {
+  background: #111;
+  color: #f7f7f7;
+  border: 1px solid #2b2b2b;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* toggle & file button */
+.toggle-box {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.file-btn {
+  background: #2da797;
+  color: #fff;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.file-btn input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Drag area */
+.drop-area {
+  border: 2px dashed rgba(255,255,255,0.06);
+  padding: 28px;
+  border-radius: 10px;
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 20px;
+  transition: 0.15s ease;
+  background: rgba(255,255,255,0.01);
+}
+
+.drop-area.drag-active {
+  border-color: #37b24d;
+  color: #dfffe3;
+  background: rgba(55,178,77,0.03);
+}
+
+/* media-grid tweaks (already present in your file, keep good rules) */
+.media-grid {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+/* favorite icon already present; ensure mobile sizing */
+.favorite-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 18px;
+  color: #777;
+  cursor: pointer;
+  transition: 0.15s ease;
+  text-shadow: 0 0 5px black;
+  user-select: none;
+  padding: 2px 4px;
+}
+
+.favorite-icon.active {
+  color: gold;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+/* Responsive toolbar */
+@media (max-width: 900px) {
+  .toolbar-item {
+    flex: 1 1 calc(50% - 12px);
+  }
+  .toolbar-item.full {
+    flex: 1 1 100%;
+  }
+  .file-btn { width: 100%; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .toolbar-item { flex: 1 1 100%; }
+  .toolbar-input { font-size: 14px; }
+  .toolbar-select { font-size: 14px; }
+  .favorite-icon { font-size: 16px; top: 8px; right: 8px; }
+}

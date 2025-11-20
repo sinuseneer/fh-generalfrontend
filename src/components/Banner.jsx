@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import "../App.css"; // or Banner.css
+import "../App.css"; 
 
 
 export default function Banner() {

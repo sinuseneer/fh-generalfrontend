@@ -54,12 +54,12 @@ export default function Contact() {
     {
       icon: <MapPin size={40} color="#fff" />,
       title: "Address",
-      text: "Lot 45 Brickdam, Stabroek Georgetown, Guyana, South America",
+      text: "Lot 4 Bel Air, Georgetown Guyana, South America",
     },
     {
       icon: <Phone size={40} color="#fff" />,
       title: "Phone Number",
-      text: "+1 (347) 869-4095",
+      text: "+1 347 860 4095",
     },
     {
       icon: <Mail size={40} color="#fff" />,
@@ -73,22 +73,24 @@ export default function Contact() {
       {/* Header */}
       <div className="contact-header text-center py-5">
         <h2 className="fw-bold">Contact Us</h2>
-        <p className="text-muted">Home</p>
+       
       </div>
 
       {/* CONTACT INFO + GET IN TOUCH (2 COLUMNS) */}
       <Container className="py-5">
         <Row className="g-4 align-items-start">
-
           {/* Left Column – Contact Cards */}
           <Col md={6}>
             <Row className="g-4">
               {contactDetails.map((item, index) => (
                 <Col md={12} key={index}>
-                  <Card className="contact-card border-1 text-center p-4 flex-fill d-flex flex-column justify-content-center">
-                    <div className="icon-box mx-auto mb-3">{item.icon}</div>
-                    <h5 className="fw-bold">{item.title}</h5>
-                    <p className="text-muted mb-0">{item.text}</p>
+                  <Card className="contact-card border-1 p-3 d-flex align-items-center">
+                    <div className="me-3">{item.icon}</div>
+
+                    <div className="d-flex flex-column">
+                      <h5 className="fw-bold mb-1">{item.title}</h5>
+                      <p className="text-muted mb-0">{item.text}</p>
+                    </div>
                   </Card>
                 </Col>
               ))}
@@ -99,7 +101,9 @@ export default function Contact() {
           <Col md={6}>
             <div className="p-4 rounded-4 bg-light shadow-sm">
               <h3 className="fw-bolder mb-3">Get In Touch</h3>
-              <p className="text-muted mb-4">Your email address is safe with us.</p>
+              <p className="text-muted mb-4">
+                Your email address is safe with us.
+              </p>
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3 position-relative">
