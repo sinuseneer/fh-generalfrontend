@@ -263,3 +263,11 @@ form textarea:focus {
 button {
   font-weight: 600;
 }
+
+
+.icon-box {
+  font-size: 32px; /* or your icon size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

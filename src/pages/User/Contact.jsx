@@ -73,7 +73,6 @@ export default function Contact() {
       {/* Header */}
       <div className="contact-header text-center py-5">
         <h2 className="fw-bold">Contact Us</h2>
-       
       </div>
 
       {/* CONTACT INFO + GET IN TOUCH (2 COLUMNS) */}
@@ -84,10 +83,10 @@ export default function Contact() {
             <Row className="g-4">
               {contactDetails.map((item, index) => (
                 <Col md={12} key={index}>
-                  <Card className="contact-card border-1 p-3 d-flex align-items-center">
-                    <div className="me-3">{item.icon}</div>
+                  <Card className="contact-card border-1 p-4 d-flex align-items-center">
+                    <div className="icon-box me-3">{item.icon}</div>
 
-                    <div className="d-flex flex-column">
+                    <div>
                       <h5 className="fw-bold mb-1">{item.title}</h5>
                       <p className="text-muted mb-0">{item.text}</p>
                     </div>
