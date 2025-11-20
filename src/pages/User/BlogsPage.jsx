@@ -7,8 +7,11 @@ import "./Blog.css";
 function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 8;
 
+  // Show pagination only if blogs > 12
+  const postsPerPage = 12;
+
+  // Fetch blogs
   const fetchBlogs = async () => {
     try {
       const res = await axios.get(`${api_uri}posts`);
@@ -25,6 +28,7 @@ function BlogsPage() {
     fetchBlogs();
   }, []);
 
+  // Pagination logic
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
   const currentPosts = blogs.slice(indexOfFirst, indexOfLast);
@@ -38,6 +42,7 @@ function BlogsPage() {
   return (
     <Container fluid className="blogs-page-wrapper">
       <Container>
+        {/* Header */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
           <div>
             <h2 className="fw-bold mb-2">Blogs</h2>
@@ -47,13 +52,18 @@ function BlogsPage() {
           </div>
         </div>
 
+        {/* Blog Grid */}
         <Row className="g-4 blogs-grid">
           {currentPosts.map((item, index) => (
             <Col key={index} xs={12} sm={6} md={6} lg={3} className="col">
               <Card className="blog-card">
                 <Card.Img
                   variant="top"
-                  src={`${base_uri}${item.image}`}
+                  src={
+                    item.image
+                      ? `${base_uri}${item.image}`
+                      : "/images/no-image.jpg"
+                  }
                   alt={item.title}
                 />
 
@@ -71,20 +81,23 @@ function BlogsPage() {
           ))}
         </Row>
 
-        <div className="pagination-wrapper mt-5 d-flex justify-content-center">
-          <Pagination>
-            {[...Array(totalPages).keys()].map((num) => (
-              <Pagination.Item
-                key={num + 1}
-                active={num + 1 === currentPage}
-                onClick={() => handlePageChange(num + 1)}
-                className="custom-pagination"
-              >
-                {num + 1}
-              </Pagination.Item>
-            ))}
-          </Pagination>
-        </div>
+        {/* Pagination (ONLY if blogs > 12) */}
+        {totalPages > 1 && (
+          <div className="pagination-wrapper mt-5 d-flex justify-content-center">
+            <Pagination>
+              {[...Array(totalPages).keys()].map((num) => (
+                <Pagination.Item
+                  key={num + 1}
+                  active={num + 1 === currentPage}
+                  onClick={() => handlePageChange(num + 1)}
+                  className="custom-pagination"
+                >
+                  {num + 1}
+                </Pagination.Item>
+              ))}
+            </Pagination>
+          </div>
+        )}
       </Container>
     </Container>
   );
