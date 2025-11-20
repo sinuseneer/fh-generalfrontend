@@ -175,3 +175,205 @@
     align-items: center;
   }
 }
+
+
+/* -------------------------------------
+   DRAG & DROP UPLOAD AREA (Responsive)
+--------------------------------------*/
+.drop-area {
+  border: 2px dashed #3e3e3e;
+  border-radius: 8px;
+  padding: 25px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ddd;
+  transition: 0.25s ease;
+}
+
+.drop-area.drag-active {
+  border-color: #37b24d;
+  background: rgba(55, 178, 77, 0.10);
+  color: #c7f9cc;
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .drop-area {
+    padding: 18px;
+    font-size: 13px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .drop-area {
+    padding: 20px;
+  }
+}
+
+/* -------------------------------------
+   MULTI-SELECTION HIGHLIGHT
+--------------------------------------*/
+.media-card.selected {
+  outline: 3px solid #37b24d;
+  outline-offset: -3px;
+}
+
+.media-card.selected:hover {
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------
+   RESPONSIVE MEDIA GRID (Your request)
+--------------------------------------*/
+
+/* Default Desktop → Already perfect */
+
+/* Large tablets / small desktop (2–4 per row) */
+@media (max-width: 1024px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+/* Tablets (3 per row) */
+@media (max-width: 900px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* Large mobile (3 per row) */
+@media (max-width: 600px) {
+  .media-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Small phones (2 per row) */
+@media (max-width: 400px) {
+  .media-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Ultra-small screens (1 per row) */
+@media (max-width: 320px) {
+  .media-grid {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+}
+
+/* -------------------------------------
+   FILE INPUT RESPONSIVE
+--------------------------------------*/
+.media-filters input[type="file"] {
+  background: #111;
+  border: 1px solid #2da79745;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ddd;
+  max-width: 160px;
+}
+
+/* File upload button styling */
+.media-filters input[type="file"]::-webkit-file-upload-button {
+  background: #2da797;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+/* Mobile: Make file input full width */
+@media (max-width: 480px) {
+  .media-filters input[type="file"] {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* -------------------------------------
+   MODAL RESPONSIVENESS
+--------------------------------------*/
+
+/* Phones → modal goes full width */
+@media (max-width: 600px) {
+  .modal-inner {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .modal-left img {
+    width: 100%;
+    height: auto;
+  }
+
+  .modal-right {
+    width: 100%;
+  }
+}
+
+
+/* toggle  Favorite Star */
+/* Base style */
+.favorite-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 20px;
+  color: #777;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-shadow: 0 0 5px black;
+  padding: 2px;
+}
+
+/* Hover (desktop only) */
+@media (min-width: 768px) {
+  .favorite-icon:hover {
+    color: #c7f9cc;
+  }
+}
+
+/* Active pinned state */
+.favorite-icon.active {
+  color: gold;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+/* --------------------------------------
+   MOBILE & SMALL SCREEN RESPONSIVE FIXES
+---------------------------------------*/
+
+/* Phones ≤ 600px */
+@media (max-width: 600px) {
+  .favorite-icon {
+    top: 4px;
+    right: 4px;
+    font-size: 18px;       /* slightly smaller */
+    padding: 4px;          /* bigger tap area */
+  }
+}
+
+/* Small phones ≤ 400px */
+@media (max-width: 400px) {
+  .favorite-icon {
+    top: 3px;
+    right: 3px;
+    font-size: 16px;
+    padding: 5px;          /* bigger tap area for thumbs */
+  }
+}
+
+/* Ultra-small ≤ 320px */
+@media (max-width: 320px) {
+  .favorite-icon {
+    font-size: 15px;
+    padding: 6px;
+    top: 2px;
+    right: 2px;
+  }
+}
