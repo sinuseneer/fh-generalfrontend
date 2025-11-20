@@ -24,7 +24,7 @@ import BlogDetailPage from "./pages/User/BlogDetailPage.jsx";
 // Admin Pages
 import Login from "./pages/Admin/Login";
 import Dashboard from "./pages/Admin/Dashboard";
-import Media from "./pages/Admin/Media";
+// import Media from "./pages/Admin/Media";
 import Categories from "./pages/Admin/Categories";
 import AddCategory from "./pages/Admin/AddCategory";
 import Products from "./pages/Admin/Products";
@@ -125,7 +125,7 @@ function App() {
 
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/media" element={<Media />} />
+          {/* <Route path="/admin/media" element={<Media />} /> */}
           <Route path="/admin/categories/list" element={<Categories />} />
           <Route path="/admin/categories/add" element={<AddCategory />} />
           <Route path="/admin/products/list" element={<Products />} />
