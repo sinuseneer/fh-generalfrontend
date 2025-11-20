@@ -419,7 +419,7 @@ export default function ProductDetails() {
             <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
               <Button
                 className="whatsapp1-btn d-flex align-items-center justify-content-center px-5"
-                href={`https://wa.me/13478604095?text=Hi%20Madam,%0AI'm%20interested%20in%20your%20product:%0A👉%20Name:%20${product.name}%0A🆔%20Product%20ID:%20${product.prod_id}%0ACould%20you%20please%20share%20more%20details?`}
+                href={`https://wa.me/13478694095?text=Hi%20Madam,%0AI'm%20interested%20in%20your%20product:%0A👉%20Name:%20${product.name}%0A🆔%20Product%20ID:%20${product.prod_id}%0ACould%20you%20please%20share%20more%20details?`}
                 target="_blank"
                 variant="success"
               >

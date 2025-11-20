@@ -165,14 +165,14 @@ export default function Footer() {
           <Col md={3}>
             <h5 className="fw-bold mb-3">Contact Us</h5>
             <p className="mb-2">
-              <FiPhone className="me-2" /> (323) 576-1942
+              <FiPhone className="me-2" /> +1 347 869 4095
             </p>
             <p className="mb-2">
               <FiMail className="me-2" /> info@fhgeneralequipment.com
             </p>
             <p className="mb-2">
               <FiMapPin className="me-2" />
-              Lot 45 Brickdam, Stabroek Georgetown, Guyana, South America
+              Lot 4 Bel Air, Georgetown Guyana, South America
             </p>
             <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={handleContactClick}>
               Get in Touch

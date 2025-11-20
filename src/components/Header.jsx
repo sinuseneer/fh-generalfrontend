@@ -19,7 +19,7 @@ function Header() {
             </div>
             <div className="d-flex align-items-center gap-2">
               <Telephone size={16} />
-              <span>(323) 578-1942</span>
+              <span>+1 347 869 4095</span>
             </div>
           </Col>
         </Row>
