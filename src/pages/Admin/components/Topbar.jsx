@@ -1,3 +1,4 @@
+// src/pages/Admin/components/TopBar.jsx
 import React, { useState } from "react";
 import {
   Box,
@@ -12,29 +13,28 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CategoryIcon from "@mui/icons-material/Category";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PersonIcon from "@mui/icons-material/Person";
-import LockIcon from "@mui/icons-material/Lock";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 
-export default function TopBar() {
+export default function TopBar({ isMobile, toggleMobile, collapsed, toggleDesktop }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [categoriesMenuEl, setCategoriesMenuEl] = useState(null);
   const open = Boolean(anchorEl);
   const openCategories = Boolean(categoriesMenuEl);
   const navigate = useNavigate();
 
-  const handleSettingsClick = (event) => setAnchorEl(event.currentTarget);
+  const handleSettingsClick = (e) => setAnchorEl(e.currentTarget);
   const handleSettingsClose = () => {
     setAnchorEl(null);
     setCategoriesMenuEl(null);
   };
 
-  const handleCategoriesOpen = (event) =>
-    setCategoriesMenuEl(event.currentTarget);
-  const handleCategoriesClose = () => setCategoriesMenuEl(null);
-
-  const handleNavigate = (path) => {
-    navigate(path);
-    handleSettingsClose();
+  // Hamburger behavior:
+  // - On mobile: toggles the temporary drawer
+  // - On desktop: toggles the collapsed/expanded sidebar
+  const handleHamburger = () => {
+    if (isMobile) toggleMobile();
+    else toggleDesktop();
   };
 
   return (
@@ -49,43 +49,37 @@ export default function TopBar() {
         borderRadius: 2,
       }}
     >
-      <Typography variant="h6" sx={{ color: "white" }}>
-        Welcome, Admin
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <IconButton onClick={handleHamburger} sx={{ color: "white" }}>
+          <MenuIcon />
+        </IconButton>
+
+        <Typography variant="h6" sx={{ color: "white" }}>
+          Welcome, Admin
+        </Typography>
+      </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <Typography variant="body2" sx={{ color: "gray" }}>
           FH General Equipments
         </Typography>
 
-        {/* Settings Button */}
         <IconButton onClick={handleSettingsClick} sx={{ color: "white" }}>
           <SettingsIcon />
         </IconButton>
 
-        {/* Main Settings Menu */}
         <Menu
           anchorEl={anchorEl}
           open={open}
           onClose={handleSettingsClose}
           PaperProps={{
-            sx: {
-              bgcolor: "#2b2b2b",
-              color: "white",
-              borderRadius: 2,
-            },
+            sx: { bgcolor: "#2b2b2b", color: "white", borderRadius: 2 },
           }}
         >
-          {/* Categories Item with Submenu */}
-          {/* Categories Item with Submenu */}
           <MenuItem
-            onMouseEnter={handleCategoriesOpen}
-            onMouseLeave={handleCategoriesClose}
-            sx={{
-              justifyContent: "space-between",
-              position: "relative",
-              "&:hover": { backgroundColor: "#383838" },
-            }}
+            onMouseEnter={(e) => setCategoriesMenuEl(e.currentTarget)}
+            onMouseLeave={() => setCategoriesMenuEl(null)}
+            sx={{ justifyContent: "space-between" }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <CategoryIcon fontSize="small" />
@@ -93,58 +87,43 @@ export default function TopBar() {
             </Box>
             <ArrowRightIcon fontSize="small" />
 
-            {/* Submenu (perfect alignment fix) */}
             <Menu
               anchorEl={categoriesMenuEl}
               open={openCategories}
-              onClose={handleCategoriesClose}
-              disableAutoFocusItem
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
+              onClose={() => setCategoriesMenuEl(null)}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
               PaperProps={{
                 sx: {
                   bgcolor: "#2b2b2b",
                   color: "white",
                   borderRadius: 2,
-                  boxShadow: "0px 2px 10px rgba(0,0,0,0.4)",
-                  mt: -1,
-                  ml: 0.5,
                   minWidth: 180,
-                  transition: "opacity 0.15s ease-in-out",
                 },
               }}
-              MenuListProps={{
-                onMouseEnter: () => setCategoriesMenuEl(categoriesMenuEl),
-                onMouseLeave: handleCategoriesClose,
-              }}
             >
-              <MenuItem
-                onClick={() => handleNavigate("/admin/categories/list")}
-              >
+              <MenuItem onClick={() => navigate("/admin/categories/list")}>
                 <ListItemIcon>
                   <CategoryIcon sx={{ color: "white" }} fontSize="small" />
                 </ListItemIcon>
                 View Categories
               </MenuItem>
-              <MenuItem onClick={() => handleNavigate("/admin/categories/add")}>
+
+              <MenuItem onClick={() => navigate("/admin/categories/add")}>
                 <ListItemIcon>
-                  <AddCircleOutlineIcon
-                    sx={{ color: "white" }}
-                    fontSize="small"
-                  />
+                  <AddCircleOutlineIcon sx={{ color: "white" }} fontSize="small" />
                 </ListItemIcon>
                 Add Category
               </MenuItem>
             </Menu>
           </MenuItem>
 
-          <MenuItem onClick={() => handleNavigate("/admin/change-settings")}>
+          <MenuItem
+            onClick={() => {
+              handleSettingsClose();
+              navigate("/admin/change-settings");
+            }}
+          >
             <ListItemIcon>
               <PersonIcon sx={{ color: "white" }} fontSize="small" />
             </ListItemIcon>

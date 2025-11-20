@@ -7,13 +7,19 @@ import "react-toastify/dist/ReactToastify.css";
 
 const LIMIT = 40;
 
-// Toast style from your preferred theme
 const toastStyle = {
   backgroundColor: "#1a1f1a",
   color: "#c7f9cc",
   border: "1px solid #37b24d",
   borderRadius: "8px",
 };
+
+const UPLOAD_FOLDERS = [
+  { key: "products", label: "Products" },
+  { key: "posts", label: "Posts" },
+  { key: "banners", label: "Banners" },
+  { key: "categories", label: "Categories" },
+];
 
 export default function MediaGallery() {
   const [media, setMedia] = useState([]);
@@ -23,35 +29,65 @@ export default function MediaGallery() {
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [uploadFolder, setUploadFolder] = useState("products");
 
   const [selected, setSelected] = useState(null);
-
-  // For multi-select delete
   const [multiSelect, setMultiSelect] = useState([]);
 
-  // Drag area highlight
+  const [showUnusedOnly, setShowUnusedOnly] = useState(false);
+
   const dropRef = useRef(null);
   const [dragging, setDragging] = useState(false);
 
-  // Load media
+  /* -----------------------------------------
+     Load media (with usage check)
+  ------------------------------------------*/
   const loadMedia = async (pageNum = 1, reset = false) => {
     setLoading(true);
 
-    const res = await axios.get("/api/media", {
-      params: { page: pageNum, limit: LIMIT, search, category },
-    });
+    try {
+      const res = await axios.get("/api/media", {
+        params: { page: pageNum, limit: LIMIT, search, category },
+      });
 
-    if (reset) setMedia(res.data.items);
-    else setMedia((prev) => [...prev, ...res.data.items]);
+      let items = res.data.items || [];
 
-    setTotal(res.data.total);
-    setLoading(false);
+      // Fetch usage count for each item if unused filter ON
+      if (showUnusedOnly && items.length > 0) {
+        const withUsage = await Promise.all(
+          items.map(async (it) => {
+            try {
+              const u = await axios.get(
+                `/api/media/usage/${encodeURIComponent(it.folder)}/${encodeURIComponent(it.name)}`
+              );
+              return { ...it, usage: u.data.usage };
+            } catch {
+              return { ...it, usage: { count: 1 } }; // assume used
+            }
+          })
+        );
+
+        // keep only unused
+        items = withUsage.filter((i) => i.usage.count === 0);
+      }
+
+      if (reset) setMedia(items);
+      else setMedia((prev) => [...prev, ...items]);
+
+      setTotal(res.data.total || 0);
+    } catch (err) {
+      toast.error("Failed to load media", { style: toastStyle });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     loadMedia(1, true);
     setPage(1);
-  }, [search, category]);
+    setMultiSelect([]);
+    setSelected(null);
+  }, [search, category, showUnusedOnly]);
 
   const loadMore = () => {
     const next = page + 1;
@@ -59,24 +95,22 @@ export default function MediaGallery() {
     loadMedia(next);
   };
 
-  // -----------------------------
-  // UPLOAD (Drag & Drop + normal)
-  // -----------------------------
+  /* -----------------------------------------
+     UPLOAD
+  ------------------------------------------*/
   const uploadFiles = async (files) => {
-    const form = new FormData();
+    if (!files || files.length === 0) return;
 
-    Array.from(files).forEach((file) => {
-      form.append("media", file);
-    });
+    const form = new FormData();
+    Array.from(files).forEach((f) => form.append("media", f));
 
     try {
-      await axios.post("/api/media/upload", form, {
+      await axios.post(`/api/media/upload?cat=${uploadFolder}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       toast.success("Uploaded successfully!", { style: toastStyle });
       loadMedia(1, true);
-    } catch (err) {
+    } catch {
       toast.error("Upload failed", { style: toastStyle });
     }
   };
@@ -84,9 +118,7 @@ export default function MediaGallery() {
   const onDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) uploadFiles(files);
+    uploadFiles(e.dataTransfer.files);
   };
 
   const onDragOver = (e) => {
@@ -96,45 +128,55 @@ export default function MediaGallery() {
 
   const onDragLeave = () => setDragging(false);
 
-  // -----------------------------
-  // MULTI SELECT
-  // -----------------------------
+  /* -----------------------------------------
+     MULTI SELECT
+  ------------------------------------------*/
   const toggleMultiSelect = (file) => {
-    setMultiSelect((prev) =>
-      prev.includes(file)
-        ? prev.filter((f) => f !== file)
-        : [...prev, file]
-    );
+    setMultiSelect((prev) => {
+      const exists = prev.some((f) => f.name === file.name && f.folder === file.folder);
+      if (exists) return prev.filter((f) => !(f.name === file.name && f.folder === file.folder));
+      return [...prev, file];
+    });
   };
 
   const deleteSelectedFiles = async () => {
-    if (multiSelect.length === 0) {
-      toast.warning("No files selected!", { style: toastStyle });
-      return;
-    }
+    if (multiSelect.length === 0) return;
 
-    if (!window.confirm(`Delete ${multiSelect.length} files permanently?`))
-      return;
+    if (!window.confirm(`Delete ${multiSelect.length} files permanently?`)) return;
 
     try {
       for (const f of multiSelect) {
-        await axios.delete(`/api/media/${f.name}?cat=${f.folder}`);
+        await axios.delete(`/api/media/${encodeURIComponent(f.name)}?cat=${encodeURIComponent(f.folder)}`);
       }
-
       toast.success("Deleted selected files", { style: toastStyle });
       setMultiSelect([]);
       loadMedia(1, true);
-    } catch (err) {
-      toast.error("Failed to delete some files", { style: toastStyle });
+    } catch {
+      toast.error("Failed to delete files", { style: toastStyle });
     }
   };
 
-  // -----------------------------
-  // SAVE META
-  // -----------------------------
+  /* -----------------------------------------
+     FAVORITE toggle
+  ------------------------------------------*/
+  const toggleFavorite = async (item) => {
+    try {
+      const newState = !(item.meta?.favorite === true);
+      await axios.post(
+        `/api/media/favorite/${encodeURIComponent(item.name)}?cat=${encodeURIComponent(item.folder)}`,
+        { favorite: newState }
+      );
+      loadMedia(1, true);
+    } catch {
+      toast.error("Failed to update favorite", { style: toastStyle });
+    }
+  };
+
+  /* -----------------------------------------
+     META SAVE
+  ------------------------------------------*/
   const saveMeta = async (e) => {
     e.preventDefault();
-
     const form = new FormData(e.target);
 
     const payload = {
@@ -146,10 +188,9 @@ export default function MediaGallery() {
 
     try {
       await axios.post(
-        `/api/media/meta/${selected.name}?cat=${selected.folder}`,
+        `/api/media/meta/${encodeURIComponent(selected.name)}?cat=${encodeURIComponent(selected.folder)}`,
         payload
       );
-
       toast.success("Updated successfully!", { style: toastStyle });
       setSelected(null);
       loadMedia(1, true);
@@ -158,14 +199,16 @@ export default function MediaGallery() {
     }
   };
 
-  // -----------------------------
-  // DELETE SINGLE
-  // -----------------------------
+  /* -----------------------------------------
+     DELETE SINGLE
+  ------------------------------------------*/
   const deleteFile = async () => {
     if (!window.confirm("Delete this file permanently?")) return;
 
     try {
-      await axios.delete(`/api/media/${selected.name}?cat=${selected.folder}`);
+      await axios.delete(
+        `/api/media/${encodeURIComponent(selected.name)}?cat=${encodeURIComponent(selected.folder)}`
+      );
       toast.success("Deleted", { style: toastStyle });
       setSelected(null);
       loadMedia(1, true);
@@ -176,13 +219,11 @@ export default function MediaGallery() {
 
   return (
     <div className="media-wrapper">
-
-      {/* Toast container */}
       <ToastContainer />
 
       <h2 className="page-title">Media Library</h2>
 
-      {/* --- Filters & Actions --- */}
+      {/* Filters */}
       <div className="media-filters">
         <input
           type="text"
@@ -199,22 +240,37 @@ export default function MediaGallery() {
           <option value="categories">Categories</option>
         </select>
 
-        {/* DELETE SELECTED BUTTON */}
+        {/* Upload Folder */}
+        <select value={uploadFolder} onChange={(e) => setUploadFolder(e.target.value)}>
+          {UPLOAD_FOLDERS.map((f) => (
+            <option key={f.key} value={f.key}>
+              Upload to: {f.label}
+            </option>
+          ))}
+        </select>
+
+        {/* Show only unused */}
+        <label className="unused-toggle">
+          <input
+            type="checkbox"
+            checked={showUnusedOnly}
+            onChange={() => setShowUnusedOnly(!showUnusedOnly)}
+          />
+          Show only unused
+        </label>
+
+        {/* Delete selected */}
         {multiSelect.length > 0 && (
           <button className="btn danger" onClick={deleteSelectedFiles}>
             Delete Selected ({multiSelect.length})
           </button>
         )}
 
-        {/* Upload Button */}
-        <input
-          type="file"
-          multiple
-          onChange={(e) => uploadFiles(e.target.files)}
-        />
+        {/* File input */}
+        <input type="file" multiple onChange={(e) => uploadFiles(e.target.files)} />
       </div>
 
-      {/* --- Drag and Drop zone --- */}
+      {/* Drag & Drop */}
       <div
         ref={dropRef}
         className={`drop-area ${dragging ? "drag-active" : ""}`}
@@ -225,14 +281,16 @@ export default function MediaGallery() {
         Drag & Drop files here
       </div>
 
-      {/* --- Media Grid --- */}
+      {/* Media Grid */}
       <div className="media-grid">
         {media.map((item) => (
           <div
             className={`media-card ${
-              multiSelect.includes(item) ? "selected" : ""
+              multiSelect.some((f) => f.name === item.name && f.folder === item.folder)
+                ? "selected"
+                : ""
             }`}
-            key={item.name}
+            key={`${item.folder}/${item.name}`}
           >
             <img
               src={base_uri + item.url}
@@ -242,6 +300,16 @@ export default function MediaGallery() {
                 else setSelected(item);
               }}
             />
+
+            <div
+              className={`favorite-icon ${item.meta?.favorite ? "active" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite(item);
+              }}
+            >
+              ★
+            </div>
           </div>
         ))}
       </div>
@@ -256,7 +324,7 @@ export default function MediaGallery() {
 
       {loading && <p style={{ color: "#999", marginTop: 15 }}>Loading...</p>}
 
-      {/* --- Modal --- */}
+      {/* Modal */}
       {selected && (
         <div className="media-modal">
           <div className="modal-inner">
@@ -292,16 +360,10 @@ export default function MediaGallery() {
                 <input name="alt" defaultValue={selected.meta?.alt} />
 
                 <label>Caption</label>
-                <textarea
-                  name="caption"
-                  defaultValue={selected.meta?.caption}
-                ></textarea>
+                <textarea name="caption" defaultValue={selected.meta?.caption}></textarea>
 
                 <label>Description</label>
-                <textarea
-                  name="description"
-                  defaultValue={selected.meta?.description}
-                ></textarea>
+                <textarea name="description" defaultValue={selected.meta?.description}></textarea>
 
                 <button className="btn save-btn">Save</button>
               </form>
