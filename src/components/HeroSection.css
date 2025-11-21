@@ -1,5 +1,5 @@
 /* ============================================
-   ULTRA MODERN CINEMATIC HERO SLIDER (Option A)
+   CLEAN SIMPLE AUTO-SLIDER (FINAL UPDATED)
    ============================================ */
 
 /* Wrapper */
@@ -10,111 +10,72 @@
   background: #070707;
 }
 
-/* container */
+/* Container */
 .custom-carousel {
   position: relative;
   width: 100%;
-  height: 720px;
+  height: 700px;
   overflow: hidden;
 }
 
-/* Slides container (stacked) */
+/* Slides wrapper */
 .carousel-slides {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* Each slide stacked, absolutely positioned */
+/* Slide – NO zoom, NO blur */
 .carousel-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
   z-index: 1;
-  transform: translateX(40px) scale(1.03);
-  transition: opacity 0.9s cubic-bezier(.2,.9,.2,1), transform 0.9s cubic-bezier(.2,.9,.2,1);
-  will-change: opacity, transform;
-  display: block;
+  transition: opacity 0.7s ease;
 }
 
-/* visible (current) slide */
 .carousel-slide.active {
   opacity: 1;
   z-index: 5;
-  transform: translateX(0) scale(1);
 }
 
-/* incoming animation classes (direction aware) */
+/* Animation for direction-based sliding */
 .carousel-slide.next {
-  animation: cinematicSlideNext 0.9s ease both;
+  animation: slideFromRight 0.7s ease both;
 }
 
 .carousel-slide.prev {
-  animation: cinematicSlidePrev 0.9s ease both;
+  animation: slideToLeft 0.7s ease both;
 }
 
-@keyframes cinematicSlideNext {
-  0% {
-    opacity: 0;
-    transform: translateX(80px) scale(1.06);
-    filter: blur(0.6px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: blur(0);
-  }
+@keyframes slideFromRight {
+  from { transform: translateX(60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes cinematicSlidePrev {
-  0% {
-    opacity: 0;
-    transform: translateX(-80px) scale(1.06);
-    filter: blur(0.6px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: blur(0);
-  }
+@keyframes slideToLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-60px); opacity: 0; }
 }
 
-/* Background image with cinematic slow zoom (parallax feel) */
+/* Background image (NO zoom) */
 .slide-image {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center center;
+  background-position: center;
   background-repeat: no-repeat;
-  transform-origin: center;
-  filter: brightness(0.92) saturate(1.02);
-  transition: transform 12s ease;
 }
 
-/* small parallax on hover (desktop) */
-.custom-hero-wrapper:hover .slide-image {
-  transition-duration: 9s;
-  transform: scale(1.06);
-}
-
-/* subtle zoom animation loop when idle */
-@keyframes cinematicZoom {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.08); }
-}
-.slide-image--animated {
-  animation: cinematicZoom 12s ease-in-out infinite alternate;
-}
-
-/* overlay for better readability */
+/* Overlay */
 .slide-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.48), rgba(0,0,0,0.14) 40%, rgba(0,0,0,0.48));
+  background: linear-gradient(135deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2), rgba(0,0,0,0.45));
   pointer-events: none;
 }
 
-/* content wrapper */
+/* Content wrapper */
 .slide-content {
   position: relative;
   height: 100%;
@@ -125,45 +86,36 @@
   padding-right: 6%;
 }
 
-/* text wrapper with staggered reveal */
+/* Text wrapper */
 .slide-text-wrapper {
-  max-width: 640px;
-  opacity: 0;
-  transform: translateY(18px);
-  animation: textStagger 1s cubic-bezier(.2,.9,.2,1) forwards;
-  animation-delay: 0.28s;
+   width: 33.33%;       
+  max-width: 33.33%; 
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  margin-top: 30px; /* always 30px */
 }
 
-@keyframes textStagger {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* titles and subtitles */
+/* Title */
 .slide-title {
-  font-size: 3.8rem;
+  font-size: 3.2rem;
   font-weight: 800;
   color: #fff;
-  margin: 0 0 16px 0;
-  line-height: 1.02;
-  letter-spacing: -0.6px;
-  text-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  margin-top: 30px !important;  /* requested */
+  margin-bottom: 16px;
+  line-height: 1.05;
 }
 
+/* Subtitle */
 .slide-subtitle {
   font-size: 1.25rem;
   color: rgba(255,255,255,0.94);
+  margin-top: 30px !important;  /* requested */
   margin-bottom: 28px;
-  line-height: 1.65;
+  line-height: 1.6;
 }
 
-/* CTA button */
+/* CTA Button */
 .learn-more-btn {
   background: #ffffff;
   color: #000;
@@ -173,18 +125,15 @@
   letter-spacing: 0.4px;
   border: none;
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(.2,.9,.2,1);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  transition: 0.2s ease;
 }
 
 .learn-more-btn:hover {
-  transform: translateY(-4px) scale(1.02);
-  background: linear-gradient(90deg,#19b38c,#0fa2a1);
+  background: #19b38c;
   color: #fff;
-  box-shadow: 0 18px 50px rgba(10,15,20,0.45);
 }
 
-/* Controls (arrows) */
+/* Controls (desktop only) */
 .carousel-controls-container {
   position: absolute;
   top: 50%;
@@ -194,28 +143,28 @@
   display: flex;
   justify-content: space-between;
   z-index: 20;
-  pointer-events: none;
 }
 
 .carousel-nav {
-  pointer-events: auto;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.15);
   border: none;
   padding: 12px;
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.22s ease, background 0.22s ease;
-  backdrop-filter: blur(6px);
+  transition: 0.2s ease;
 }
 
 .carousel-nav:hover {
-  transform: scale(1.12);
-  background: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.25);
 }
 
-.carousel-nav svg { color: #fff; width: 26px; height: 26px; }
+.carousel-nav svg {
+  color: #fff;
+  width: 26px;
+  height: 26px;
+}
 
-/* Dot indicators */
+/* Dot Indicators */
 .carousel-indicators {
   position: absolute;
   left: 50%;
@@ -232,48 +181,76 @@
   background: rgba(255,255,255,0.6);
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.32s cubic-bezier(.2,.9,.2,1);
+  transition: 0.3s ease;
 }
 
 .carousel-dot.active {
-  width: 42px;
+  width: 40px;
   border-radius: 10px;
   background: #ffffff;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .custom-carousel { height: 620px; }
-  .slide-title { font-size: 3.2rem; }
-  .slide-subtitle { font-size: 1.18rem; }
-  .slide-content { padding-left: 60px; }
-}
+/* ================================
+   RESPONSIVE FIXES
+================================ */
 
+/* Medium screens */
 @media (max-width: 900px) {
   .custom-carousel { height: 520px; }
-  .slide-title { font-size: 2.6rem; }
-  .slide-subtitle { font-size: 1rem; }
-  .slide-content { padding-left: 40px; padding-right: 40px; }
-  .slide-text-wrapper { max-width: 100%; }
+
+  .slide-content {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .slide-title {
+    font-size: 2.4rem;
+  }
+
+  .slide-subtitle {
+    font-size: 1.05rem;
+  }
 }
 
+/* Mobile screens */
 @media (max-width: 600px) {
-  .custom-carousel { height: 480px; }
-  .slide-title { font-size: 1.85rem; margin-bottom: 10px; }
-  .slide-subtitle { font-size: 0.98rem; margin-bottom: 18px; }
-  .slide-content { padding-left: 20px; padding-right: 20px; align-items: flex-start; }
-  .carousel-controls-container { display: none; }
-  .carousel-dot.active { width: 30px; }
+  .custom-carousel { height: 450px; }
+
+  .slide-content {
+    padding-left: 20px;
+    padding-right: 20px;
+    align-items: flex-start;
+  }
+
+  .slide-title {
+    font-size: 1.8rem;
+    margin-top: 30px !important;
+    margin-bottom: 10px;
+    text-align: left !important;
+  }
+
+  .slide-subtitle {
+    font-size: 0.95rem;
+    margin-top: 30px !important;
+    margin-bottom: 18px;
+    text-align: left !important;
+  }
+
+  .carousel-controls-container {
+    display: none; /* arrows hidden on mobile */
+  }
+
+  .carousel-dot.active {
+    width: 26px;
+  }
 }
 
-/* Accessibility: reduce motion */
+/* Reduce Motion */
 @media (prefers-reduced-motion: reduce) {
   .carousel-slide,
-  .slide-image--animated,
+  .slide-image,
   .slide-text-wrapper {
     animation: none !important;
     transition: none !important;
-    transform: none !important;
   }
 }
