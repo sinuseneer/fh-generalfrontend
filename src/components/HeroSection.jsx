@@ -8,13 +8,14 @@ export default function HeroSection() {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [direction, setDirection] = useState("next"); // "next" or "prev"
+  const [direction, setDirection] = useState("next");
   const autoplayRef = useRef(null);
-  const touchStartX = useRef(0);
-  const touchDeltaX = useRef(0);
-  const ANIM_DURATION = 900; // ms - must match CSS
 
-  // fetch active banners (ensure backend sorts by order)
+  const ANIM_DURATION = 900; // must match CSS
+
+  /* ----------------------------------------
+     Fetch Slides
+  ----------------------------------------- */
   const fetchSlides = useCallback(async () => {
     try {
       const res = await axios.get(`${api_uri}banners/active?sort=order`);
@@ -22,10 +23,10 @@ export default function HeroSection() {
         id: b._id,
         title: b.title || "",
         subtitle: b.subtitle || "",
-        textMode: b.textMode || "dark",
         desktop: b.image ? `${base_uri}${b.image}` : null,
         mobile: b.mobileImage ? `${base_uri}${b.mobileImage}` : null,
       }));
+
       setSlides(formatted);
       setCurrent(0);
     } catch (err) {
@@ -37,12 +38,13 @@ export default function HeroSection() {
     fetchSlides();
   }, [fetchSlides]);
 
-  // autoplay
+  /* ----------------------------------------
+     Autoplay Logic
+  ----------------------------------------- */
   useEffect(() => {
-    startAutoplay();
+    if (slides.length > 1) startAutoplay();
     return stopAutoplay;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slides, current]);
+  }, [slides]);
 
   function startAutoplay() {
     stopAutoplay();
@@ -50,6 +52,7 @@ export default function HeroSection() {
       handleNext();
     }, 5200);
   }
+
   function stopAutoplay() {
     if (autoplayRef.current) {
       clearInterval(autoplayRef.current);
@@ -57,34 +60,38 @@ export default function HeroSection() {
     }
   }
 
-  // navigation handlers
-  const handleGoTo = (index) => {
-    if (isTransitioning || index === current || slides.length <= 1) return;
-    setDirection(index > current ? "next" : "prev");
-    setIsTransitioning(true);
-    setCurrent(index);
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, ANIM_DURATION + 50);
-  };
-
+  /* ----------------------------------------
+     Slide Navigation
+  ----------------------------------------- */
   const handleNext = () => {
     if (isTransitioning || slides.length <= 1) return;
+
     setDirection("next");
     setIsTransitioning(true);
-    setCurrent((s) => (s + 1) % slides.length);
-    setTimeout(() => setIsTransitioning(false), ANIM_DURATION + 50);
+
+    setCurrent((prev) => (prev + 1) % slides.length);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, ANIM_DURATION + 40);
   };
 
   const handlePrev = () => {
     if (isTransitioning || slides.length <= 1) return;
+
     setDirection("prev");
     setIsTransitioning(true);
-    setCurrent((s) => (s - 1 + slides.length) % slides.length);
-    setTimeout(() => setIsTransitioning(false), ANIM_DURATION + 50);
+
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, ANIM_DURATION + 40);
   };
 
-  // keyboard navigation
+  /* ----------------------------------------
+     Keyboard Navigation
+  ----------------------------------------- */
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "ArrowLeft") handlePrev();
@@ -92,107 +99,88 @@ export default function HeroSection() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isTransitioning, slides.length]);
+  });
 
-  // touch/swipe handlers for mobile
+  /* ----------------------------------------
+     Touch Swipe Navigation
+  ----------------------------------------- */
+  const startX = useRef(0);
+  const deltaX = useRef(0);
+
   const onTouchStart = (e) => {
     stopAutoplay();
-    touchStartX.current = e.touches ? e.touches[0].clientX : e.clientX;
-    touchDeltaX.current = 0;
+    startX.current = e.touches[0].clientX;
+    deltaX.current = 0;
   };
 
   const onTouchMove = (e) => {
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    touchDeltaX.current = x - touchStartX.current;
+    deltaX.current = e.touches[0].clientX - startX.current;
   };
 
   const onTouchEnd = () => {
     startAutoplay();
-    const threshold = 60;
-    if (touchDeltaX.current > threshold) {
-      handlePrev();
-    } else if (touchDeltaX.current < -threshold) {
-      handleNext();
-    }
-    touchDeltaX.current = 0;
+    if (deltaX.current > 60) handlePrev();
+    else if (deltaX.current < -60) handleNext();
   };
 
-  // reduced-motion respect: disable animations if user prefers reduced motion
-  const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* ----------------------------------------
+     NOTE: Fix animation logic (prevents black flicker)
+  ----------------------------------------- */
+  const getSlideClass = (i) => {
+    const isActive = i === current;
+
+    const oldIndex =
+      direction === "next"
+        ? (current - 1 + slides.length) % slides.length
+        : (current + 1) % slides.length;
+
+    const isOldSlide = isTransitioning && i === oldIndex;
+    const isIncoming = isTransitioning && isActive;
+
+    return [
+      "carousel-slide",
+      isActive ? "active" : "",
+      isIncoming ? direction : "",
+      isOldSlide ? (direction === "next" ? "prev" : "next") : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+  };
 
   return (
-    <Container fluid className="p-0 custom-hero-wrapper"
-      onMouseEnter={stopAutoplay}
-      onMouseLeave={startAutoplay}
-    >
+    <Container fluid className="p-0 custom-hero-wrapper">
       <div
         className="custom-carousel"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
-        onPointerDown={onTouchStart}
-        onPointerMove={onTouchMove}
-        onPointerUp={onTouchEnd}
         aria-roledescription="carousel"
       >
-        <div className="carousel-slides" role="list">
-          {slides.length === 0 && (
-            <div className="carousel-slide active">
-              <div className="slide-image" style={{ background: "linear-gradient(90deg,#111,#222)" }} />
-              <div className="slide-overlay" />
-              <div className="slide-content">
-                <div className="slide-text-wrapper">
-                  <h1 className="slide-title">Welcome</h1>
-                  <p className="slide-subtitle">No banners available</p>
-                </div>
-              </div>
-            </div>
-          )}
-
+        <div className="carousel-slides">
           {slides.map((s, i) => {
-            const isActive = i === current;
-            const cls = [
-              "carousel-slide",
-              isActive ? "active" : "",
-              isTransitioning && isActive ? direction : "",
-            ]
-              .filter(Boolean)
-              .join(" ");
+            const cls = getSlideClass(i);
 
-            // choose image based on screen width (client-only)
-            const imageUrl = typeof window !== "undefined" && window.innerWidth <= 768 ? s.mobile || s.desktop : s.desktop || s.mobile;
+            const img =
+              typeof window !== "undefined" && window.innerWidth <= 768
+                ? s.mobile || s.desktop
+                : s.desktop || s.mobile;
 
             return (
-              <div
-                key={s.id || i}
-                role="listitem"
-                aria-hidden={!isActive}
-                aria-roledescription="slide"
-                aria-label={`${i + 1} of ${slides.length}`}
-                className={cls}
-              >
+              <div key={i} className={cls}>
                 <div
-                  className={`slide-image ${!prefersReducedMotion ? "slide-image--animated" : ""}`}
+                  className="slide-image"
                   style={{
-                    backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-                    backgroundColor: !imageUrl ? "#0e0e0e" : undefined,
+                    backgroundImage: `url(${img})`,
                   }}
                 />
+
                 <div className="slide-overlay" />
+
                 <div className="slide-content">
-                  <div className="slide-text-wrapper" style={{ animationDelay: "0.32s" }}>
-                    <h2 className="slide-title">{s.title}</h2>
+                  <div className="slide-text-wrapper">
+                    <h1 className="slide-title">{s.title}</h1>
                     <p className="slide-subtitle">{s.subtitle}</p>
-                    <button
-                      className="learn-more-btn"
-                      onClick={() => {
-                        // example: could navigate to link if you add link field
-                        console.log("Learn more clicked", s);
-                      }}
-                      aria-label={`Learn more about ${s.title}`}
-                    >
-                      Learn More
-                    </button>
+                    <button className="learn-more-btn">Learn More</button>
                   </div>
                 </div>
               </div>
@@ -203,25 +191,22 @@ export default function HeroSection() {
         {/* Controls */}
         {slides.length > 1 && (
           <>
-            <div className="carousel-controls-container" aria-hidden="false">
-              <button className="carousel-nav carousel-nav-prev" onClick={handlePrev} aria-label="Previous slide">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="15 18 9 12 15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <div className="carousel-controls-container">
+              <button className="carousel-nav" onClick={handlePrev}>
+                ‹
               </button>
-
-              <button className="carousel-nav carousel-nav-next" onClick={handleNext} aria-label="Next slide">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="9 18 15 12 9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <button className="carousel-nav" onClick={handleNext}>
+                ›
               </button>
             </div>
 
-            <div className="carousel-indicators" role="tablist" aria-label="Slide dots">
+            <div className="carousel-indicators">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   className={`carousel-dot ${idx === current ? "active" : ""}`}
-                  onClick={() => handleGoTo(idx)}
-                  aria-label={`Go to slide ${idx + 1}`}
-                  aria-pressed={idx === current}
-                />
+                  onClick={() => !isTransitioning && setCurrent(idx)}
+                ></button>
               ))}
             </div>
           </>

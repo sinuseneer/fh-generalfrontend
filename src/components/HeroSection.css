@@ -1,256 +1,192 @@
-/* ============================================
-   CLEAN SIMPLE AUTO-SLIDER (FINAL UPDATED)
-   ============================================ */
-
 /* Wrapper */
 .custom-hero-wrapper {
   width: 100%;
   overflow: hidden;
-  position: relative;
   background: #070707;
 }
 
 /* Container */
 .custom-carousel {
-  position: relative;
   width: 100%;
   height: 700px;
+  position: relative;
   overflow: hidden;
 }
 
-/* Slides wrapper */
+/* Slides container */
 .carousel-slides {
-  position: relative;
   width: 100%;
   height: 100%;
+  position: relative;
 }
 
-/* Slide – NO zoom, NO blur */
+/* Slide */
 .carousel-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
+  transition: opacity 0.9s ease;
   z-index: 1;
-  transition: opacity 0.7s ease;
 }
 
+/* Active slide */
 .carousel-slide.active {
   opacity: 1;
   z-index: 5;
 }
 
-/* Animation for direction-based sliding */
+/* Slide animation */
 .carousel-slide.next {
-  animation: slideFromRight 0.7s ease both;
+  animation: slideFromRight 0.9s ease forwards;
 }
 
 .carousel-slide.prev {
-  animation: slideToLeft 0.7s ease both;
+  animation: slideToLeft 0.9s ease forwards;
 }
 
 @keyframes slideFromRight {
-  from { transform: translateX(60px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from { transform: translateX(80px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes slideToLeft {
   from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(-60px); opacity: 0; }
+  to   { transform: translateX(-80px); opacity: 0; }
 }
 
-/* Background image (NO zoom) */
+/* Image */
 .slide-image {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 /* Overlay */
 .slide-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2), rgba(0,0,0,0.45));
-  pointer-events: none;
+  background: rgba(0,0,0,0.35);
 }
 
-/* Content wrapper */
+/* Content */
 .slide-content {
   position: relative;
   height: 100%;
+  z-index: 10;
   display: flex;
   align-items: center;
-  z-index: 3;
-  padding-left: 110px;
-  padding-right: 6%;
+  padding-left: 80px;
+  padding-right: 40px;
 }
 
-/* Text wrapper */
+/* Text wrapper (col-4 width) */
 .slide-text-wrapper {
-   width: 33.33%;       
-  max-width: 33.33%; 
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
-  margin-top: 30px; /* always 30px */
+  width: 33%;
+  max-width: 33%;
+  margin-top: 30px;
 }
 
 /* Title */
 .slide-title {
   font-size: 3.2rem;
   font-weight: 800;
+  margin-top: 30px;
   color: #fff;
-  margin-top: 30px !important;  /* requested */
-  margin-bottom: 16px;
-  line-height: 1.05;
 }
 
 /* Subtitle */
 .slide-subtitle {
-  font-size: 1.25rem;
-  color: rgba(255,255,255,0.94);
-  margin-top: 30px !important;  /* requested */
-  margin-bottom: 28px;
-  line-height: 1.6;
+  font-size: 1.2rem;
+  color: #f1f1f1;
+  margin-top: 30px;
 }
 
-/* CTA Button */
+/* Button */
 .learn-more-btn {
-  background: #ffffff;
-  color: #000;
-  border-radius: 999px;
-  padding: 14px 40px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
+  margin-top: 20px;
+  padding: 12px 30px;
+  border-radius: 50px;
+  background: #fff;
+  font-weight: bold;
   border: none;
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
-.learn-more-btn:hover {
-  background: #19b38c;
-  color: #fff;
-}
-
-/* Controls (desktop only) */
+/* Controls */
 .carousel-controls-container {
   position: absolute;
   top: 50%;
   width: 100%;
-  transform: translateY(-50%);
-  padding: 0 48px;
+  padding: 0 30px;
   display: flex;
   justify-content: space-between;
   z-index: 20;
 }
 
 .carousel-nav {
-  background: rgba(255,255,255,0.15);
-  border: none;
-  padding: 12px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.carousel-nav:hover {
-  background: rgba(255,255,255,0.25);
-}
-
-.carousel-nav svg {
+  border: none;
+  background: rgba(255,255,255,0.2);
   color: #fff;
-  width: 26px;
-  height: 26px;
+  font-size: 26px;
+  cursor: pointer;
 }
 
-/* Dot Indicators */
+/* Indicators */
 .carousel-indicators {
   position: absolute;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 36px;
-  z-index: 25;
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .carousel-dot {
   width: 12px;
   height: 12px;
   background: rgba(255,255,255,0.6);
-  border-radius: 999px;
+  border-radius: 50%;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: 0.3s;
 }
 
 .carousel-dot.active {
-  width: 40px;
-  border-radius: 10px;
-  background: #ffffff;
+  width: 30px;
+  border-radius: 8px;
+  background: #fff;
 }
 
-/* ================================
-   RESPONSIVE FIXES
-================================ */
-
-/* Medium screens */
-@media (max-width: 900px) {
-  .custom-carousel { height: 520px; }
-
-  .slide-content {
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-
-  .slide-title {
-    font-size: 2.4rem;
-  }
-
-  .slide-subtitle {
-    font-size: 1.05rem;
-  }
-}
-
-/* Mobile screens */
+/* Mobile */
 @media (max-width: 600px) {
-  .custom-carousel { height: 450px; }
+  .custom-carousel {
+    height: 450px;
+  }
 
   .slide-content {
     padding-left: 20px;
     padding-right: 20px;
-    align-items: flex-start;
+  }
+
+  .slide-text-wrapper {
+    width: 100%;
+    max-width: 100%;
   }
 
   .slide-title {
     font-size: 1.8rem;
-    margin-top: 30px !important;
-    margin-bottom: 10px;
-    text-align: left !important;
+    text-align: left;
   }
 
   .slide-subtitle {
-    font-size: 0.95rem;
-    margin-top: 30px !important;
-    margin-bottom: 18px;
-    text-align: left !important;
+    font-size: 1rem;
+    text-align: left;
   }
 
   .carousel-controls-container {
-    display: none; /* arrows hidden on mobile */
-  }
-
-  .carousel-dot.active {
-    width: 26px;
-  }
-}
-
-/* Reduce Motion */
-@media (prefers-reduced-motion: reduce) {
-  .carousel-slide,
-  .slide-image,
-  .slide-text-wrapper {
-    animation: none !important;
-    transition: none !important;
+    display: none;
   }
 }
