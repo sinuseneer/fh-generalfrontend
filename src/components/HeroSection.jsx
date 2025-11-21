@@ -180,7 +180,16 @@ export default function HeroSection() {
                   <div className="slide-text-wrapper">
                     <h1 className="slide-title">{s.title}</h1>
                     <p className="slide-subtitle">{s.subtitle}</p>
-                    <button className="learn-more-btn">Learn More</button>
+                    <button
+                      className="learn-more-btn"
+                      onClick={() =>
+                        navigate("/product", {
+                          state: { category: "Hospital Bed" },
+                        })
+                      }
+                    >
+                      Learn More
+                    </button>
                   </div>
                 </div>
               </div>
