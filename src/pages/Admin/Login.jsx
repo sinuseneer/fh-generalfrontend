@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api_uri from "../../config/api";
 
-export default function AdminLogin() {
+export default function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -29,19 +29,22 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-  const res = await axios.post(`${api_uri}admin/login`, formData);
+      const res = await axios.post(`${api_uri}admin/login`, formData);
 
       if (res.data.success) {
-        // ✅ Save admin info to localStorage
-        localStorage.setItem("admin", JSON.stringify(res.data.admin));
+        const { token, admin } = res.data;
 
-        // ✅ Redirect to admin dashboard
+        // ⭐ Save token + expiry
+        const expiresAt = Date.now() + 2 * 60 * 60 * 1000; // 2 hours
+        localStorage.setItem("admin_token", token);
+        localStorage.setItem("admin_expiry", expiresAt);
+        localStorage.setItem("admin_info", JSON.stringify(admin));
+
         navigate("/admin/dashboard");
       } else {
         setError(res.data.message || "Invalid username or password");
       }
     } catch (err) {
-      console.error(err);
       if (err.response) {
         setError(err.response.data.message || "Invalid credentials");
       } else {

@@ -9,9 +9,9 @@ import {
   Collapse,
   Box,
   Typography,
-  Backdrop,
   Tooltip,
 } from "@mui/material";
+
 import {
   ExpandLess,
   ExpandMore,
@@ -23,6 +23,7 @@ import {
   Add as AddIcon,
   ListAlt as ListIcon,
 } from "@mui/icons-material";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 
@@ -33,56 +34,45 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [openMenus, setOpenMenus] = useState({ products: false, posts: false });
-
-  const handleToggle = (menu) => {
-    setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
-  };
-
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/admin/dashboard" },
     { text: "Media", icon: <MediaIcon />, path: "/admin/media" },
+
     {
       text: "Products",
       icon: <ProductIcon />,
+      key: "products",
       subMenu: [
         { text: "Add Product", icon: <AddIcon />, path: "/admin/products/add" },
         { text: "View Products", icon: <ListIcon />, path: "/admin/products/list" },
       ],
-      key: "products",
     },
+
     {
       text: "Posts",
       icon: <PostIcon />,
+      key: "posts",
       subMenu: [
         { text: "Add New Post", icon: <AddIcon />, path: "/admin/posts/add" },
         { text: "View Posts", icon: <ListIcon />, path: "/admin/posts/list" },
       ],
-      key: "posts",
     },
-    {
-      text: "Banner Settings",
-      icon: <MediaIcon />,
-      path: "/admin/banner",
-    },
-    { text: "Logout", icon: <LogoutIcon />, path: "/login" },
+
+    { text: "Banner Settings", icon: <MediaIcon />, path: "/admin/banner" },
+
+    // LOGOUT option
+    { text: "Logout", icon: <LogoutIcon />, path: "/logout" },
   ];
 
-  // Drawer props differ for mobile vs desktop
-  if (isMobile) {
-    // Temporary drawer (mobile) — uses MUI's backdrop; we customize its color via BackdropProps
-    return (
-      <>
+  return (
+    <>
+      {/* MOBILE SIDEBAR */}
+      {isMobile ? (
         <Drawer
           variant="temporary"
           open={mobileOpen}
           onClose={toggleMobile}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          BackdropProps={{
-            sx: { backgroundColor: "rgba(0,0,0,0.6)" }, // dark-glass overlay
-          }}
+          BackdropProps={{ sx: { backgroundColor: "rgba(0,0,0,0.6)" } }}
           sx={{
             "& .MuiDrawer-paper": {
               width: SIDEBAR_EXPANDED_WIDTH,
@@ -94,60 +84,52 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
         >
           <SidebarContent
             menuItems={menuItems}
+            collapsed={false}
             navigate={navigate}
             locationPath={location.pathname}
-            closeOnNavigate={() => {
-              toggleMobile();
-            }}
-            collapsed={false}
+            onNavigate={toggleMobile}
+            toggleDesktop={toggleDesktop}
           />
         </Drawer>
-      </>
-    );
-  }
-
-  // Desktop permanent drawer with collapsible (mini) mode
-  return (
-    <>
-      <Drawer
-        variant="permanent"
-        open
-        sx={{
-          width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH,
-          flexShrink: 0,
-          whiteSpace: "nowrap",
-          "& .MuiDrawer-paper": {
+      ) : (
+        // DESKTOP SIDEBAR
+        <Drawer
+          variant="permanent"
+          open
+          sx={{
             width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH,
-            overflowX: "hidden",
-            bgcolor: "#0b0b0b",
-            color: "#f5f5f5",
-            borderRight: "1px solid #1c1c1c",
-            transition: "width 220ms ease-in-out, min-width 220ms ease-in-out",
-          },
-        }}
-      >
-        <SidebarContent
-          menuItems={menuItems}
-          navigate={navigate}
-          locationPath={location.pathname}
-          closeOnNavigate={() => {
-            /* on desktop we don't auto-close, but we keep this callback */
+            "& .MuiDrawer-paper": {
+              width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH,
+              bgcolor: "#0b0b0b",
+              color: "#f5f5f5",
+              borderRight: "1px solid #1c1c1c",
+              transition: "0.22s ease-in-out",
+            },
           }}
-          collapsed={collapsed}
-          toggleDesktop={toggleDesktop}
-        />
-      </Drawer>
+        >
+          <SidebarContent
+            menuItems={menuItems}
+            collapsed={collapsed}
+            navigate={navigate}
+            locationPath={location.pathname}
+            onNavigate={() => {}}
+            toggleDesktop={toggleDesktop}
+          />
+        </Drawer>
+      )}
     </>
   );
 };
 
 export default Sidebar;
 
-/* ---------- SidebarContent - shared between mobile & desktop ---------- */
-function SidebarContent({ menuItems, navigate, locationPath, closeOnNavigate, collapsed, toggleDesktop }) {
+/* --------------------------------------------------------------------------
+   SIDEBAR CONTENT (Shared for mobile and desktop)
+--------------------------------------------------------------------------- */
+function SidebarContent({ menuItems, collapsed, navigate, locationPath, onNavigate, toggleDesktop }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* Header */}
+      {/* HEADER */}
       <Box
         sx={{
           p: 2,
@@ -158,108 +140,100 @@ function SidebarContent({ menuItems, navigate, locationPath, closeOnNavigate, co
           bgcolor: "#111",
         }}
       >
-        <Box
-          component="img"
+        <img
           src={`${baseUrl}images/logo.svg`}
           alt="Admin Logo"
-          sx={{
+          style={{
             width: 40,
             height: 40,
             borderRadius: "50%",
             objectFit: "contain",
-            ml: collapsed ? 0.5 : 0,
           }}
         />
 
-        {/* Show title only when expanded */}
         {!collapsed && (
-          <Typography variant="h6" sx={{ fontWeight: 500, color: "#fff", fontSize: "16px" }}>
+          <Typography variant="h6" sx={{ lineHeight: 1.2, fontWeight: 500 }}>
             GENERAL <br /> EQUIPMENTS
           </Typography>
         )}
-
-        {/* If collapsed show a small spacer to center icons */}
-        {collapsed && <Box sx={{ flexGrow: 1 }} />}
       </Box>
 
-      {/* Menu list */}
+      {/* MENU AREA */}
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <List disablePadding>
           {menuItems.map((item) => (
-            <MenuRow
+            <MenuItemRow
               key={item.text}
               item={item}
+              collapsed={collapsed}
               navigate={navigate}
               locationPath={locationPath}
-              closeOnNavigate={closeOnNavigate}
-              collapsed={collapsed}
-              toggleDesktop={toggleDesktop}
+              onNavigate={onNavigate}
             />
           ))}
         </List>
       </Box>
 
-      {/* Footer - collapse/expand control (desktop only) */}
-      <Box sx={{ p: 1, borderTop: "1px solid #1c1c1c" }}>
-        {!collapsed ? (
+      {/* FOOTER BUTTON: collapse toggle */}
+      {!collapsed ? (
+        <ListItemButton onClick={toggleDesktop} sx={{ borderTop: "1px solid #1c1c1c" }}>
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Collapse" />
+        </ListItemButton>
+      ) : (
+        <Tooltip title="Expand" placement="right">
           <ListItemButton
-            onClick={() => toggleDesktop && toggleDesktop()}
-            sx={{
-              borderRadius: 1,
-              "&:hover": { bgcolor: "#1b1b1b" },
-            }}
+            onClick={toggleDesktop}
+            sx={{ justifyContent: "center", borderTop: "1px solid #1c1c1c" }}
           >
-            <ListItemIcon>
-              {/* reuse DashboardIcon as a chevron-like control; feel free to replace */}
+            <ListItemIcon sx={{ justifyContent: "center" }}>
               <DashboardIcon />
             </ListItemIcon>
-            <ListItemText primary="Collapse" />
           </ListItemButton>
-        ) : (
-          <Tooltip title="Expand" placement="right">
-            <ListItemButton
-              onClick={() => toggleDesktop && toggleDesktop()}
-              sx={{
-                justifyContent: "center",
-                minHeight: 48,
-                borderRadius: 1,
-                "&:hover": { bgcolor: "#1b1b1b" },
-              }}
-            >
-              <ListItemIcon sx={{ justifyContent: "center" }}>
-                <DashboardIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </Tooltip>
-        )}
-      </Box>
+        </Tooltip>
+      )}
     </Box>
   );
 }
 
-/* ---------- MenuRow component ---------- */
-function MenuRow({ item, navigate, locationPath, closeOnNavigate, collapsed, toggleDesktop }) {
+/* --------------------------------------------------------------------------
+   MENU ITEM + SUBMENU HANDLING
+--------------------------------------------------------------------------- */
+function MenuItemRow({ item, collapsed, navigate, locationPath, onNavigate }) {
   const [open, setOpen] = useState(false);
 
-  const handleNavigate = (path) => {
-    navigate(path);
-    if (typeof closeOnNavigate === "function") closeOnNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_expiry");
+    localStorage.removeItem("admin_info");
+    navigate("/login");
   };
 
-  if (!item.subMenu) {
-    // Simple item
-    return (
+  const handleClick = () => {
+    if (item.text === "Logout") return handleLogout();
+
+    if (item.subMenu) {
+      setOpen((prev) => !prev);
+    } else {
+      navigate(item.path);
+      onNavigate();
+    }
+  };
+
+  return (
+    <>
+      {/* MAIN MENU BUTTON */}
       <Tooltip title={collapsed ? item.text : ""} placement="right">
         <ListItemButton
-          onClick={() => handleNavigate(item.path)}
+          onClick={handleClick}
           sx={{
-            pl: collapsed ? 1.2 : 3,
+            pl: collapsed ? 1 : 3,
             py: 1.2,
-            display: "flex",
-            alignItems: "center",
-            gap: 1.2,
-            backgroundColor: locationPath === item.path ? "#1b1b1b" : "transparent",
-            borderLeft: locationPath === item.path ? "3px solid #5fbe90" : "3px solid transparent",
+            bgcolor: locationPath === item.path ? "#1b1b1b" : "transparent",
+            borderLeft:
+              locationPath === item.path ? "3px solid #5fbe90" : "3px solid transparent",
             justifyContent: collapsed ? "center" : "flex-start",
           }}
         >
@@ -267,62 +241,41 @@ function MenuRow({ item, navigate, locationPath, closeOnNavigate, collapsed, tog
             {item.icon}
           </ListItemIcon>
 
-          {!collapsed && <ListItemText primary={item.text} sx={{ ml: 2 }} />}
-        </ListItemButton>
-      </Tooltip>
-    );
-  }
+          {!collapsed && <ListItemText primary={item.text} sx={{ ml: 1 }} />}
 
-  // Item with submenu
-  return (
-    <>
-      <Tooltip title={collapsed ? item.text : ""} placement="right">
-        <ListItemButton
-          onClick={() => setOpen((s) => !s)}
-          sx={{
-            pl: collapsed ? 1.2 : 3,
-            py: 1.2,
-            display: "flex",
-            alignItems: "center",
-            gap: 1.2,
-            justifyContent: collapsed ? "center" : "space-between",
-            backgroundColor: open ? "#1b1b1b" : "transparent",
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: 0, justifyContent: "center", color: "#fff" }}>
-            {item.icon}
-          </ListItemIcon>
-
-          {!collapsed && <ListItemText primary={item.text} />}
-
-          {!collapsed && (open ? <ExpandLess /> : <ExpandMore />)}
+          {!collapsed && item.subMenu && (open ? <ExpandLess /> : <ExpandMore />)}
         </ListItemButton>
       </Tooltip>
 
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        {item.subMenu.map((sub) => (
-          <ListItemButton
-            key={sub.text}
-            onClick={() => handleNavigate(sub.path)}
-            sx={{
-              pl: collapsed ? 1.2 : 6,
-              py: 1.1,
-              display: "flex",
-              alignItems: "center",
-              gap: 1.2,
-              backgroundColor: locationPath === sub.path ? "#1b1b1b" : "transparent",
-              borderLeft: locationPath === sub.path ? "3px solid #5fbe90" : "3px solid transparent",
-              justifyContent: collapsed ? "center" : "flex-start",
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 0, justifyContent: "center", color: "#fff" }}>
-              {sub.icon}
-            </ListItemIcon>
+      {/* SUBMENU */}
+      {item.subMenu && (
+        <Collapse in={open} unmountOnExit>
+          {item.subMenu.map((subItem) => (
+            <ListItemButton
+              key={subItem.text}
+              onClick={() => {
+                navigate(subItem.path);
+                onNavigate();
+              }}
+              sx={{
+                pl: collapsed ? 1 : 6,
+                py: 1.1,
+                bgcolor: locationPath === subItem.path ? "#1b1b1b" : "transparent",
+                borderLeft:
+                  locationPath === subItem.path
+                    ? "3px solid #5fbe90"
+                    : "3px solid transparent",
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0, justifyContent: "center", color: "#fff" }}>
+                {subItem.icon}
+              </ListItemIcon>
 
-            {!collapsed && <ListItemText primary={sub.text} sx={{ ml: 1.2 }} />}
-          </ListItemButton>
-        ))}
-      </Collapse>
+              {!collapsed && <ListItemText primary={subItem.text} sx={{ ml: 1 }} />}
+            </ListItemButton>
+          ))}
+        </Collapse>
+      )}
     </>
   );
 }

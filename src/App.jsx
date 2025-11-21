@@ -45,6 +45,7 @@ import WhyChooseUs from "./components/WhyChooseUs";
 import LatestNews from "./components/LatestNews";
 import PartnerSection from "./components/PartnerSection";
 import MediaGallery from "./pages/Admin/MediaGallery.jsx";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 
 function App() {
   return (
@@ -120,27 +121,30 @@ function App() {
           }
         />
 
-        {/* ========== Admin Routes ========== */}
-        <Route path="/login" element={<Login />} />
+{/* ========== Admin Routes ========== */}
+<Route path="/login" element={<Login />} />
 
-        <Route element={<AdminLayout />}>
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          {/* <Route path="/admin/media" element={<Media />} /> */}
-          <Route path="/admin/categories/list" element={<Categories />} />
-          <Route path="/admin/categories/add" element={<AddCategory />} />
-          <Route path="/admin/products/list" element={<Products />} />
-          <Route path="/admin/products/add" element={<ProductAdd />} />
-          <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
-          <Route
-            path="/admin/product-images/:productId"
-            element={<ProductImages />}
-          />
-          <Route path="/admin/settings" element={<AccountSettings />} />
-          <Route path="/admin/banner" element={<BannerSettings />} />
-          <Route path="/admin/posts/add" element={<AddPost />} />
-          <Route path="/admin/posts/list" element={<PostsList />} />
-          <Route path="/admin/media" element={<MediaGallery />} />
-        </Route>
+<Route
+  element={
+    <ProtectedAdminRoute>
+      <AdminLayout />
+    </ProtectedAdminRoute>
+  }
+>
+  <Route path="/admin/dashboard" element={<Dashboard />} />
+  <Route path="/admin/categories/list" element={<Categories />} />
+  <Route path="/admin/categories/add" element={<AddCategory />} />
+  <Route path="/admin/products/list" element={<Products />} />
+  <Route path="/admin/products/add" element={<ProductAdd />} />
+  <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
+  <Route path="/admin/product-images/:productId" element={<ProductImages />} />
+  <Route path="/admin/settings" element={<AccountSettings />} />
+  <Route path="/admin/banner" element={<BannerSettings />} />
+  <Route path="/admin/posts/add" element={<AddPost />} />
+  <Route path="/admin/posts/list" element={<PostsList />} />
+  <Route path="/admin/media" element={<MediaGallery />} />
+</Route>
+
 
         {/* ========== Fallback ========== */}
         <Route path="*" element={<Navigate to="/" replace />} />
