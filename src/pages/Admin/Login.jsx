@@ -34,8 +34,8 @@ export default function Login() {
       if (res.data.success) {
         const { token, admin } = res.data;
 
-        // ⭐ Save token + expiry
-        const expiresAt = Date.now() + 2 * 60 * 60 * 1000; // 2 hours
+        // ⭐ Updated: Save token + 5-hour expiry
+        const expiresAt = Date.now() + 5 * 60 * 60 * 1000; // 5 hours
         localStorage.setItem("admin_token", token);
         localStorage.setItem("admin_expiry", expiresAt);
         localStorage.setItem("admin_info", JSON.stringify(admin));

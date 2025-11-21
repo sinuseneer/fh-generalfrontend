@@ -26,10 +26,14 @@ export default function ProtectedAdminRoute({ children }) {
       return <Navigate to="/login" replace />;
     }
 
-    // Token present and not expired -> render children
+    // ⭐ Auto-extend session by 5 hours (sliding expiry)
+    const newExpiry = Date.now() + 5 * 60 * 60 * 1000;
+    localStorage.setItem("admin_expiry", newExpiry);
+
+    // Valid → allow access
     return children;
   } catch (err) {
-    // On unexpected error, be safe: clear storage and redirect
+    // Safe fallback
     localStorage.removeItem("admin_token");
     localStorage.removeItem("admin_expiry");
     localStorage.removeItem("admin_info");
