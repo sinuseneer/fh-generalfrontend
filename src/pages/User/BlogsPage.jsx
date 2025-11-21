@@ -1,3 +1,4 @@
+// src/pages/User/BlogsPage.jsx
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -46,33 +47,32 @@ function BlogsPage() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
           <div>
             <h2 className="fw-bold mb-2">Blogs</h2>
-            <p className="text-muted mb-0">
-              Discover our latest posts & updates.
-            </p>
+            <p className="text-muted mb-0">Discover our latest posts & updates.</p>
           </div>
         </div>
 
         {/* Blog Grid */}
         <Row className="g-4 blogs-grid">
           {currentPosts.map((item, index) => (
-            <Col key={index} xs={12} sm={6} md={6} lg={3} className="col">
+            <Col key={index} xs={12} sm={6} md={6} lg={3}>
               <Link
                 to={`/blog/${item._id}`}
                 className="text-decoration-none blog-card-link"
+                onClick={() => window.scrollTo(0, 0)} // ⭐ scroll on click
               >
                 <Card className="blog-card clickable-card">
                   <Card.Img
                     variant="top"
                     src={
-                      item.image
-                        ? `${base_uri}${item.image}`
-                        : "/images/no-image.jpg"
+                      item.image ? `${base_uri}${item.image}` : "/images/no-image.jpg"
                     }
                     alt={item.title}
                   />
 
                   <Card.Body className="text-start">
-                    <small className="text-muted mb-2">{item.date}</small>
+                    <small className="text-muted mb-2">
+                      {item.date}
+                    </small>
                     <Card.Title>{item.title}</Card.Title>
                     <span className="text-success">Read More</span>
                   </Card.Body>

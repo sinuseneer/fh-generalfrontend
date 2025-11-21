@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import BlogDetail from "./BlogDetail.jsx"; 
+import BlogDetail from "./BlogDetail.jsx";
 import api_uri, { base_uri } from "../../config/api";
 
 /**
@@ -28,6 +28,11 @@ export default function BlogDetailPage() {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ⭐ Scroll to top when blog ID changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   const fetchBlog = async () => {
     setLoading(true);
 
@@ -41,13 +46,13 @@ export default function BlogDetailPage() {
           ? `${base_uri}${data.image}`
           : data.image || "";
 
-      // Format date using createdAt (from Mongoose timestamps)
+      // Format date using createdAt (from Mongoose)
       const formatted = formatDate(data.createdAt);
 
       const finalBlog = {
         ...data,
         image: fixedImage,
-        date: formatted, // BlogDetail.jsx expects blog.date
+        date: formatted,
       };
 
       setBlog(finalBlog);
