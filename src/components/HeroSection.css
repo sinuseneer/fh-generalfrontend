@@ -178,7 +178,7 @@
     .slide-text-wrapper {
     width: 100%;
     max-width: 100%;
-    margin-top: 30px !important; 
+    margin-top: 10px !important; 
       /* ✔ Added */
        width: 75% !important;       /* 🔥 reduce width */
     max-width: 75% !important;
