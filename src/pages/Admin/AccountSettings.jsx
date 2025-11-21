@@ -14,6 +14,8 @@ const AccountSettings = () => {
     newPassword: "",
   });
 
+  const [loading, setLoading] = useState(false); // ⬅️ prevent double submit
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -21,26 +23,45 @@ const AccountSettings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.currentUsername) {
+    if (!formData.currentUsername.trim()) {
       toast.warning("Enter your current username");
       return;
     }
 
+    if (!formData.newUsername && !formData.newPassword) {
+      toast.warning("Enter a new username or new password");
+      return;
+    }
+
     try {
-  const res = await axios.post(`${api_uri}admin/update`, formData);
+      setLoading(true);
+
+      const res = await axios.post(`${api_uri}admin/update`, formData);
 
       if (res.data.success) {
         toast.success(res.data.message);
-        setFormData({ currentUsername: "", newUsername: "", newPassword: "" });
 
-        // Optional: redirect to login page after 2 seconds
-        setTimeout(() => navigate("/login"), 2000);
+        // Clear fields
+        setFormData({
+          currentUsername: "",
+          newUsername: "",
+          newPassword: "",
+        });
+
+        // Auto logout after update
+        setTimeout(() => {
+          localStorage.removeItem("admin_token");
+          localStorage.removeItem("admin_expiry");
+          navigate("/login");
+        }, 2000);
       } else {
-        toast.error(res.data.message);
+        toast.error(res.data.message || "Update failed");
       }
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,14 +116,15 @@ const AccountSettings = () => {
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-100 fw-semibold"
             style={{
-              backgroundColor: "#007bff",
+              backgroundColor: loading ? "#555" : "#007bff",
               border: "none",
               borderRadius: "8px",
             }}
           >
-            Update Account
+            {loading ? "Updating..." : "Update Account"}
           </Button>
         </Form>
       </Card>

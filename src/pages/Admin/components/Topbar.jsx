@@ -121,7 +121,7 @@ export default function TopBar({ isMobile, toggleMobile, collapsed, toggleDeskto
           <MenuItem
             onClick={() => {
               handleSettingsClose();
-              navigate("/admin/change-settings");
+              navigate("/admin/settings");
             }}
           >
             <ListItemIcon>

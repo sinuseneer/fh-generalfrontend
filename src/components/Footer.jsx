@@ -58,11 +58,10 @@ export default function Footer() {
               />
             </div>
 
-            <h6 className="fw-bold mb-3">Follow Us</h6>
-            <div className="d-flex gap-3 align-items-center footer-social-icons">
+            <h6 className="fw-bold mb-3 mt-4">Follow Us</h6>
+            <div className="d-flex gap-4 align-items-center footer-social-icons">
               <FaFacebookF size={24} />
               <FaInstagram size={24} />
-              <FaXTwitter size={24} />
               <FaLinkedinIn size={24} />
             </div>
           </Col>

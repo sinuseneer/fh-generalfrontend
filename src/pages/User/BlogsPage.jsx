@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import api_uri, { base_uri } from "../../config/api";
 import "./Blog.css";
@@ -8,7 +9,6 @@ function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Show pagination only if blogs > 12
   const postsPerPage = 12;
 
   // Fetch blogs
@@ -56,32 +56,33 @@ function BlogsPage() {
         <Row className="g-4 blogs-grid">
           {currentPosts.map((item, index) => (
             <Col key={index} xs={12} sm={6} md={6} lg={3} className="col">
-              <Card className="blog-card">
-                <Card.Img
-                  variant="top"
-                  src={
-                    item.image
-                      ? `${base_uri}${item.image}`
-                      : "/images/no-image.jpg"
-                  }
-                  alt={item.title}
-                />
+              <Link
+                to={`/blog/${item._id}`}
+                className="text-decoration-none blog-card-link"
+              >
+                <Card className="blog-card clickable-card">
+                  <Card.Img
+                    variant="top"
+                    src={
+                      item.image
+                        ? `${base_uri}${item.image}`
+                        : "/images/no-image.jpg"
+                    }
+                    alt={item.title}
+                  />
 
-                <Card.Body className="text-start">
-                  <small className="text-muted mb-2">{item.date}</small>
-
-                  <Card.Title>{item.title}</Card.Title>
-
-                  <a href={`/blog/${item._id}`} className="text-success">
-                    Read More
-                  </a>
-                </Card.Body>
-              </Card>
+                  <Card.Body className="text-start">
+                    <small className="text-muted mb-2">{item.date}</small>
+                    <Card.Title>{item.title}</Card.Title>
+                    <span className="text-success">Read More</span>
+                  </Card.Body>
+                </Card>
+              </Link>
             </Col>
           ))}
         </Row>
 
-        {/* Pagination (ONLY if blogs > 12) */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="pagination-wrapper mt-5 d-flex justify-content-center">
             <Pagination>
