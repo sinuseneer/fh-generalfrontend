@@ -10,27 +10,26 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Layouts
-import UserLayout from "./layouts/UserLayout";
-import AdminLayout from "./layouts/AdminLayout";
+import UserLayout from "./layouts/UserLayout.jsx";
+import AdminLayout from "./layouts/AdminLayout.jsx";
 
 // User Pages
-import About from "./pages/User/About";
-import Product from "./pages/User/Product";
-import BlogsPage from "./pages/User/BlogsPage";
-import Contact from "./pages/User/Contact";
-import ProductDetails from "./pages/User/ProductDetails";
+import About from "./pages/User/About.jsx";
+import Product from "./pages/User/Product.jsx";
+import BlogsPage from "./pages/User/BlogsPage.jsx";
+import Contact from "./pages/User/Contact.jsx";
+import ProductDetails from "./pages/User/ProductDetails.jsx";
 import BlogDetailPage from "./pages/User/BlogDetailPage.jsx";
 
 // Admin Pages
-import Login from "./pages/Admin/Login";
-import Dashboard from "./pages/Admin/Dashboard";
-// import Media from "./pages/Admin/Media";
-import Categories from "./pages/Admin/Categories";
-import AddCategory from "./pages/Admin/AddCategory";
-import Products from "./pages/Admin/Products";
-import ProductAdd from "./pages/Admin/ProductAdd";
-import ProductEdit from "./pages/Admin/ProductEdit";
-import ProductImages from "./pages/Admin/ProductImages";
+import Login from "./pages/Admin/Login.jsx";
+import Dashboard from "./pages/Admin/Dashboard.jsx";
+import Categories from "./pages/Admin/Categories.jsx";
+import AddCategory from "./pages/Admin/AddCategory.jsx";
+import Products from "./pages/Admin/Products.jsx";
+import ProductAdd from "./pages/Admin/ProductAdd.jsx";
+import ProductEdit from "./pages/Admin/ProductEdit.jsx";
+import ProductImages from "./pages/Admin/ProductImages.jsx";
 import AccountSettings from "./pages/Admin/AccountSettings.jsx";
 import AddPost from "./pages/Admin/AddPost.jsx";
 import PostsList from "./pages/Admin/PostsList.jsx";
@@ -38,18 +37,23 @@ import BannerSettings from "./pages/Admin/BannerSettings.jsx";
 
 // Components (for Home)
 import HeroSection from "./components/HeroSection.jsx";
-import ProductCarousel from "./components/ProductCarousel";
-import AboutSection from "./components/AboutSection";
-import FeatureProducts from "./components/FeatureProducts";
-import WhyChooseUs from "./components/WhyChooseUs";
-import LatestNews from "./components/LatestNews";
-import PartnerSection from "./components/PartnerSection";
+import ProductCarousel from "./components/ProductCarousel.jsx";
+import AboutSection from "./components/AboutSection.jsx";
+import FeatureProducts from "./components/FeatureProducts.jsx";
+import WhyChooseUs from "./components/WhyChooseUs.jsx";
+import LatestNews from "./components/LatestNews.jsx";
+import PartnerSection from "./components/PartnerSection.jsx";
 import MediaGallery from "./pages/Admin/MediaGallery.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
+
 
 function App() {
   return (
     <Router>
+      {/* ⭐ Scroll to top on every route change */}
+      <ScrollToTop />
+
       <Routes>
         {/* ========== User Routes ========== */}
         <Route
@@ -121,30 +125,32 @@ function App() {
           }
         />
 
-{/* ========== Admin Routes ========== */}
-<Route path="/login" element={<Login />} />
+        {/* ========== Admin Routes ========== */}
+        <Route path="/login" element={<Login />} />
 
-<Route
-  element={
-    <ProtectedAdminRoute>
-      <AdminLayout />
-    </ProtectedAdminRoute>
-  }
->
-  <Route path="/admin/dashboard" element={<Dashboard />} />
-  <Route path="/admin/categories/list" element={<Categories />} />
-  <Route path="/admin/categories/add" element={<AddCategory />} />
-  <Route path="/admin/products/list" element={<Products />} />
-  <Route path="/admin/products/add" element={<ProductAdd />} />
-  <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
-  <Route path="/admin/product-images/:productId" element={<ProductImages />} />
-  <Route path="/admin/settings" element={<AccountSettings />} />
-  <Route path="/admin/banner" element={<BannerSettings />} />
-  <Route path="/admin/posts/add" element={<AddPost />} />
-  <Route path="/admin/posts/list" element={<PostsList />} />
-  <Route path="/admin/media" element={<MediaGallery />} />
-</Route>
-
+        <Route
+          element={
+            <ProtectedAdminRoute>
+              <AdminLayout />
+            </ProtectedAdminRoute>
+          }
+        >
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/categories/list" element={<Categories />} />
+          <Route path="/admin/categories/add" element={<AddCategory />} />
+          <Route path="/admin/products/list" element={<Products />} />
+          <Route path="/admin/products/add" element={<ProductAdd />} />
+          <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
+          <Route
+            path="/admin/product-images/:productId"
+            element={<ProductImages />}
+          />
+          <Route path="/admin/settings" element={<AccountSettings />} />
+          <Route path="/admin/banner" element={<BannerSettings />} />
+          <Route path="/admin/posts/add" element={<AddPost />} />
+          <Route path="/admin/posts/list" element={<PostsList />} />
+          <Route path="/admin/media" element={<MediaGallery />} />
+        </Route>
 
         {/* ========== Fallback ========== */}
         <Route path="*" element={<Navigate to="/" replace />} />
