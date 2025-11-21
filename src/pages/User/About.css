@@ -43,3 +43,19 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* REMOVE WHITE GAP ABOVE FOOTER */
+.about-section {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.about-section .row {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+#why-choose-us {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}

@@ -45,7 +45,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-light text-dark mt-5 pt-2 pb-0 m-0">
+    <footer className="bg-light text-dark mt-1 pt-2 pb-0 m-0">
       <Container>
         <Row className="gy-4 my-4">
           {/* Logo */}

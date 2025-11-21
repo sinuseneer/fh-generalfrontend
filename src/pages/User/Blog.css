@@ -116,3 +116,19 @@
   background: #dffbf3 !important;
   color: #2da797 !important;
 }
+
+/* Remove white gap above footer */
+.blogs-page-wrapper {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.blogs-grid {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.pagination-wrapper {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}

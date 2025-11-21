@@ -4,11 +4,9 @@ import "./About.css";
 import WhyChooseUs from "../../components/WhyChooseUs";
 import { useNavigate } from "react-router-dom";
 
-
 export default function About() {
   const [activeTab, setActiveTab] = useState("story");
   const navigate = useNavigate();
-
 
   const content = {
     story: {
@@ -32,8 +30,8 @@ export default function About() {
   };
 
   return (
-  <>
-      <Container fluid className="about-section py-5">
+    <>
+      <Container fluid className="about-section pt-5 pb-2">
         <Container>
           <Row className="align-items-center">
             {/* Left Side Image */}
@@ -46,7 +44,7 @@ export default function About() {
                 className="w-64"
               />
             </Col>
-  
+
             {/* Right Side Content */}
             <Col xs={12} md={6}>
               <div className="tabs mb-3">
@@ -69,20 +67,24 @@ export default function About() {
                   VISION
                 </span>
               </div>
-  
+
               <h3 className="fw-bold mb-1">{content[activeTab].title}</h3>
               <p className="about-text">{content[activeTab].text}</p>
-          <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={() => navigate("/contact")}>
+              <Button
+                className="rounded-1 mt-3 custom-btn px-4 py-2"
+                onClick={() => navigate("/contact")}
+              >
                 Get in Touch
               </Button>
             </Col>
           </Row>
         </Container>
-        
+
         {/* Why Choose Us Section */}
-        
       </Container>
-      <WhyChooseUs />
-  </>
+      <div id="why-choose-us">
+        <WhyChooseUs />
+      </div>
+    </>
   );
 }
