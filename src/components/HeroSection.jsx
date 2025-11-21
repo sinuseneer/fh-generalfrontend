@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import axios from "axios";
-import { api_uri, base_uri } from "../../config/api";
+import { api_uri, base_uri } from "../config/api";
 import "../App.css";
 import "./HeroSection.css";
 
