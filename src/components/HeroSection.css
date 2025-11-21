@@ -1,115 +1,143 @@
-/* ===========================
-   CLEAN MODERN HERO SLIDER CSS
-   =========================== */
+/* ============================================
+   ULTRA MODERN CINEMATIC HERO SLIDER (Option A)
+   ============================================ */
 
 /* Wrapper */
 .custom-hero-wrapper {
   width: 100%;
   overflow: hidden;
   position: relative;
+  background: #070707;
 }
 
+/* container */
 .custom-carousel {
   position: relative;
   width: 100%;
-  height: 650px;
+  height: 720px;
   overflow: hidden;
 }
 
-/* SLIDE TRACK */
+/* Slides container (stacked) */
 .carousel-slides {
-  display: flex;
-  height: 100%;
-  transition: transform 0.7s ease;
-}
-
-/* SLIDE */
-.carousel-slide {
-  flex: 0 0 100%;
-  height: 100%;
   position: relative;
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  width: 100%;
+  height: 100%;
 }
 
+/* Each slide stacked, absolutely positioned */
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 1;
+  transform: translateX(40px) scale(1.03);
+  transition: opacity 0.9s cubic-bezier(.2,.9,.2,1), transform 0.9s cubic-bezier(.2,.9,.2,1);
+  will-change: opacity, transform;
+  display: block;
+}
+
+/* visible (current) slide */
 .carousel-slide.active {
   opacity: 1;
-  transform: translateX(0);
+  z-index: 5;
+  transform: translateX(0) scale(1);
 }
 
+/* incoming animation classes (direction aware) */
 .carousel-slide.next {
-  animation: slideNext 0.6s ease forwards;
+  animation: cinematicSlideNext 0.9s ease both;
 }
 
 .carousel-slide.prev {
-  animation: slidePrev 0.6s ease forwards;
+  animation: cinematicSlidePrev 0.9s ease both;
 }
 
-/* Direction Animations */
-@keyframes slideNext {
-  from {
+@keyframes cinematicSlideNext {
+  0% {
     opacity: 0;
-    transform: translateX(45px);
+    transform: translateX(80px) scale(1.06);
+    filter: blur(0.6px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
+    filter: blur(0);
   }
 }
 
-@keyframes slidePrev {
-  from {
+@keyframes cinematicSlidePrev {
+  0% {
     opacity: 0;
-    transform: translateX(-45px);
+    transform: translateX(-80px) scale(1.06);
+    filter: blur(0.6px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
+    filter: blur(0);
   }
 }
 
-/* BACKGROUND IMAGE */
+/* Background image with cinematic slow zoom (parallax feel) */
 .slide-image {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   background-repeat: no-repeat;
-  transform: scale(1.05);
-  animation: bgZoom 8s ease-in-out infinite alternate;
+  transform-origin: center;
+  filter: brightness(0.92) saturate(1.02);
+  transition: transform 12s ease;
 }
 
-@keyframes bgZoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.08); }
+/* small parallax on hover (desktop) */
+.custom-hero-wrapper:hover .slide-image {
+  transition-duration: 9s;
+  transform: scale(1.06);
 }
 
+/* subtle zoom animation loop when idle */
+@keyframes cinematicZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+.slide-image--animated {
+  animation: cinematicZoom 12s ease-in-out infinite alternate;
+}
+
+/* overlay for better readability */
 .slide-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, rgba(0,0,0,0.48), rgba(0,0,0,0.14) 40%, rgba(0,0,0,0.48));
+  pointer-events: none;
 }
 
-/* TEXT AREA */
+/* content wrapper */
 .slide-content {
   position: relative;
   height: 100%;
   display: flex;
   align-items: center;
-  padding-left: 80px;
   z-index: 3;
+  padding-left: 110px;
+  padding-right: 6%;
 }
 
+/* text wrapper with staggered reveal */
 .slide-text-wrapper {
-  max-width: 520px;
-  animation: textFadeUp 0.8s ease forwards;
+  max-width: 640px;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: textStagger 1s cubic-bezier(.2,.9,.2,1) forwards;
+  animation-delay: 0.28s;
 }
 
-@keyframes textFadeUp {
+@keyframes textStagger {
   from {
     opacity: 0;
-    transform: translateY(25px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -117,96 +145,135 @@
   }
 }
 
+/* titles and subtitles */
 .slide-title {
-  font-size: 3.2rem;
-  font-weight: 700;
-  margin-bottom: 15px;
+  font-size: 3.8rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 16px 0;
+  line-height: 1.02;
+  letter-spacing: -0.6px;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.45);
 }
 
 .slide-subtitle {
   font-size: 1.25rem;
-  margin-bottom: 25px;
-  line-height: 1.6;
+  color: rgba(255,255,255,0.94);
+  margin-bottom: 28px;
+  line-height: 1.65;
 }
 
-/* BUTTON */
+/* CTA button */
 .learn-more-btn {
-  background: white;
+  background: #ffffff;
   color: #000;
+  border-radius: 999px;
+  padding: 14px 40px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
   border: none;
-  padding: 12px 34px;
-  border-radius: 40px;
-  font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: all .3s ease;
+  transition: all 0.35s cubic-bezier(.2,.9,.2,1);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
 }
 
 .learn-more-btn:hover {
-  background: #26a69a;
+  transform: translateY(-4px) scale(1.02);
+  background: linear-gradient(90deg,#19b38c,#0fa2a1);
   color: #fff;
-  transform: translateY(-3px);
+  box-shadow: 0 18px 50px rgba(10,15,20,0.45);
 }
 
-/* NAV ARROWS */
+/* Controls (arrows) */
 .carousel-controls-container {
   position: absolute;
   top: 50%;
   width: 100%;
-  padding: 0 40px;
   transform: translateY(-50%);
+  padding: 0 48px;
   display: flex;
   justify-content: space-between;
-  z-index: 5;
+  z-index: 20;
+  pointer-events: none;
 }
 
 .carousel-nav {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(4px);
+  pointer-events: auto;
+  background: rgba(255,255,255,0.12);
   border: none;
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
   cursor: pointer;
-  transition: .3s ease;
+  transition: transform 0.22s ease, background 0.22s ease;
+  backdrop-filter: blur(6px);
 }
 
 .carousel-nav:hover {
-  background: rgba(255,255,255,0.25);
-  transform: scale(1.1);
+  transform: scale(1.12);
+  background: rgba(255,255,255,0.22);
 }
 
-.carousel-nav svg {
-  color: #fff;
-}
+.carousel-nav svg { color: #fff; width: 26px; height: 26px; }
 
-/* DOT INDICATORS */
+/* Dot indicators */
 .carousel-indicators {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 36px;
+  z-index: 25;
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px 0;
+  gap: 12px;
 }
 
 .carousel-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.6);
+  width: 12px;
+  height: 12px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.32s cubic-bezier(.2,.9,.2,1);
 }
 
 .carousel-dot.active {
-  width: 35px;
-  border-radius: 6px;
-  background: white;
+  width: 42px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .custom-carousel { height: 500px; }
-  .slide-content { padding-left: 25px; }
-  .slide-title { font-size: 2rem; }
+/* Responsive */
+@media (max-width: 1200px) {
+  .custom-carousel { height: 620px; }
+  .slide-title { font-size: 3.2rem; }
+  .slide-subtitle { font-size: 1.18rem; }
+  .slide-content { padding-left: 60px; }
+}
+
+@media (max-width: 900px) {
+  .custom-carousel { height: 520px; }
+  .slide-title { font-size: 2.6rem; }
   .slide-subtitle { font-size: 1rem; }
+  .slide-content { padding-left: 40px; padding-right: 40px; }
+  .slide-text-wrapper { max-width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .custom-carousel { height: 480px; }
+  .slide-title { font-size: 1.85rem; margin-bottom: 10px; }
+  .slide-subtitle { font-size: 0.98rem; margin-bottom: 18px; }
+  .slide-content { padding-left: 20px; padding-right: 20px; align-items: flex-start; }
   .carousel-controls-container { display: none; }
+  .carousel-dot.active { width: 30px; }
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide,
+  .slide-image--animated,
+  .slide-text-wrapper {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }
