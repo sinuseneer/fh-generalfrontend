@@ -74,12 +74,12 @@
   background-position: center;
 }
 
-/* Overlay */
+/* Overlay
 .slide-overlay {
   position: absolute;
   inset: 0;
   /* background: rgba(0,0,0,0.35); */
-}
+ 
 
 /* Content wrapper */
 .slide-content {
@@ -126,7 +126,7 @@
 }
 
 .learn-more-btn:hover {
-  background: #35ac8a;
+  background: #2EA898;
   color: #fff;
 }
 
