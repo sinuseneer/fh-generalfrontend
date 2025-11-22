@@ -14,6 +14,7 @@ import {
   Card,
 } from "react-bootstrap";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 // Drag & Drop (Vite friendly)
 import {
@@ -21,28 +22,6 @@ import {
   Droppable,
   Draggable,
 } from "@hello-pangea/dnd";
-
-// React Router v6 blocker (unstable API — available in v6.4+)
-import { unstable_useBlocker as useBlocker } from "react-router-dom";
-import { toast } from "react-toastify";
-
-function usePrompt(when, message) {
-  // when = boolean, message = string
-  const blocker = useBlocker(when);
-
-  useEffect(() => {
-    if (!blocker) return;
-
-    if (blocker.state === "blocked") {
-      const allow = window.confirm(message || "You have unsaved changes. Leave anyway?");
-      if (allow) {
-        blocker.proceed(); // allow navigation
-      } else {
-        blocker.reset(); // cancel navigation
-      }
-    }
-  }, [blocker, message]);
-}
 
 function Categories() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -59,7 +38,7 @@ function Categories() {
   const [preview, setPreview] = useState("");
   const [newImage, setNewImage] = useState(null);
 
-  // Load categories
+  // Load categories on mount
   useEffect(() => {
     loadCategories();
   }, []);
@@ -73,7 +52,10 @@ function Categories() {
         setCategories(sorted);
         setOrderChanged(false);
       })
-      .catch(err => console.error("Error fetching categories:", err));
+      .catch(err => {
+        console.error("Error fetching categories:", err);
+        toast.error("Failed to load categories");
+      });
   };
 
   // Search
@@ -139,17 +121,26 @@ function Categories() {
     }
   };
 
-  // Drag & Drop
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
+  // Drag & Drop handler (local only — save when user clicks Save Order)
+ const handleDragEnd = (result) => {
+  if (!result.destination) return;
 
-    const updated = Array.from(categories);
-    const [moved] = updated.splice(result.source.index, 1);
-    updated.splice(result.destination.index, 0, moved);
+  const updated = Array.from(categories);
+  const [moved] = updated.splice(result.source.index, 1);
+  updated.splice(result.destination.index, 0, moved);
 
-    setCategories(updated);
-    setOrderChanged(true);
-  };
+  setCategories(updated);
+  setOrderChanged(true);
+
+  // 🔔 subtle reminder toast
+  toast.info("Order changed — don't forget to click Save Order!", {
+    toastId: "order-changed", // prevents duplicates
+    autoClose: 1200,
+    pauseOnHover: false,
+    theme: "dark",
+  });
+};
+
 
   // Save order to backend
   const saveOrder = async () => {
@@ -160,17 +151,18 @@ function Categories() {
           priority: index,
         })),
       });
-      toast.success("Order saved");
+
+      toast.success("Order saved successfully");
       setOrderChanged(false);
+      // reload to ensure priorities reflect correctly in UI
+      loadCategories();
     } catch (err) {
       console.error("Save order error:", err);
       toast.error("Failed to save order");
     }
   };
 
-  // ---------------------------
-  // External unload protection
-  // ---------------------------
+  // Unsaved changes: browser beforeunload warning (Option A)
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (orderChanged) {
@@ -183,35 +175,29 @@ function Categories() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [orderChanged]);
 
-  // ---------------------------
-  // Internal navigation protection (React Router v6.4+)
-  // ---------------------------
-  usePrompt(orderChanged, "You have unsaved changes. Are you sure you want to leave without saving?");
-
   return (
     <Container fluid className="p-4">
       <Card className="bg-dark text-light shadow-lg rounded-4">
         <Card.Body>
-
-          {/* Save Order top button */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
+          {/* Header row — Title left, Save button top-right (same row) */}
+          <Row className="align-items-center mb-3">
+            <Col>
               <h3 className="fw-bold text-uppercase mb-0">Manage Categories</h3>
-              <small className="text-secondary">Drag to reorder categories, then click Save Order.</small>
-            </div>
+              <small className="text-secondary">Drag categories to change their priority. Click Save Order to persist changes.</small>
+            </Col>
 
-            <div className="d-flex align-items-center gap-2">
+            <Col className="text-end">
               {orderChanged && (
-                <Button variant="info" className="fw-semibold" onClick={saveOrder}>
+                <Button variant="success" className="fw-semibold me-2" onClick={saveOrder}>
                   💾 Save Order
                 </Button>
               )}
 
-              <Button variant="success" className="fw-semibold" href="/admin/categories/add">
-                <i className="bi bi-plus-circle me-1" /> Add Category
+              <Button variant="outline-light" className="fw-semibold" href="/admin/categories/add">
+                + Add Category
               </Button>
-            </div>
-          </div>
+            </Col>
+          </Row>
 
           {/* Search */}
           <Form onSubmit={handleSubmit(searchCategory)} className="p-3 bg-secondary bg-opacity-25 rounded-3 mb-4">
@@ -225,7 +211,7 @@ function Categories() {
                 />
                 {errors.category_name && <small className="text-danger">{errors.category_name.message}</small>}
               </Col>
-              <Col md={2}>
+              <Col md={2} className="text-end">
                 <Button variant="primary" type="submit" className="w-100">
                   <FaSearch className="me-2" /> Search
                 </Button>
@@ -233,7 +219,7 @@ function Categories() {
             </Row>
           </Form>
 
-          {/* Table */}
+          {/* Categories table */}
           <div className="table-responsive">
             <Table bordered hover variant="dark" className="align-middle text-center shadow-sm">
               <thead>
@@ -241,7 +227,7 @@ function Categories() {
                   <th style={{ width: "60px" }}>Drag</th>
                   <th style={{ width: "120px" }}>Image</th>
                   <th>Name</th>
-                  <th style={{ width: "120px" }}>Priority</th>
+                  <th style={{ width: "100px" }}>Priority</th>
                   <th style={{ width: "160px" }}>Actions</th>
                 </tr>
               </thead>
@@ -263,7 +249,7 @@ function Categories() {
                                 }}
                               >
                                 <td {...provided.dragHandleProps} style={{ cursor: "grab" }}>
-                                  <span style={{ fontSize: 20, opacity: 0.75 }}>☰</span>
+                                  <span style={{ fontSize: 20, opacity: 0.8 }}>☰</span>
                                 </td>
 
                                 <td>
@@ -276,9 +262,9 @@ function Categories() {
                                   />
                                 </td>
 
-                                <td className="fw-semibold">{cat.category_name}</td>
+                                <td className="fw-semibold text-start ps-3">{cat.category_name}</td>
 
-                                <td>{cat.priority ?? 0}</td>
+                                <td className="fw-bold">{cat.priority ?? index}</td>
 
                                 <td>
                                   <Button variant="outline-warning" size="sm" className="me-2" onClick={() => openEditModal(cat)}>
