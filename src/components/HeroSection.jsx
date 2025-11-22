@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 import axios from "axios";
 import { api_uri, base_uri } from "../config/api";
 import "./HeroSection.css";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
   const [slides, setSlides] = useState([]);
@@ -10,8 +11,9 @@ export default function HeroSection() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [direction, setDirection] = useState("next");
   const autoplayRef = useRef(null);
+  const navigate = useNavigate();
 
-  const ANIM_DURATION = 900; // must match CSS
+  const ANIM_DURATION = 900;
 
   /* ----------------------------------------
      Fetch Slides
@@ -19,10 +21,12 @@ export default function HeroSection() {
   const fetchSlides = useCallback(async () => {
     try {
       const res = await axios.get(`${api_uri}banners/active?sort=order`);
+
       const formatted = (res.data || []).map((b) => ({
         id: b._id,
         title: b.title || "",
         subtitle: b.subtitle || "",
+        textMode: b.textMode || "dark", // ⭐ IMPORTANT
         desktop: b.image ? `${base_uri}${b.image}` : null,
         mobile: b.mobileImage ? `${base_uri}${b.mobileImage}` : null,
       }));
@@ -61,7 +65,7 @@ export default function HeroSection() {
   }
 
   /* ----------------------------------------
-     Slide Navigation
+     Navigation
   ----------------------------------------- */
   const handleNext = () => {
     if (isTransitioning || slides.length <= 1) return;
@@ -124,7 +128,7 @@ export default function HeroSection() {
   };
 
   /* ----------------------------------------
-     NOTE: Fix animation logic (prevents black flicker)
+     Animation Class Logic
   ----------------------------------------- */
   const getSlideClass = (i) => {
     const isActive = i === current;
@@ -178,15 +182,40 @@ export default function HeroSection() {
 
                 <div className="slide-content">
                   <div className="slide-text-wrapper">
-                    <h1 className="slide-title">{s.title}</h1>
-                    <p className="slide-subtitle">{s.subtitle}</p>
+                    
+                    {/* ⭐ Text Mode Applied */}
+                    <h1
+                      className="slide-title"
+                      style={{
+                        color: s.textMode === "light" ? "#ffffff" : "#000000",
+                        textShadow:
+                          s.textMode === "light"
+                            ? "0 1px 4px rgba(0,0,0,0.7)"
+                            : "0 1px 4px rgba(255,255,255,0.7)",
+                      }}
+                    >
+                      {s.title}
+                    </h1>
+
+                    <p
+                      className="slide-subtitle"
+                      style={{
+                        color:
+                          s.textMode === "light"
+                            ? "rgba(255,255,255,0.9)"
+                            : "rgba(0,0,0,0.9)",
+                        textShadow:
+                          s.textMode === "light"
+                            ? "0 1px 4px rgba(0,0,0,0.7)"
+                            : "0 1px 4px rgba(255,255,255,0.7)",
+                      }}
+                    >
+                      {s.subtitle}
+                    </p>
+
                     <button
                       className="learn-more-btn"
-                      onClick={() =>
-                        navigate("/product", {
-                          state: { category: "Hospital Bed" },
-                        })
-                      }
+                      onClick={() => navigate("/product")}
                     >
                       Learn More
                     </button>
@@ -197,7 +226,6 @@ export default function HeroSection() {
           })}
         </div>
 
-        {/* Controls */}
         {slides.length > 1 && (
           <>
             <div className="carousel-controls-container">

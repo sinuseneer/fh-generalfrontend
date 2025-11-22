@@ -23,7 +23,6 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 export default function BannerSettings() {
   const [banners, setBanners] = useState([]);
 
-  // New banner upload inputs
   const [desktopImage, setDesktopImage] = useState(null);
   const [desktopPreview, setDesktopPreview] = useState(null);
   const [mobileImage, setMobileImage] = useState(null);
@@ -33,7 +32,6 @@ export default function BannerSettings() {
   const [lightText, setLightText] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Edit state
   const [editing, setEditing] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editSubtitle, setEditSubtitle] = useState("");
@@ -44,11 +42,9 @@ export default function BannerSettings() {
   const [editMobilePreview, setEditMobilePreview] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
 
-  // Fetch banners
   const fetchBanners = async () => {
     try {
       const res = await axios.get(`${api_uri}banners`);
-      // sort by order (if provided) so UI uses persisted order
       const sorted = Array.isArray(res.data)
         ? res.data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
         : [];
@@ -63,7 +59,6 @@ export default function BannerSettings() {
     fetchBanners();
   }, []);
 
-  // Handlers for new upload previews
   function handleDesktopChange(e) {
     const f = e.target.files[0];
     if (f) {
@@ -80,7 +75,6 @@ export default function BannerSettings() {
     }
   }
 
-  // Upload new banner
   async function handleUpload(e) {
     e.preventDefault();
     if (!desktopImage) return toast.warning("Please upload desktop image");
@@ -97,7 +91,7 @@ export default function BannerSettings() {
     try {
       await axios.post(`${api_uri}banners`, formData);
       toast.success("Banner uploaded");
-      // reset
+
       setDesktopImage(null);
       setMobileImage(null);
       setDesktopPreview(null);
@@ -113,7 +107,6 @@ export default function BannerSettings() {
     setLoading(false);
   }
 
-  // Start editing: initialize edit state from banner
   const startEditing = (b) => {
     setEditing(b._id);
     setEditTitle(b.title || "");
@@ -125,7 +118,6 @@ export default function BannerSettings() {
     setEditMobilePreview(null);
   };
 
-  // Edit file handlers
   const handleEditDesktopChange = (e) => {
     const f = e.target.files[0];
     if (f) {
@@ -142,12 +134,11 @@ export default function BannerSettings() {
     }
   };
 
-  // Update banner
   const updateBanner = async (id) => {
     const formData = new FormData();
-    if (editTitle !== undefined) formData.append("title", editTitle);
-    if (editSubtitle !== undefined) formData.append("subtitle", editSubtitle);
-    if (editMode) formData.append("textMode", editMode);
+    formData.append("title", editTitle);
+    formData.append("subtitle", editSubtitle);
+    formData.append("textMode", editMode);
     if (editDesktopFile) formData.append("desktopImage", editDesktopFile);
     if (editMobileFile) formData.append("mobileImage", editMobileFile);
 
@@ -164,7 +155,6 @@ export default function BannerSettings() {
     setSavingEdit(false);
   };
 
-  // Delete banner
   const handleDelete = async (id) => {
     if (!window.confirm("Delete banner?")) return;
     try {
@@ -177,7 +167,6 @@ export default function BannerSettings() {
     }
   };
 
-  // Activate / Deactivate
   const toggleActive = async (b) => {
     try {
       if (b.active) {
@@ -194,7 +183,6 @@ export default function BannerSettings() {
     }
   };
 
-  // Drag & Drop reorder save
   const onDragEnd = async (result) => {
     const { destination, source } = result;
     if (!destination) return;
@@ -206,7 +194,6 @@ export default function BannerSettings() {
 
     setBanners(reordered);
 
-    // Save new order (array of ids)
     try {
       const orderedIDs = reordered.map((x) => x._id);
       await axios.put(`${api_uri}banners/reorder`, { order: orderedIDs });
@@ -342,12 +329,7 @@ export default function BannerSettings() {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="banners-droppable">
           {(provided) => (
-            <Grid
-              container
-              spacing={3}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <Grid container spacing={3} {...provided.droppableProps} ref={provided.innerRef}>
               {banners.map((b, idx) => (
                 <Draggable key={b._id} draggableId={b._id} index={idx}>
                   {(prov, snapshot) => (
@@ -357,15 +339,15 @@ export default function BannerSettings() {
                       md={4}
                       ref={prov.innerRef}
                       {...prov.draggableProps}
-                      // drag handle applied to header area/icon
                     >
                       <Card
                         sx={{
                           background: "#111",
                           color: "#fff",
                           p: 1,
-                          border:
-                            snapshot.isDragging ? "1px dashed rgba(255,255,255,0.12)" : "none",
+                          border: snapshot.isDragging
+                            ? "1px dashed rgba(255,255,255,0.12)"
+                            : "none",
                         }}
                       >
                         <Box sx={{ display: "flex", alignItems: "center", px: 1, pt: 0.5 }}>
@@ -382,7 +364,6 @@ export default function BannerSettings() {
                           </IconButton>
                         </Box>
 
-                        {/* Desktop Preview */}
                         <CardMedia
                           height="180"
                           component="img"
@@ -390,7 +371,6 @@ export default function BannerSettings() {
                           alt="Desktop banner"
                         />
 
-                        {/* Mobile Preview (small) */}
                         <CardMedia
                           sx={{ mt: 1 }}
                           height="140"
@@ -399,9 +379,26 @@ export default function BannerSettings() {
                           alt="Mobile banner"
                         />
 
+                        {/* ⭐ TEXT COLOR FIX APPLIED HERE */}
                         <Box sx={{ p: 2 }}>
-                          <Typography sx={{ fontWeight: 600 }}>{b.title}</Typography>
-                          <Typography sx={{ color: "rgba(255,255,255,0.7)", mt: 0.5 }}>
+                          <Typography
+                            sx={{
+                              fontWeight: 600,
+                              color: b.textMode === "light" ? "#fff" : "#000",
+                            }}
+                          >
+                            {b.title}
+                          </Typography>
+
+                          <Typography
+                            sx={{
+                              mt: 0.5,
+                              color:
+                                b.textMode === "light"
+                                  ? "rgba(255,255,255,0.85)"
+                                  : "rgba(0,0,0,0.85)",
+                            }}
+                          >
                             {b.subtitle}
                           </Typography>
 
@@ -425,7 +422,7 @@ export default function BannerSettings() {
                             Delete
                           </Button>
 
-                          {/* EDIT SECTION (inline) */}
+                          {/* EDIT SECTION */}
                           {editing === b._id && (
                             <Box sx={{ mt: 2, borderTop: "1px solid #333", pt: 2 }}>
                               <TextField
@@ -448,7 +445,9 @@ export default function BannerSettings() {
                                 control={
                                   <Switch
                                     checked={editMode === "light"}
-                                    onChange={(e) => setEditMode(e.target.checked ? "light" : "dark")}
+                                    onChange={(e) =>
+                                      setEditMode(e.target.checked ? "light" : "dark")
+                                    }
                                     color="success"
                                   />
                                 }
@@ -456,7 +455,6 @@ export default function BannerSettings() {
                                 sx={{ mb: 1 }}
                               />
 
-                              {/* Replace Desktop */}
                               <Button
                                 component="label"
                                 fullWidth
@@ -481,7 +479,6 @@ export default function BannerSettings() {
                                 />
                               )}
 
-                              {/* Replace Mobile */}
                               <Button
                                 component="label"
                                 fullWidth
@@ -536,7 +533,6 @@ export default function BannerSettings() {
                   )}
                 </Draggable>
               ))}
-
               {provided.placeholder}
             </Grid>
           )}
