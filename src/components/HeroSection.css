@@ -76,7 +76,7 @@
   z-index: 10;
   display: flex;
   align-items: center;
-  padding-left: 80px;
+  padding-left: 14%;
   padding-right: 40px;
 }
 
@@ -91,7 +91,7 @@
 .slide-title {
   font-size: 3.2rem;
   font-weight: 800;
-  margin-top: 30px;
+  margin-top: -55px;
   color: #fff;
 }
 
@@ -195,5 +195,5 @@
   .carousel-controls-container {
     display: none;
   }
-  
+
 }
