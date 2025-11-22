@@ -61,15 +61,16 @@ useEffect(() => {
       }
 
       if (res.data.success) {
-        // ⭐ Sort latest first
-        const sorted = [...res.data.products].sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        // ⭐ Sort using product.date
+        const sortedProducts = res.data.products.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
         );
 
-        setProducts(sorted);
+        setProducts(sortedProducts);
       } else {
         toast.warning("No products found");
       }
+
     } catch (error) {
       console.error("❌ Error fetching products:", error);
       toast.error("Failed to load products");
@@ -187,7 +188,7 @@ useEffect(() => {
 
         {/* 🧭 Pagination */}
         {!loading && totalPages > 1 && (
-          <Box display="flex" justifyContent="center" mt={5}>
+          <Box display="flex" justifyContent="center" mt={5} mb={5}>
             <Pagination
               count={totalPages}
               page={currentPage}
