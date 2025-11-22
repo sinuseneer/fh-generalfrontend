@@ -440,6 +440,7 @@
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   border-radius: 10px;
   padding: 10px 0;
+   scroll-padding-left: 0 !important;
 }
 
 .slider-container::-webkit-scrollbar {
@@ -450,7 +451,10 @@
   display: flex;
   gap: 15px;
   /* reduce horizontal padding so first slide isn't pushed off-screen */
-  padding: 0 1rem;
+    padding-left: 0 !important;
+  padding-right: 1rem;
+  
+
 }
 
 .mobile-slide {
@@ -480,7 +484,7 @@
   }
   
   .mobile-slide {
-    scroll-snap-align: center;
+    scroll-snap-align: start;
   }
 }
 
@@ -490,18 +494,19 @@
     flex: 0 0 260px;
     max-width: 260px;
   }
-  
+
   .slider-track {
     gap: 12px;
-    /* reduce horizontal padding on small screens as well */
-    padding: 0 1rem;
+    padding-left: 0 !important;   /* ⭐ always start from left */
+    padding-right: 1rem !important;
   }
-  
+
   .mobile-slide .feature-card {
     padding: 12px;
     height: 410px;
   }
 }
+
 
 @media (max-width: 480px) {
   .mobile-slide {
