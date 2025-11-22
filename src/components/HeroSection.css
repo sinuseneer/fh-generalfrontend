@@ -213,3 +213,29 @@
     display: none;
   }
 }
+
+
+
+
+@media (max-width: 600px) {
+
+  /* Push content to top ONLY on mobile */
+  .slide-content {
+    display: flex;
+    align-items: flex-start !important;   /* top */
+    justify-content: flex-start !important;
+    padding-top: 20px;     /* adjust value */
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .slide-text-wrapper {
+    margin-top: 0 !important;  /* remove spacing */
+    width: 80% !important;
+    max-width: 80% !important;
+  }
+
+  .slide-title {
+    margin-top: 0 !important;  /* remove negative margin */
+  }
+}
