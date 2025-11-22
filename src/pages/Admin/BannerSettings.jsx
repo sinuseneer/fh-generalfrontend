@@ -266,7 +266,8 @@ export default function BannerSettings() {
   // Delete (DB only)
   // ----------------------------
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete banner? This removes it from database only.")) return;
+    if (!window.confirm("Delete banner? This removes it from database only."))
+      return;
     try {
       await axios.delete(`${api_uri}banners/${id}`);
       toast.success("Deleted");
@@ -321,38 +322,47 @@ export default function BannerSettings() {
             ref={prov.innerRef}
             {...prov.draggableProps}
             secondaryAction={
-              <ListItemSecondaryAction sx={{ right: 8, display: "flex", gap: 1 }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                {/* ACTIVE / INACTIVE BUTTON */}
                 <Tooltip title={b.active ? "Deactivate" : "Activate"}>
-                  <IconButton
-                    edge="end"
-                    onClick={() => toggleActive(b)}
-                    size="small"
-                    color={b.active ? "success" : "default"}
-                  >
-                    {b.active ? <CheckCircleIcon /> : <CancelIcon />}
+                  <IconButton onClick={() => toggleActive(b)} size="small">
+                    {b.active ? (
+                      <CheckCircleIcon sx={{ color: "#4CAF50" }} /> // green
+                    ) : (
+                      <CancelIcon sx={{ color: "#ff9800" }} /> // orange
+                    )}
                   </IconButton>
                 </Tooltip>
 
+                {/* EDIT BUTTON */}
                 <Tooltip title="Edit">
-                  <IconButton edge="end" onClick={() => openEditModal(b)} size="small">
-                    <EditIcon />
+                  <IconButton onClick={() => openEditModal(b)} size="small">
+                    <EditIcon sx={{ color: "#29b6f6" }} /> // blue
                   </IconButton>
                 </Tooltip>
 
+                {/* DELETE BUTTON */}
                 <Tooltip title="Delete">
-                  <IconButton
-                    edge="end"
-                    onClick={() => handleDelete(b._id)}
-                    size="small"
-                    color="error"
-                  >
-                    <DeleteIcon />
+                  <IconButton onClick={() => handleDelete(b._id)} size="small">
+                    <DeleteIcon sx={{ color: "#e53935" }} /> // red
                   </IconButton>
                 </Tooltip>
-              </ListItemSecondaryAction>
+              </Box>
             }
             sx={{
-              bgcolor: snapshot.isDragging ? "rgba(255,255,255,0.03)" : "transparent",
+              bgcolor: snapshot.isDragging
+                ? "rgba(255,255,255,0.03)"
+                : "transparent",
               borderRadius: 1,
               px: 1,
               py: 1,
@@ -392,23 +402,38 @@ export default function BannerSettings() {
             <ListItemText
               primary={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography sx={{ fontWeight: 700 }}>{b.title || "Untitled"}</Typography>
-                  {b.active && <Chip size="small" label="Active" color="success" />}
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {b.title || "Untitled"}
+                  </Typography>
+                  {b.active && (
+                    <Chip size="small" label="Active" color="success" />
+                  )}
                 </Box>
               }
               secondary={
                 <>
-                  <Typography sx={{ color: "text.secondary" }}>{b.subtitle}</Typography>
+                  <Typography sx={{ color: "text.secondary" }}>
+                    {b.subtitle}
+                  </Typography>
                   <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary" }}
+                    >
                       Order: {b.order ?? "-"}
                     </Typography>
                     {mobilePreviewUrl && (
-                      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "text.secondary" }}
+                      >
                         Mobile ✓
                       </Typography>
                     )}
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary" }}
+                    >
                       Text: {b.textMode === "light" ? "Light" : "Dark"}
                     </Typography>
                   </Stack>
@@ -426,13 +451,24 @@ export default function BannerSettings() {
   // ----------------------------
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           🖼 Banner Manager
         </Typography>
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={openAddModal}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={openAddModal}
+          >
             Add Banner
           </Button>
 
@@ -458,7 +494,11 @@ export default function BannerSettings() {
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="banners-list">
             {(provided) => (
-              <List ref={provided.innerRef} {...provided.droppableProps} sx={{ width: "100%", gap: 1 }}>
+              <List
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                sx={{ width: "100%", gap: 1 }}
+              >
                 {banners.map((b, i) => (
                   <Box key={b._id} sx={{ mb: 1 }}>
                     <Row b={b} index={i} />
@@ -493,22 +533,47 @@ export default function BannerSettings() {
             <Grid item xs={12} md={6}>
               <Button component="label" variant="contained" fullWidth>
                 Upload Desktop Image
-                <input hidden type="file" accept="image/*" onChange={onAddDesktopChange} />
+                <input
+                  hidden
+                  type="file"
+                  accept="image/*"
+                  onChange={onAddDesktopChange}
+                />
               </Button>
 
               {addDesktopPreview && (
-                <Box component="img" src={addDesktopPreview} alt="desktop" sx={{ width: "100%", mt: 2, borderRadius: 1 }} />
+                <Box
+                  component="img"
+                  src={addDesktopPreview}
+                  alt="desktop"
+                  sx={{ width: "100%", mt: 2, borderRadius: 1 }}
+                />
               )}
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <Button component="label" variant="contained" fullWidth color="secondary">
+              <Button
+                component="label"
+                variant="contained"
+                fullWidth
+                color="secondary"
+              >
                 Upload Mobile Image
-                <input hidden type="file" accept="image/*" onChange={onAddMobileChange} />
+                <input
+                  hidden
+                  type="file"
+                  accept="image/*"
+                  onChange={onAddMobileChange}
+                />
               </Button>
 
               {addMobilePreview && (
-                <Box component="img" src={addMobilePreview} alt="mobile" sx={{ width: "100%", mt: 2, borderRadius: 1 }} />
+                <Box
+                  component="img"
+                  src={addMobilePreview}
+                  alt="mobile"
+                  sx={{ width: "100%", mt: 2, borderRadius: 1 }}
+                />
               )}
             </Grid>
 
@@ -535,9 +600,14 @@ export default function BannerSettings() {
             <Grid item xs={12}>
               <FormControlLabel
                 control={
-                  <Switch checked={addTextModeLight} onChange={() => setAddTextModeLight((s) => !s)} />
+                  <Switch
+                    checked={addTextModeLight}
+                    onChange={() => setAddTextModeLight((s) => !s)}
+                  />
                 }
-                label={addTextModeLight ? "Light Text (white)" : "Dark Text (black)"}
+                label={
+                  addTextModeLight ? "Light Text (white)" : "Dark Text (black)"
+                }
               />
             </Grid>
           </Grid>
@@ -570,7 +640,9 @@ export default function BannerSettings() {
         <DialogContent dividers>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2">Current / Replace Desktop Image</Typography>
+              <Typography variant="subtitle2">
+                Current / Replace Desktop Image
+              </Typography>
               <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
                 {/* show current server preview if available */}
                 {editBannerId && (
@@ -580,7 +652,9 @@ export default function BannerSettings() {
                       // try to show preview of selected file or fallback to server path
                       editDesktopPreview ||
                       (banners.find((x) => x._id === editBannerId)?.image
-                        ? baseImage(banners.find((x) => x._id === editBannerId).image)
+                        ? baseImage(
+                            banners.find((x) => x._id === editBannerId).image
+                          )
                         : null)
                     }
                     alt="desktop"
@@ -591,11 +665,19 @@ export default function BannerSettings() {
                 <Box>
                   <Button component="label" variant="contained">
                     Replace Desktop
-                    <input hidden type="file" accept="image/*" onChange={onEditDesktopChange} />
+                    <input
+                      hidden
+                      type="file"
+                      accept="image/*"
+                      onChange={onEditDesktopChange}
+                    />
                   </Button>
 
                   {editDesktopPreview && (
-                    <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", mt: 1 }}
+                    >
                       New desktop selected
                     </Typography>
                   )}
@@ -604,16 +686,23 @@ export default function BannerSettings() {
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2">Current / Replace Mobile Image</Typography>
+              <Typography variant="subtitle2">
+                Current / Replace Mobile Image
+              </Typography>
 
-              <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
+              <Box
+                sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}
+              >
                 {editBannerId && (
                   <Avatar
                     variant="rounded"
                     src={
                       editMobilePreview ||
                       (banners.find((x) => x._id === editBannerId)?.mobileImage
-                        ? baseImage(banners.find((x) => x._id === editBannerId).mobileImage)
+                        ? baseImage(
+                            banners.find((x) => x._id === editBannerId)
+                              .mobileImage
+                          )
                         : null)
                     }
                     alt="mobile"
@@ -622,13 +711,25 @@ export default function BannerSettings() {
                 )}
 
                 <Box>
-                  <Button component="label" variant="contained" color="secondary">
+                  <Button
+                    component="label"
+                    variant="contained"
+                    color="secondary"
+                  >
                     Replace Mobile
-                    <input hidden type="file" accept="image/*" onChange={onEditMobileChange} />
+                    <input
+                      hidden
+                      type="file"
+                      accept="image/*"
+                      onChange={onEditMobileChange}
+                    />
                   </Button>
 
                   {editMobilePreview && (
-                    <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", mt: 1 }}
+                    >
                       New mobile selected
                     </Typography>
                   )}
@@ -637,7 +738,12 @@ export default function BannerSettings() {
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <TextField label="Title" fullWidth value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+              <TextField
+                label="Title"
+                fullWidth
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+              />
             </Grid>
 
             <Grid item xs={12} md={6}>
@@ -651,8 +757,15 @@ export default function BannerSettings() {
 
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Switch checked={editTextModeLight} onChange={() => setEditTextModeLight((s) => !s)} />}
-                label={editTextModeLight ? "Light Text (white)" : "Dark Text (black)"}
+                control={
+                  <Switch
+                    checked={editTextModeLight}
+                    onChange={() => setEditTextModeLight((s) => !s)}
+                  />
+                }
+                label={
+                  editTextModeLight ? "Light Text (white)" : "Dark Text (black)"
+                }
               />
             </Grid>
           </Grid>
@@ -660,7 +773,11 @@ export default function BannerSettings() {
 
         <DialogActions>
           <Button onClick={closeEditModal}>Cancel</Button>
-          <Button onClick={submitEdit} variant="contained" disabled={editSaving}>
+          <Button
+            onClick={submitEdit}
+            variant="contained"
+            disabled={editSaving}
+          >
             {editSaving ? <CircularProgress size={18} /> : "Save Changes"}
           </Button>
         </DialogActions>
