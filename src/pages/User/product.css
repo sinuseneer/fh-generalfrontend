@@ -61,6 +61,22 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
+
+/* Hide Banner only on mobile */
+@media (max-width: 600px) {
+  .hide-banner-mobile {
+    display: none !important;
+     height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+   .banner-container {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+
 /* ----------------------------------
    FIX IMAGE SIZE
 ---------------------------------- */
@@ -263,3 +279,5 @@ button {
 .contact-card.horizontal .contact-content {
   flex: 1;
 }
+
+

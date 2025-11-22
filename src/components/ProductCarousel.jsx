@@ -109,24 +109,29 @@ export default function ProductCarousel() {
   };
 
   // ✅ Fetch categories from backend
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-  const res = await axios.get(`${api_uri}category/userview`);
+ useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${api_uri}category/userview`);
 
-        if (res.data.success) {
-          setCategories(res.data.categories);
-          console.log("✅ Categories Loaded:", res.data.categories);
-        }
-      } catch (error) {
-        console.error("❌ Error loading categories:", error);
-      } finally {
-        setLoading(false);
+      if (res.data.success) {
+        const sorted = (res.data.categories || []).sort(
+          (a, b) => (a.priority ?? 0) - (b.priority ?? 0)
+        );
+
+        setCategories(sorted);
+        console.log("✅ Categories Loaded:", sorted);
       }
-    };
+    } catch (error) {
+      console.error("❌ Error loading categories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchCategories();
-  }, []);
+  fetchCategories();
+}, []);
+
 
   return (
     <div className="product-carousel-section mt-2 mb-1">

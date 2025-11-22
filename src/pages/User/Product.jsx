@@ -94,7 +94,10 @@ export default function Product() {
 
   return (
     <>
-      <Banner />
+      <div className="hide-banner-mobile">
+  <Banner />
+</div>
+
       <Container sx={{ my: 0 }}>
         {/* 🧭 Category Carousel */}
         <ProductCarousel />

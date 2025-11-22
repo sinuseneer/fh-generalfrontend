@@ -20,18 +20,25 @@ const AddCategory = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("category_name", categoryName);
-    formData.append("image", image);
-
     try {
+      // ⭐ Step 1: Find total existing categories for priority assignment
+      const countRes = await axios.post(`${api_uri}category/view`);
+      const categories = countRes.data.categories || [];
+      const nextPriority = categories.length; // last position
+
+      // Step 2: Submit category with priority
+      const formData = new FormData();
+      formData.append("category_name", categoryName);
+      formData.append("image", image);
+      formData.append("priority", nextPriority); // ⭐ NEW
+
       const res = await axios.post(`${api_uri}category/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.data.success) {
         toast.success("✅ Category added successfully!");
-        // Navigate to category list after a short delay
+
         setTimeout(() => {
           navigate("/admin/categories/list");
         }, 1500);
@@ -41,6 +48,7 @@ const AddCategory = () => {
 
       setCategoryName("");
       setImage(null);
+
     } catch (error) {
       console.error("❌ Error adding category:", error);
       toast.error("Server error while adding category!");
@@ -50,7 +58,9 @@ const AddCategory = () => {
   return (
     <div className="container mt-5" style={{ maxWidth: "600px" }}>
       <div className="card bg-dark text-light shadow-lg rounded-4 p-4">
-        <h3 className="fw-bold text-uppercase mb-4 text-center">Add New Category</h3>
+        <h3 className="fw-bold text-uppercase mb-4 text-center">
+          Add New Category
+        </h3>
 
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           {/* Category Name */}

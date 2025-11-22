@@ -16,6 +16,13 @@ import {
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
+// ⭐ Drag & Drop Library (Vite compatible)
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+} from "@hello-pangea/dnd";
+
 function Categories() {
   const {
     register,
@@ -36,7 +43,9 @@ function Categories() {
   const [preview, setPreview] = useState("");
   const [newImage, setNewImage] = useState(null);
 
-  // Load all categories
+  // ===============================
+  // Load Categories
+  // ===============================
   useEffect(() => {
     loadCategories();
   }, []);
@@ -45,14 +54,20 @@ function Categories() {
     axios
       .post(`${api_uri}category/view`)
       .then((response) => {
-        setCategories(response.data.categories);
+        // ⭐ Sort by priority (admin view)
+        const sorted = [...response.data.categories].sort(
+          (a, b) => (a.priority ?? 0) - (b.priority ?? 0)
+        );
+        setCategories(sorted);
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
       });
   };
 
-  // 🔍 Search category
+  // ===============================
+  // Search Category
+  // ===============================
   const searchCategory = (data) => {
     axios
       .post(`${api_uri}category/search`, data)
@@ -62,7 +77,9 @@ function Categories() {
       .catch(() => toast.error("Error searching category"));
   };
 
-  // 🗑️ Delete Category
+  // ===============================
+  // Delete Category
+  // ===============================
   const deleteCategory = () => {
     if (!selectedCategory) return;
 
@@ -81,7 +98,9 @@ function Categories() {
       });
   };
 
-  // ✏️ Open Edit Modal
+  // ===============================
+  // Edit Category Modal
+  // ===============================
   const openEditModal = (cat) => {
     setEditingCategory(cat);
     setName(cat.category_name);
@@ -89,7 +108,6 @@ function Categories() {
     setShowEditModal(true);
   };
 
-  // ✏️ Update Category
   const updateCategory = async (e) => {
     e.preventDefault();
 
@@ -117,6 +135,30 @@ function Categories() {
     }
   };
 
+  // ===============================
+  // ⭐ Drag & Drop Handler
+  // ===============================
+  const handleDragEnd = async (result) => {
+    if (!result.destination) return;
+
+    const updated = Array.from(categories);
+    const [moved] = updated.splice(result.source.index, 1);
+    updated.splice(result.destination.index, 0, moved);
+
+    // Update UI
+    setCategories(updated);
+
+    // Save to DB
+    await axios.post(`${api_uri}category/update-priority`, {
+      categories: updated.map((cat, index) => ({
+        id: cat._id,
+        priority: index,
+      })),
+    });
+
+    toast.success("Priority updated!");
+  };
+
   return (
     <Container fluid className="p-4">
       <Card className="bg-dark text-light shadow-lg rounded-4">
@@ -126,7 +168,7 @@ function Categories() {
             <Col md={8}>
               <h3 className="fw-bold text-uppercase">Manage Categories</h3>
               <p className="text-secondary">
-                View, search, edit or delete existing categories.
+                Drag and drop to reorder categories by priority.
               </p>
             </Col>
             <Col md={4} className="text-end">
@@ -140,7 +182,7 @@ function Categories() {
             </Col>
           </Row>
 
-          {/* 🔍 Search */}
+          {/* Search */}
           <Form
             onSubmit={handleSubmit(searchCategory)}
             className="p-3 bg-secondary bg-opacity-25 rounded-3 mb-4"
@@ -169,7 +211,9 @@ function Categories() {
             </Row>
           </Form>
 
-          {/* 📋 Categories Table */}
+          {/* ===============================
+              Categories Table (with DragDrop)
+          =============================== */}
           <div className="table-responsive">
             <Table
               bordered
@@ -179,77 +223,111 @@ function Categories() {
             >
               <thead>
                 <tr style={{ backgroundColor: "#1f1f1f" }}>
+                  <th>Drag</th>
                   <th>Image</th>
                   <th>Category Name</th>
-                  <th>Created At</th>
+                  <th>Priority</th>
                   <th>Actions</th>
                 </tr>
               </thead>
 
-              <tbody>
-                {categories.length > 0 ? (
-                  categories.map((cat) => (
-                    <tr key={cat._id}>
-                      <td>
-                        <Image
-                          src={
-                            cat.category_image
-                              ? `${base_uri}${cat.category_image}`
-                              : "/images/no-image.jpg"
-                          }
-                          alt={cat.category_name}
-                          height="70"
-                          width="70"
-                          rounded
-                          className="shadow-sm border border-secondary"
-                        />
-                      </td>
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="categories">
+                  {(provided) => (
+                    <tbody ref={provided.innerRef} {...provided.droppableProps}>
+                      {categories.length > 0 ? (
+                        categories.map((cat, index) => (
+                          <Draggable
+                            key={cat._id}
+                            draggableId={cat._id}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <tr
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                              >
+                                <td {...provided.dragHandleProps}>
+                                  <span
+                                    style={{
+                                      cursor: "grab",
+                                      fontSize: "22px",
+                                      color: "#ccc",
+                                    }}
+                                  >
+                                    ☰
+                                  </span>
+                                </td>
 
-                      <td className="fw-semibold">{cat.category_name}</td>
+                                <td>
+                                  <Image
+                                    src={
+                                      cat.category_image
+                                        ? `${base_uri}${cat.category_image}`
+                                        : "/images/no-image.jpg"
+                                    }
+                                    height="70"
+                                    width="70"
+                                    rounded
+                                    className="shadow-sm border border-secondary"
+                                  />
+                                </td>
 
-                      <td>
-                        {new Date(cat.createdAt).toLocaleDateString("en-GB")}
-                      </td>
+                                <td className="fw-semibold">
+                                  {cat.category_name}
+                                </td>
 
-                      <td>
-                        {/* ✏️ Edit Button */}
-                        <Button
-                          variant="outline-warning"
-                          size="sm"
-                          className="me-2"
-                          onClick={() => openEditModal(cat)}
-                        >
-                          <FaEdit />
-                        </Button>
+                                <td>{cat.priority ?? 0}</td>
 
-                        {/* 🗑️ Delete Button */}
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedCategory(cat._id);
-                            setShowDeleteModal(true);
-                          }}
-                        >
-                          <FaTrash />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-center text-secondary py-4">
-                      No categories found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
+                                <td>
+                                  <Button
+                                    variant="outline-warning"
+                                    size="sm"
+                                    className="me-2"
+                                    onClick={() => openEditModal(cat)}
+                                  >
+                                    <FaEdit />
+                                  </Button>
+
+                                  <Button
+                                    variant="outline-danger"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedCategory(cat._id);
+                                      setShowDeleteModal(true);
+                                    }}
+                                  >
+                                    <FaTrash />
+                                  </Button>
+                                </td>
+                              </tr>
+                            )}
+                          </Draggable>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan="5"
+                            className="text-center text-secondary py-4"
+                          >
+                            No categories found.
+                          </td>
+                        </tr>
+                      )}
+
+                      {provided.placeholder}
+                    </tbody>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </Table>
           </div>
         </Card.Body>
       </Card>
 
-      {/* 🗑️ Delete Confirmation Modal */}
+      {/* ===============================
+          Delete Modal
+      =============================== */}
       <Modal
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
@@ -263,7 +341,10 @@ function Categories() {
           undone.
         </Modal.Body>
         <Modal.Footer className="bg-dark text-light">
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteModal(false)}
+          >
             Cancel
           </Button>
           <Button variant="danger" onClick={deleteCategory}>
@@ -272,7 +353,9 @@ function Categories() {
         </Modal.Footer>
       </Modal>
 
-      {/* ✏️ Edit Category Modal */}
+      {/* ===============================
+          Edit Modal
+      =============================== */}
       <Modal
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
