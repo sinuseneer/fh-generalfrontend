@@ -44,37 +44,43 @@ export default function Product() {
   }, [location.state?.category]);
 
   // ✅ Fetch products whenever category changes
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        let res;
+useEffect(() => {
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      let res;
 
-        if (selectedCategory) {
-          // 🔍 Fetch only products for this category
-          res = await axios.get(
-            `${api_uri}product/category/${selectedCategory}`
-          );
-        } else {
-          // 🔍 Otherwise, fetch all products
-          res = await axios.get(`${api_uri}product/userview`);
-        }
-
-        if (res.data.success) {
-          setProducts(res.data.products);
-        } else {
-          toast.warning("No products found");
-        }
-      } catch (error) {
-        console.error("❌ Error fetching products:", error);
-        toast.error("Failed to load products");
-      } finally {
-        setLoading(false);
+      if (selectedCategory) {
+        // 🔍 Fetch only products for this category
+        res = await axios.get(
+          `${api_uri}product/category/${selectedCategory}`
+        );
+      } else {
+        // 🔍 Otherwise, fetch all products
+        res = await axios.get(`${api_uri}product/userview`);
       }
-    };
 
-    loadProducts();
-  }, [selectedCategory]); // ✅ Re-fetch when category changes
+      if (res.data.success) {
+        // ⭐ Sort latest first
+        const sorted = [...res.data.products].sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
+        setProducts(sorted);
+      } else {
+        toast.warning("No products found");
+      }
+    } catch (error) {
+      console.error("❌ Error fetching products:", error);
+      toast.error("Failed to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadProducts();
+}, [selectedCategory]);
+
 
   // ✅ Frontend search (local filtering)
   const filtered = products.filter((p) =>
