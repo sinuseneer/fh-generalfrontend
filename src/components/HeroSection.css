@@ -156,10 +156,13 @@
 .carousel-indicators {
   position: absolute;
   bottom: 30px;
-  /* left: 50%; */
+  left: 50%;
   /* transform: translateX(-50%); */
   display: flex;
   gap: 10px;
+  transform: translateX(-50%);
+   justify-content: center;
+  align-items: center;
 }
 
 .carousel-dot {
@@ -168,7 +171,7 @@
   background: rgba(123, 123, 123, 0.6);
   border-radius: 50%;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.4s;
 }
 
 .carousel-dot.active {
