@@ -156,23 +156,23 @@
 .carousel-indicators {
   position: absolute;
   bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
   display: flex;
   gap: 10px;
 }
 
 .carousel-dot {
-  width: 12px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.6);
+  width: 5px;
+  height: 5px;
+  background: rgba(123, 123, 123, 0.6);
   border-radius: 50%;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .carousel-dot.active {
-  width: 30px;
+  width: 15px;
   border-radius: 8px;
   background: #fff;
 }
@@ -230,12 +230,15 @@
   }
 
   .slide-text-wrapper {
-    margin-top: 0 !important;  /* remove spacing */
+    margin-top: 10px !important;  /* remove spacing */
     width: 80% !important;
     max-width: 80% !important;
   }
 
   .slide-title {
     margin-top: 0 !important;  /* remove negative margin */
+  }
+   .carousel-indicators {
+    display: none !important;
   }
 }
