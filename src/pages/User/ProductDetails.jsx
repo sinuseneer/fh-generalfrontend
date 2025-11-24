@@ -150,12 +150,12 @@ export default function ProductDetails() {
       );
 
       toast.dismiss(toastId);
-      toast.success("✅ Message sent successfully!");
+      toast.success(" Message sent successfully!");
       setFormData({ name: "", phone: "", email: "", message: "" });
     } catch (err) {
-      console.error("❌ Email send failed:", err);
+      console.error(" Email send failed:", err);
       toast.dismiss(toastId);
-      toast.error("⚠️ Failed to send message. Please try again.");
+      toast.error(" Failed to send message. Please try again.");
     }
   };
 

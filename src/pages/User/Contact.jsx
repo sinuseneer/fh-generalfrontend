@@ -52,17 +52,17 @@ export default function Contact() {
 
   const contactDetails = [
     {
-      icon: <MapPin size={40} color="#fff" />,
+      icon: <MapPin size={40} color="#2EA898" />,
       title: "Address",
       text: "Lot 4 Bel Air, Georgetown Guyana, South America",
     },
     {
-      icon: <Phone size={40} color="#fff" />,
+      icon: <Phone size={40} color="#2EA898" />,
       title: "Phone Number",
       text: "+1 347 860 4095",
     },
     {
-      icon: <Mail size={40} color="#fff" />,
+      icon: <Mail size={40} color="#2EA898" />,
       title: "E-mail",
       text: "info@fhgeneralequipment.com",
     },
@@ -83,7 +83,7 @@ export default function Contact() {
             <Row className="g-4">
               {contactDetails.map((item, index) => (
                 <Col md={12} key={index}>
-                  <Card className="contact-card horizontal border-1 p-4">
+                  <Card className="contact-card horizontal border-1 p-1">
                     <div className="icon-box">{item.icon}</div>
 
                     <div className="contact-content ms-3">
