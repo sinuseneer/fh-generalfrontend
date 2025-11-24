@@ -17,10 +17,7 @@ import { FaSearch, FaEdit, FaTrash, FaTag } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 function Products() {
-  const {
-    register,
-    handleSubmit,
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -190,7 +187,13 @@ function Products() {
           <span className="ms-2 fw-semibold text-primary">Loading...</span>
         </div>
       ) : (
-        <Table striped bordered hover responsive className="bg-white text-center">
+        <Table
+          striped
+          bordered
+          hover
+          responsive
+          className="bg-white text-center"
+        >
           <thead>
             <tr>
               <th>Image</th>
@@ -227,10 +230,12 @@ function Products() {
                   <td>{p.description || "—"}</td>
 
                   <td>
-                    {Array.isArray(p.product_info) && p.product_info.length > 0 ? (
+                    {Array.isArray(p.product_info) &&
+                    p.product_info.length > 0 ? (
                       <Button
                         variant="secondary"
                         size="sm"
+                        style={{ width: "100px" }}
                         onClick={() => viewInfo(p)}
                       >
                         View Specs
@@ -245,7 +250,11 @@ function Products() {
                       variant="warning"
                       size="sm"
                       href={`/admin/products/edit/${p._id}`}
-                      className="me-2"
+                      style={{
+                        display: "block",
+                        marginBottom: "10px",
+                        width: "130px",
+                      }}
                     >
                       <FaEdit /> Edit
                     </Button>
@@ -254,7 +263,11 @@ function Products() {
                       variant="danger"
                       size="sm"
                       onClick={() => handleShow(p._id)}
-                      className="me-2"
+                      style={{
+                        display: "block",
+                        marginBottom: "10px",
+                        width: "130px",
+                      }}
                     >
                       <FaTrash /> Delete
                     </Button>
@@ -263,6 +276,11 @@ function Products() {
                       variant="info"
                       size="sm"
                       href={`/admin/product-images/${p._id}`}
+                      style={{
+                        display: "block",
+                        marginBottom: "10px",
+                        width: "130px",
+                      }}
                     >
                       <FaTag /> Set Thumbnail
                     </Button>
@@ -285,9 +303,7 @@ function Products() {
         <Modal.Header closeButton>
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this product?
-        </Modal.Body>
+        <Modal.Body>Are you sure you want to delete this product?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
