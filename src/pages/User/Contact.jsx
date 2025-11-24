@@ -58,7 +58,7 @@ export default function Contact() {
     {
       icon: <Phone size={40} color="#2EA898" />,
       title: "Phone Number",
-      text: "+1 347 860 4095",
+      text: "+1 347 869 4095",
     },
     {
       icon: <Mail size={40} color="#2EA898" />,

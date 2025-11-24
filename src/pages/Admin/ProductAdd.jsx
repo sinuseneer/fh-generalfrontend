@@ -12,29 +12,27 @@ import {
   Col,
   Image,
 } from "react-bootstrap";
-import { FaUpload, FaSave } from "react-icons/fa";
-// import "react-quill/dist/quill.bubble.css";
-// import ReactQuill from "react-quill";
-// import { RichTextEditor } from "@mantine/rte";
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-
+import { FaUpload, FaSave, FaPlus, FaTrash } from "react-icons/fa";
 
 function ProductAdd() {
   const [categories, setCategories] = useState([]);
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+
+  // Form data
   const [formData, setFormData] = useState({
     prod_id: "",
     product_name: "",
     CAT_ID: "",
-    description: "",
-    product_info: "",
+    description: "", // now unused but kept for safety
   });
+
+  // Dynamic key-value rows for product_info
+  const [infoRows, setInfoRows] = useState([{ key: "", value: "" }]);
 
   const navigate = useNavigate();
 
-  // ✅ Fetch categories
+  // Load categories
   useEffect(() => {
     axios
       .post(`${api_uri}category/view`)
@@ -44,12 +42,12 @@ function ProductAdd() {
       .catch(() => toast.error("Failed to load categories"));
   }, []);
 
-  // ✅ Handle input change
+  // Handle input fields
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle image upload
+  // Handle image selection
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
@@ -57,28 +55,49 @@ function ProductAdd() {
     setPreviewUrls(previews);
   };
 
-  // ✅ Submit product
+  // Add row to product_info
+  const addRow = () => {
+    setInfoRows([...infoRows, { key: "", value: "" }]);
+  };
+
+  // Remove row from product_info
+  const removeRow = (index) => {
+    const updated = infoRows.filter((_, i) => i !== index);
+    setInfoRows(updated);
+  };
+
+  // Update each key/value row
+  const updateRow = (index, field, value) => {
+    const updated = [...infoRows];
+    updated[index][field] = value;
+    setInfoRows(updated);
+  };
+
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
       !formData.prod_id ||
       !formData.product_name ||
-      !formData.CAT_ID ||
-      !formData.description
+      !formData.CAT_ID
     ) {
-      toast.warning("Please fill all required fields");
-      return;
+      return toast.warning("Please fill all required fields");
     }
 
     try {
-      // 1️⃣ Add product details
-      const res = await axios.post(`${api_uri}product/add`, formData);
+      // Send product details
+      const productData = {
+        ...formData,
+        product_info: infoRows,
+      };
+
+      const res = await axios.post(`${api_uri}product/add`, productData);
 
       if (res.data.success) {
         const productId = res.data.product._id;
 
-        // 2️⃣ Upload product images
+        // Upload images if any
         if (images.length > 0) {
           const imgForm = new FormData();
           images.forEach((file) => imgForm.append("images", file));
@@ -122,7 +141,7 @@ function ProductAdd() {
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-light">Product ID *</Form.Label>
+                <Form.Label>Product ID *</Form.Label>
                 <Form.Control
                   type="text"
                   name="prod_id"
@@ -133,7 +152,6 @@ function ProductAdd() {
                     backgroundColor: "#2a2d33",
                     border: "1px solid #333",
                     color: "#fff",
-                    borderRadius: "8px",
                   }}
                 />
               </Form.Group>
@@ -141,7 +159,7 @@ function ProductAdd() {
 
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-light">Product Name *</Form.Label>
+                <Form.Label>Product Name *</Form.Label>
                 <Form.Control
                   type="text"
                   name="product_name"
@@ -152,14 +170,14 @@ function ProductAdd() {
                     backgroundColor: "#2a2d33",
                     border: "1px solid #333",
                     color: "#fff",
-                    borderRadius: "8px",
                   }}
                 />
               </Form.Group>
             </Col>
           </Row>
+
           <Form.Group className="mb-3">
-            <Form.Label className="fw-light">Category *</Form.Label>
+            <Form.Label>Category *</Form.Label>
             <Form.Select
               name="CAT_ID"
               value={formData.CAT_ID}
@@ -168,7 +186,6 @@ function ProductAdd() {
                 backgroundColor: "#2a2d33",
                 border: "1px solid #333",
                 color: "#fff",
-                borderRadius: "8px",
               }}
             >
               <option value="">Select Category</option>
@@ -179,63 +196,68 @@ function ProductAdd() {
               ))}
             </Form.Select>
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label className="fw-light">Description *</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Enter Description"
-              style={{
-                backgroundColor: "#2a2d33",
-                border: "1px solid #333",
-                color: "#fff",
-                borderRadius: "8px",
-              }}
-            />
+
+          {/* PRODUCT INFO DYNAMIC KEY VALUE TABLE */}
+          <Form.Group className="mb-4">
+            <Form.Label>Product Info (Key - Value)</Form.Label>
+
+            {infoRows.map((row, index) => (
+              <Row key={index} className="mb-2">
+                <Col md={5}>
+                  <Form.Control
+                    value={row.key}
+                    placeholder="Feature Name"
+                    onChange={(e) =>
+                      updateRow(index, "key", e.target.value)
+                    }
+                    style={{
+                      backgroundColor: "#2a2d33",
+                      border: "1px solid #444",
+                      color: "#fff",
+                    }}
+                  />
+                </Col>
+
+                <Col md={5}>
+                  <Form.Control
+                    value={row.value}
+                    placeholder="Feature Value"
+                    onChange={(e) =>
+                      updateRow(index, "value", e.target.value)
+                    }
+                    style={{
+                      backgroundColor: "#2a2d33",
+                      border: "1px solid #444",
+                      color: "#fff",
+                    }}
+                  />
+                </Col>
+
+                <Col md={2}>
+                  <Button
+                    variant="danger"
+                    onClick={() => removeRow(index)}
+                    disabled={infoRows.length === 1}
+                    className="w-100"
+                  >
+                    <FaTrash />
+                  </Button>
+                </Col>
+              </Row>
+            ))}
+
+            <Button
+              variant="success"
+              className="mt-2"
+              onClick={addRow}
+            >
+              <FaPlus /> Add Row
+            </Button>
           </Form.Group>
 
-     {/* <Form.Group className="mb-4">
-  <Form.Label className="fw-light">Product Info (optional)</Form.Label>
-  <div
-    style={{
-      backgroundColor: "#2a2d33",
-      borderRadius: "8px",
-      border: "1px solid #333",
-      padding: "8px",
-    }}
-  >
-    <SimpleMDE
-      value={formData.product_info}
-      onChange={(value) => setFormData({ ...formData, product_info: value })}
-      options={{
-        spellChecker: false,
-        placeholder: "Write technical or additional info here...",
-        toolbar: [
-          "bold",
-          "italic",
-          "heading",
-          "|",
-          "unordered-list",
-          "ordered-list",
-          "|",
-          "link",
-          "preview",
-        ],
-        status: false,
-        renderingConfig: { singleLineBreaks: false },
-      }}
-    />
-  </div>
-</Form.Group> */}
-
-
-
-          {/* 🖼 Image Upload Section */}
+          {/* IMAGES */}
           <Form.Group className="mb-4">
-            <Form.Label className="fw-light">Upload Product Images</Form.Label>
+            <Form.Label>Upload Images</Form.Label>
             <Form.Control
               type="file"
               multiple
@@ -244,7 +266,6 @@ function ProductAdd() {
                 backgroundColor: "#2a2d33",
                 border: "1px solid #333",
                 color: "#aaa",
-                borderRadius: "8px",
               }}
             />
             <div className="mt-3 d-flex flex-wrap gap-3">
@@ -252,19 +273,14 @@ function ProductAdd() {
                 <Image
                   key={index}
                   src={url}
-                  alt="preview"
-                  thumbnail
                   height="100"
                   width="100"
-                  style={{
-                    borderRadius: "8px",
-                    border: "1px solid #444",
-                    backgroundColor: "#222",
-                  }}
+                  thumbnail
                 />
               ))}
             </div>
           </Form.Group>
+
           <Button
             type="submit"
             className="w-100 fw-semibold py-2"

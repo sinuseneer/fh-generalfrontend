@@ -29,10 +29,11 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(!passedProduct);
   const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
-  // Touch/swipe state for mobile
+  // Touch/swipe
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
+  // Inquiry form
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -40,28 +41,27 @@ export default function ProductDetails() {
     message: "",
   });
 
-  // ✅ Normalize image URLs
   const normalizeImg = (img) =>
     img ? (img.startsWith("http") ? img : `${base_uri}${img}`) : null;
 
-  // ✅ Handle case when product is already passed via router
   useEffect(() => {
     if (passedProduct) {
       const mainImg = normalizeImg(passedProduct.main_image);
       const galleryImgs = (passedProduct.gallery || [])
         .filter(Boolean)
         .map(normalizeImg);
+
       const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
       setSelectedImage(firstImg);
     }
   }, [passedProduct]);
 
-  // ✅ Fetch product from API if not passed via navigation
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(`${api_uri}product/userview/${id}`);
         const data = await res.json();
+
         if (data.success) {
           setProduct(data.product);
 
@@ -70,7 +70,6 @@ export default function ProductDetails() {
             .filter(Boolean)
             .map(normalizeImg);
 
-          // ✅ First available image as default
           const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
           setSelectedImage(firstImg);
         } else {
@@ -87,48 +86,33 @@ export default function ProductDetails() {
     if (!passedProduct && id) fetchProduct();
   }, [id]);
 
-  // ✅ Handle form change
+  // Input handler
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // ✅ Handle touch/swipe for mobile image navigation
-  const handleTouchStart = (e) => {
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
+  // Swipe logic
+  const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
 
   const handleTouchEnd = (allImages) => {
     if (!touchStart || !touchEnd) return;
 
     const distance = touchStart - touchEnd;
-    const minSwipeDistance = 50;
+    if (Math.abs(distance) < 50) return;
 
-    if (Math.abs(distance) < minSwipeDistance) return;
-
-    const currentIndex = allImages.findIndex((img) => img === selectedImage);
-
-    if (distance > 0) {
-      // Swipe left - next image
-      if (currentIndex < allImages.length - 1) {
-        setSelectedImage(allImages[currentIndex + 1]);
-      }
-    } else {
-      // Swipe right - previous image
-      if (currentIndex > 0) {
-        setSelectedImage(allImages[currentIndex - 1]);
-      }
+    const i = allImages.findIndex((img) => img === selectedImage);
+    if (distance > 0 && i < allImages.length - 1) {
+      setSelectedImage(allImages[i + 1]);
+    } else if (distance < 0 && i > 0) {
+      setSelectedImage(allImages[i - 1]);
     }
 
     setTouchStart(0);
     setTouchEnd(0);
   };
 
-  // ✅ Send Email using EmailJS
+  // Send email
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.info("Sending message...", { autoClose: false });
@@ -143,27 +127,25 @@ export default function ProductDetails() {
 
     try {
       await emailjs.send(
-        "service_dq1kvps", // EmailJS service ID
-        "template_enjtl4e", // Template ID
+        "service_dq1kvps",
+        "template_enjtl4e",
         templateParams,
-        "tGZK_yhhP8blh1oT-" // Public key
+        "tGZK_yhhP8blh1oT-"
       );
 
       toast.dismiss(toastId);
-      toast.success(" Message sent successfully!");
+      toast.success("Message sent successfully!");
       setFormData({ name: "", phone: "", email: "", message: "" });
     } catch (err) {
-      console.error(" Email send failed:", err);
       toast.dismiss(toastId);
-      toast.error(" Failed to send message. Please try again.");
+      toast.error("Failed to send message.");
     }
   };
 
-  // ✅ Handle loading and error states
   if (loading) {
     return (
       <Container className="text-center my-5">
-        <Spinner animation="border" variant="success" />
+        <Spinner animation="border" />
         <p>Loading product details...</p>
       </Container>
     );
@@ -173,114 +155,44 @@ export default function ProductDetails() {
     return (
       <Container className="my-5 text-center">
         <h3>Product not found</h3>
-        <Button variant="secondary" onClick={() => navigate("/product")}>
-          Back
-        </Button>
+        <Button onClick={() => navigate("/product")}>Back</Button>
       </Container>
     );
   }
 
-  // ✅ Collect all images
+  // All images
   const allImages = [product.main_image, ...(product.gallery || [])]
     .filter(Boolean)
     .map(normalizeImg);
-
-  // Parse backend description into a heading + bullet items
-  const parseDescription = (desc) => {
-    if (!desc || typeof desc !== "string") return { heading: null, items: [] };
-
-    // Normalize line endings
-    let s = desc.replace(/\r/g, "").trim();
-
-    // If description contains explicit newlines, prefer those as separators
-    // Otherwise split by common bullet symbols like ► • • or hyphen
-    const bulletChars = /[►•\u2022\-]/;
-    const firstBulletIndex = s.search(bulletChars);
-
-    let heading = null;
-    let rest = s;
-
-    // If there's text before the first bullet and it looks like a heading (ends with ':'), keep it
-    if (firstBulletIndex > 0) {
-      const possibleHeading = s.slice(0, firstBulletIndex).trim();
-      if (possibleHeading.endsWith(":")) {
-        heading = possibleHeading;
-        rest = s.slice(firstBulletIndex);
-      }
-    }
-
-    let parts = [];
-    if (rest.includes("\n")) {
-      parts = rest.split("\n");
-    } else {
-      // Split by any of the bullet characters
-      parts = rest.split(/[►•\u2022]/);
-    }
-
-    const items = parts
-      .map((p) => p.replace(/^[:\s\-–—]+/, "").trim())
-      .filter(Boolean);
-
-    return { heading, items };
-  };
 
   return (
     <Container className="my-5">
       <ToastContainer position="top-center" />
 
-      {/* ---------- Back Button ---------- */}
-      <Row className="mb-3">
-        <Col xs={12}>
-          <Button
-            variant=""
-            onClick={() => navigate("/product")}
-            className="d-flex align-items-center"
-          >
-            <i className="bi bi-arrow-left me-2"></i>
-            Back to Products
-          </Button>
-        </Col>
-      </Row>
+      {/* Back button */}
+      <Button variant="link" onClick={() => navigate("/product")}>
+        ← Back to Products
+      </Button>
 
-      {/* ---------- Image (left) and Product Details + Inquiry Form (right) ---------- */}
       <Row className="mb-4">
-        {/* Left: Main Image + Thumbnails */}
-        <Col xs={12} md={6} className="text-center">
+        {/* LEFT IMAGES */}
+        <Col md={6} className="text-center">
           <Box
             sx={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#fff",
-              borderRadius: 2,
               mb: 2,
-              p: 1,
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={() => handleTouchEnd(allImages)}
           >
-            <MuiCard
-              elevation={3}
-              sx={{
-                borderRadius: 3,
-                overflow: "hidden",
-                width: "100%",
-                maxHeight: 560,
-                /* use a very light border instead of a colored shadow */
-                border: "1px solid #fcfcfc",
-              }}
-            >
+            <MuiCard sx={{ borderRadius: 3, width: "100%", maxHeight: 560 }}>
               <CardMedia
                 component="img"
                 image={selectedImage}
                 alt={product.name}
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  transition: "0.3s ease",
-                }}
+                sx={{ objectFit: "contain", height: "100%" }}
                 onError={(e) => (e.target.src = "/images/no-image.jpg")}
               />
             </MuiCard>
@@ -288,157 +200,123 @@ export default function ProductDetails() {
 
           {/* Thumbnails */}
           <Box
-            className="thumbnail-container"
+            ref={thumbRef}
             sx={{
-              position: "relative",
-              width: "100%",
-              maxWidth: 560,
-              mr: "auto",
+              display: "flex",
+              gap: 1,
+              overflowX: "auto",
+              p: 1,
             }}
           >
-            {allImages.length > 4 && (
-              <IconButton
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: -10,
-                  transform: "translateY(-50%)",
-                  zIndex: 2,
-                  backgroundColor: "white",
-                  border: 1,
-                  boxShadow: "0 0 4px rgba(0,0,0,0.2)",
-                  "&:hover": { backgroundColor: "#f0f0f0" },
-                }}
-                onClick={() => (thumbRef.current.scrollLeft -= 150)}
-              >
-                <ArrowBackIosNew fontSize="small" />
-              </IconButton>
-            )}
-
-            <Box
-              ref={thumbRef}
-              sx={{
-                display: "flex",
-                gap: 1.5,
-                overflowX: "auto",
-                scrollBehavior: "smooth",
-                p: 1,
-                "&::-webkit-scrollbar": { height: "6px" },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "#2EA898",
-                  borderRadius: "3px",
-                },
-              }}
-            >
-              {allImages.map((img, index) => (
-                <MuiCard
-                  key={index}
-                  onClick={() => setSelectedImage(img)}
-                  sx={{
-                    flex: "0 0 auto",
-                    width: 120,
-                    height: 80,
-                    border:
-                      selectedImage === img
-                        ? "2px solid #2EA898"
-                        : "1px solid #ddd",
-                    borderRadius: 1,
-                    cursor: "pointer",
-                    transition: "0.3s",
-                    "&:hover": {
-                      transform: "scale(1.05)",
-                      border: "2px solid #37b24d",
-                    },
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    image={img}
-                    alt={`Thumbnail ${index}`}
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: "4px",
-                    }}
-                    onError={(e) => (e.target.src = "/images/no-image.jpg")}
-                  />
-                </MuiCard>
-              ))}
-            </Box>
-
-            {allImages.length > 4 && (
-              <IconButton
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  right: -10,
-                  transform: "translateY(-50%)",
-                  zIndex: 2,
-                  backgroundColor: "white",
-                  border: 1,
-                  boxShadow: "0 0 4px rgba(0,0,0,0.2)",
-                  "&:hover": { backgroundColor: "#f0f0f0" },
-                }}
-                onClick={() => (thumbRef.current.scrollLeft += 150)}
-              >
-                <ArrowForwardIos fontSize="small" />
-              </IconButton>
-            )}
-          </Box>
-
-          {/* Mobile Dots Pagination */}
-          <div className="mobile-dots-container" style={{ display: "none" }}>
             {allImages.map((img, index) => (
-              <div
+              <MuiCard
                 key={index}
-                className={`mobile-dot ${
-                  selectedImage === img ? "active" : ""
-                }`}
                 onClick={() => setSelectedImage(img)}
-              />
+                sx={{
+                  width: 120,
+                  height: 80,
+                  cursor: "pointer",
+                  border:
+                    selectedImage === img ? "2px solid #2EA898" : "1px solid #ddd",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  image={img}
+                  alt=""
+                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </MuiCard>
             ))}
-          </div>
+          </Box>
         </Col>
 
-        {/* Right: Product Details (without enquiry) */}
-        <Col xs={12} md={6}>
+        {/* RIGHT DETAILS */}
+        <Col md={6}>
           <Card className="p-4 border-0">
-            <h2 className="mb-3 text-start fw-bold">{product.name}</h2>
+            <h2 className="fw-bold">{product.name || product.product_name}</h2>
+
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
-            {product.product_info ? (
-              <p>
-                <strong>Product Info:</strong> {product.product_info}
-              </p>
-            ) : (
-              ""
-            )}
 
-            <div className="d-flex gap-3 flex-wrap mt-3 mb-4">
-              <Button
-                className="whatsapp1-btn d-flex align-items-center justify-content-center px-5"
-                href={`https://wa.me/13478694095?text=Hi%20Madam,%0AI'm%20interested%20in%20your%20product:%0A👉%20Name:%20${product.name}%0A🆔%20Product%20ID:%20${product.prod_id}%0ACould%20you%20please%20share%20more%20details?`}
-                target="_blank"
-                variant="success"
-              >
-                <i className="bi bi-whatsapp me-2"></i> WhatsApp Now
-              </Button>
-            </div>
+            {/* ⭐⭐⭐ NEW SPECIFICATIONS TABLE ⭐⭐⭐ */}
+            {Array.isArray(product.product_info) &&
+              product.product_info.length > 0 && (
+                <Card className="p-3 mt-3 shadow-sm border-0">
+                  <h5 className="mb-3">Specifications</h5>
+
+                  <table className="table table-bordered">
+                    <tbody>
+                      {(() => {
+                        const rows = [];
+                        for (let i = 0; i < product.product_info.length; i += 2) {
+                          const a = product.product_info[i];
+                          const b = product.product_info[i + 1];
+
+                          rows.push(
+                            <tr key={i}>
+                              <th
+                                style={{
+                                  width: "25%",
+                                  background: "#f8f9fa",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {a?.key}
+                              </th>
+                              <td style={{ width: "25%" }}>{a?.value}</td>
+
+                              {b ? (
+                                <>
+                                  <th
+                                    style={{
+                                      width: "25%",
+                                      background: "#f8f9fa",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    {b.key}
+                                  </th>
+                                  <td style={{ width: "25%" }}>{b.value}</td>
+                                </>
+                              ) : (
+                                <>
+                                  <th></th>
+                                  <td></td>
+                                </>
+                              )}
+                            </tr>
+                          );
+                        }
+                        return rows;
+                      })()}
+                    </tbody>
+                  </table>
+                </Card>
+              )}
+
+            {/* WhatsApp Button */}
+            <Button
+              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.name}`}
+              target="_blank"
+              variant="success"
+              className="mt-3"
+            >
+              WhatsApp Now
+            </Button>
           </Card>
-          {/* Inquiry form placed under the details on the right column */}
-          <Card className="pt-0 p-4 shadow-sm border-0 mt-0">
-            <h5 className="mb-3">Submit your inquiry to know more.</h5>
+
+          {/* INQUIRY FORM */}
+          <Card className="p-4 shadow-sm mt-3">
+            <h5>Submit your inquiry</h5>
 
             <Form onSubmit={handleSubmit}>
-              <Row className="mb-3">
+              <Row>
                 <Col md={6}>
-                  <Form.Group controlId="formName">
-                    <Form.Label>Full Name</Form.Label>
+                  <Form.Group>
+                    <Form.Label>Name</Form.Label>
                     <Form.Control
-                      type="text"
-                      placeholder="Enter your full name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
@@ -446,12 +324,11 @@ export default function ProductDetails() {
                     />
                   </Form.Group>
                 </Col>
+
                 <Col md={6}>
-                  <Form.Group controlId="formPhone">
-                    <Form.Label>Phone Number</Form.Label>
+                  <Form.Group>
+                    <Form.Label>Phone</Form.Label>
                     <Form.Control
-                      type="tel"
-                      placeholder="Enter your phone number"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
@@ -461,28 +338,21 @@ export default function ProductDetails() {
                 </Col>
               </Row>
 
-              <Row className="mb-3">
-                <Col md={12}>
-                  <Form.Group controlId="formEmail">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="email"
-                      placeholder="Enter your email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
+              <Form.Group className="mt-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
 
-              <Form.Group controlId="formMessage" className="mb-3">
+              <Form.Group className="mt-3">
                 <Form.Label>Message</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
-                  placeholder="Enter your message here..."
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
@@ -490,52 +360,20 @@ export default function ProductDetails() {
                 />
               </Form.Group>
 
-              <div className="text-start">
-                <Button type="submit" className="custom-btn px-4">
-                  Send Message
-                </Button>
-              </div>
+              <Button className="mt-3" type="submit">
+                Send Message
+              </Button>
             </Form>
           </Card>
         </Col>
       </Row>
 
-      {/* ---------- Product Description (below the inquiry form) ---------- */}
+      {/* DESCRIPTION SECTION */}
       <Row className="mt-4">
-        <Col xs={12} md={8} className="ml-auto">
+        <Col md={8}>
           <Card className="p-4 border-0">
-            <h5 className="mb-3">Product Description</h5>
-
-            {(() => {
-              const { heading, items } = parseDescription(product.description);
-              if (items.length > 0) {
-                return (
-                  <div>
-                    {heading && (
-                      <p>
-                        <strong>{heading}</strong>
-                      </p>
-                    )}
-                    <ul className="product-bullets" style={{ paddingLeft: 0 }}>
-                      {items.map((it, idx) => {
-                        const [label, ...rest] = it.split(":");
-                        if (rest.length > 0) {
-                          return (
-                            <li key={idx}>
-                              <strong>{label.trim()}:</strong>{" "}
-                              {rest.join(":").trim()}
-                            </li>
-                          );
-                        }
-                        return <li key={idx}>{it}</li>;
-                      })}
-                    </ul>
-                  </div>
-                );
-              }
-
-              return <p>{product.description}</p>;
-            })()}
+            <h5>Description</h5>
+            <p>{product.description}</p>
           </Card>
         </Col>
       </Row>

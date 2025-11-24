@@ -12,11 +12,12 @@ import {
   Col,
   Image,
   Spinner,
+  Table,
 } from "react-bootstrap";
-import { FaSave, FaUpload, FaTrashAlt } from "react-icons/fa";
+import { FaSave, FaTrashAlt } from "react-icons/fa";
 
 function ProductEdit() {
-  const { id } = useParams(); // product ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -24,18 +25,17 @@ function ProductEdit() {
     product_name: "",
     CAT_ID: "",
     description: "",
-    product_info: "",
+    product_info: [],
   });
 
   const [categories, setCategories] = useState([]);
   const [productImages, setProductImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
   const [editingImageId, setEditingImageId] = useState(null);
   const [replaceImage, setReplaceImage] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Load product details + categories
+  // Load categories + product
   useEffect(() => {
     loadCategories();
     loadProduct();
@@ -55,19 +55,19 @@ function ProductEdit() {
       const res = await axios.get(`${api_uri}product/${id}`);
       if (res.data.success) {
         const product = res.data.product;
+
         setFormData({
           prod_id: product.prod_id,
           product_name: product.product_name,
           CAT_ID: product.CAT_ID?._id || "",
           description: product.description,
-          product_info: product.product_info || "",
+          product_info: Array.isArray(product.product_info)
+            ? product.product_info
+            : [],
         });
 
         if (product.images?.length > 0) {
           setProductImages(product.images);
-          setPreviewUrls(
-            product.images.map((img) => `${base_uri}${img.image_path}`)
-          );
         }
       }
     } catch {
@@ -77,89 +77,95 @@ function ProductEdit() {
     }
   };
 
-  // ✅ Handle text field changes
+  // Input text handling
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle multiple new images
+  // Add New Images
   const handleNewImageChange = (e) => {
     const files = Array.from(e.target.files);
     setNewImages(files);
   };
 
-  // ✅ Replace single image in an existing slot
+  // Replace existing image
   const handleReplaceImage = (e) => {
     setReplaceImage(e.target.files[0]);
   };
 
-  // ✅ Delete single image
-const handleDeleteImage = async (imageId) => {
-  if (!window.confirm("Are you sure you want to delete this image?")) return;
+  // Delete Image
+  const handleDeleteImage = async (imageId) => {
+    if (!window.confirm("Are you sure?")) return;
 
-  try {
-    const res = await axios.delete(`${api_uri}product/delete-image/${imageId}`);
-    if (res.data.success) {
-      toast.success("Image deleted successfully");
-      loadProduct();
-    }
-  } catch {
-    toast.error("Failed to delete image");
-  }
-};
-
-
-  // ✅ Submit Update
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    // 1️⃣ Update product text fields
-    const res = await axios.put(`${api_uri}product/update/${id}`, formData);
-
-    if (res.data.success) {
-      // 2️⃣ Replace single image slot (if selected)
-      if (editingImageId && replaceImage) {
-        const imgForm = new FormData();
-        imgForm.append("image", replaceImage);
-
-        await axios.put(
-          `${api_uri}product/replace-image/${editingImageId}`,
-          imgForm,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-
-        toast.success("Image slot replaced successfully!");
+    try {
+      const res = await axios.delete(`${api_uri}product/delete-image/${imageId}`);
+      if (res.data.success) {
+        toast.success("Image deleted");
+        loadProduct();
       }
-
-      // 3️⃣ Upload new images (if selected)
-      if (newImages.length > 0) {
-        const imgForm = new FormData();
-        newImages.forEach((file) => imgForm.append("images", file));
-
-        await axios.post(`${api_uri}product/upload-images/${id}`, imgForm, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        toast.success("New images added successfully!");
-      }
-
-      // Reset
-      setEditingImageId(null);
-      setReplaceImage(null);
-      setNewImages([]);
-
-      loadProduct();
-      toast.success("✅ Product updated successfully!");
-
-      setTimeout(() => navigate("/admin/products/list"), 1500);
+    } catch {
+      toast.error("Failed to delete image");
     }
-  } catch (error) {
-    console.error("❌ Error updating product:", error);
-    toast.error("Server error while updating");
-  }
-};
+  };
 
+  // ======== PRODUCT INFO KEY-VALUE FUNCTIONS ========
+
+  const addRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      product_info: [...prev.product_info, { key: "", value: "" }],
+    }));
+  };
+
+  const updateRow = (index, field, value) => {
+    const updated = [...formData.product_info];
+    updated[index][field] = value;
+    setFormData({ ...formData, product_info: updated });
+  };
+
+  const deleteRow = (index) => {
+    const updated = formData.product_info.filter((_, i) => i !== index);
+    setFormData({ ...formData, product_info: updated });
+  };
+
+  // ======== SUBMIT UPDATE ========
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Update text fields + product_info
+      const res = await axios.put(`${api_uri}product/update/${id}`, formData);
+
+      if (res.data.success) {
+        // Replace image slot
+        if (editingImageId && replaceImage) {
+          const imgForm = new FormData();
+          imgForm.append("image", replaceImage);
+
+          await axios.put(
+            `${api_uri}product/replace-image/${editingImageId}`,
+            imgForm,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+        }
+
+        // Upload new images
+        if (newImages.length > 0) {
+          const imgForm = new FormData();
+          newImages.forEach((file) => imgForm.append("images", file));
+
+          await axios.post(`${api_uri}product/upload-images/${id}`, imgForm, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+        }
+
+        toast.success("Product updated successfully!");
+        setTimeout(() => navigate("/admin/products/list"), 1200);
+      }
+    } catch (err) {
+      toast.error("Update failed");
+    }
+  };
 
   if (loading)
     return (
@@ -171,12 +177,10 @@ const handleSubmit = async (e) => {
   return (
     <Container className="mt-5" style={{ maxWidth: "900px" }}>
       <Card className="bg-dark text-light p-4 shadow-lg rounded-4">
-        <h3 className="fw-bold text-uppercase mb-4 text-center text-info">
-          Edit Product
-        </h3>
+        <h3 className="fw-bold text-center text-info mb-4">Edit Product</h3>
 
         <Form onSubmit={handleSubmit}>
-          {/* ✅ Product Info */}
+          {/* Basic Info */}
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
@@ -186,11 +190,12 @@ const handleSubmit = async (e) => {
                   name="prod_id"
                   value={formData.prod_id}
                   onChange={handleChange}
+                  className="bg-secondary bg-opacity-25 text-light"
                   required
-                  className="bg-secondary bg-opacity-25 text-light border-secondary"
                 />
               </Form.Group>
             </Col>
+
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Product Name *</Form.Label>
@@ -199,21 +204,22 @@ const handleSubmit = async (e) => {
                   name="product_name"
                   value={formData.product_name}
                   onChange={handleChange}
+                  className="bg-secondary bg-opacity-25 text-light"
                   required
-                  className="bg-secondary bg-opacity-25 text-light border-secondary"
                 />
               </Form.Group>
             </Col>
           </Row>
 
+          {/* Category */}
           <Form.Group className="mb-3">
             <Form.Label>Category *</Form.Label>
             <Form.Select
               name="CAT_ID"
               value={formData.CAT_ID}
               onChange={handleChange}
+              className="bg-secondary bg-opacity-25 text-light"
               required
-              className="bg-secondary bg-opacity-25 text-light border-secondary"
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -224,7 +230,8 @@ const handleSubmit = async (e) => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group className="mb-3">
+          {/* Description */}
+          <Form.Group className="mb-4">
             <Form.Label>Description *</Form.Label>
             <Form.Control
               as="textarea"
@@ -232,78 +239,133 @@ const handleSubmit = async (e) => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              required
-              className="bg-secondary bg-opacity-25 text-light border-secondary"
+              className="bg-secondary bg-opacity-25 text-light"
             />
           </Form.Group>
 
-          {/* 🖼 Current Images */}
-          <div className="mb-4">
-            <Form.Label>Current Images</Form.Label>
-            <div className="d-flex flex-wrap gap-3">
-              {productImages.length > 0 ? (
-                productImages.map((img, idx) => (
-                  <div
-                    key={img._id}
-                    className="p-2 rounded position-relative bg-dark"
-                    style={{
-                      border:
-                        editingImageId === img._id
-                          ? "3px solid #ff4d4f"
-                          : "1px solid #0dcaf0",
-                      width: "120px",
-                    }}
-                  >
-                    <Image
-                      src={`${base_uri}${img.image_path}`}
-                      height="100"
-                      width="100"
-                      rounded
-                      className="mb-2"
-                    />
-                    <div className="d-flex justify-content-between">
-                      <Button
-                        size="sm"
-                        variant={
-                          editingImageId === img._id ? "danger" : "warning"
+          {/* PRODUCT INFO KEY-VALUE TABLE */}
+          <Card className="p-3 mb-4 bg-secondary bg-opacity-25">
+            <h5 className="text-info mb-3">Product Info (Key / Value)</h5>
+
+            <Table bordered hover variant="dark">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                  <th style={{ width: "70px" }}>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {formData.product_info.map((row, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        value={row.key}
+                        onChange={(e) =>
+                          updateRow(index, "key", e.target.value)
                         }
-                        onClick={() =>
-                          setEditingImageId(
-                            editingImageId === img._id ? null : img._id
-                          )
+                        className="bg-dark text-light"
+                      />
+                    </td>
+
+                    <td>
+                      <Form.Control
+                        type="text"
+                        value={row.value}
+                        onChange={(e) =>
+                          updateRow(index, "value", e.target.value)
                         }
-                      >
-                        {editingImageId === img._id ? "Cancel" : "Replace"}
-                      </Button>
+                        className="bg-dark text-light"
+                      />
+                    </td>
+
+                    <td className="text-center">
                       <Button
+                        variant="danger"
                         size="sm"
-                        variant="outline-danger"
-                        onClick={() => handleDeleteImage(img._id)}
+                        onClick={() => deleteRow(index)}
                       >
                         <FaTrashAlt />
                       </Button>
-                    </div>
-                  </div>
-                ))
-              ) : (
+                    </td>
+                  </tr>
+                ))}
+
+                <tr>
+                  <td colSpan={3} className="text-center">
+                    <Button variant="info" size="sm" onClick={addRow}>
+                      + Add New Row
+                    </Button>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </Card>
+
+          {/* ===== IMAGES SECTION ===== */}
+          <div className="mb-4">
+            <Form.Label>Current Images</Form.Label>
+
+            <div className="d-flex flex-wrap gap-3">
+              {productImages.length === 0 && (
                 <span className="text-muted">No images available</span>
               )}
+
+              {productImages.map((img) => (
+                <div
+                  key={img._id}
+                  className="p-2 rounded bg-dark border border-info"
+                  style={{ width: "130px" }}
+                >
+                  <Image
+                    src={`${base_uri}${img.image_path}`}
+                    height="100"
+                    width="100"
+                    rounded
+                    className="mb-2"
+                  />
+
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      size="sm"
+                      variant={
+                        editingImageId === img._id ? "danger" : "warning"
+                      }
+                      onClick={() =>
+                        setEditingImageId(
+                          editingImageId === img._id ? null : img._id
+                        )
+                      }
+                    >
+                      {editingImageId === img._id ? "Cancel" : "Replace"}
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline-danger"
+                      onClick={() => handleDeleteImage(img._id)}
+                    >
+                      <FaTrashAlt />
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Replace selected image slot */}
           {editingImageId && (
             <Form.Group className="mb-4">
               <Form.Label>Replace Selected Image</Form.Label>
               <Form.Control
                 type="file"
                 onChange={handleReplaceImage}
-                className="bg-secondary bg-opacity-25 text-light border-secondary"
+                className="bg-secondary bg-opacity-25 text-light"
               />
             </Form.Group>
           )}
 
-          {/* Add new images */}
           <Form.Group className="mb-4">
             <Form.Label>Add New Images</Form.Label>
             <Form.Control
@@ -311,22 +373,8 @@ const handleSubmit = async (e) => {
               multiple
               accept="image/*"
               onChange={handleNewImageChange}
-              className="bg-secondary bg-opacity-25 text-light border-secondary"
+              className="bg-secondary bg-opacity-25 text-light"
             />
-            {newImages.length > 0 && (
-              <div className="d-flex flex-wrap gap-3 mt-3">
-                {newImages.map((file, idx) => (
-                  <Image
-                    key={idx}
-                    src={URL.createObjectURL(file)}
-                    height="80"
-                    width="80"
-                    rounded
-                    className="border border-warning"
-                  />
-                ))}
-              </div>
-            )}
           </Form.Group>
 
           <Button
