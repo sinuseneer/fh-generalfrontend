@@ -257,11 +257,11 @@ export default function ProductDetails() {
   variant="success"
   className="mt-3 px-4 py-2"
   style={{
-    width: "200px",
+    width: "150px",
     backgroundColor: "#128C7E",
     border: "none",
     borderRadius: "8px",
-    fontWeight: "500",
+    fontWeight: "400",
     display: "inline-flex",
     alignItems: "start",
     gap: "8px",
@@ -339,7 +339,7 @@ export default function ProductDetails() {
 
       {/* PRODUCT INFO SECTION */}
       <Row className="mt-4">
-        <Col md={8}>
+        <Col md={12}>
           <Card className="p-4 border-0">
             <h5>Specifications</h5>
 
