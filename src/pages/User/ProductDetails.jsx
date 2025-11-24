@@ -10,8 +10,7 @@ import {
 } from "react-bootstrap";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import emailjs from "emailjs-com";
-import { Box, IconButton, Card as MuiCard, CardMedia } from "@mui/material";
-import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
+import { Box, Card as MuiCard, CardMedia } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
@@ -56,6 +55,7 @@ export default function ProductDetails() {
     }
   }, [passedProduct]);
 
+  // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -86,12 +86,12 @@ export default function ProductDetails() {
     if (!passedProduct && id) fetchProduct();
   }, [id]);
 
-  // Input handler
+  // Form input handler
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // Swipe logic
+  // Swipe handlers
   const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
   const handleTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
 
@@ -112,7 +112,7 @@ export default function ProductDetails() {
     setTouchEnd(0);
   };
 
-  // Send email
+  // Send inquiry email
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.info("Sending message...", { autoClose: false });
@@ -122,7 +122,7 @@ export default function ProductDetails() {
       from_email: formData.email,
       phone: formData.phone,
       message: formData.message,
-      product_name: product?.name || "Unknown Product",
+      product_name: product?.name || product?.product_name || "Unknown Product",
     };
 
     try {
@@ -160,7 +160,7 @@ export default function ProductDetails() {
     );
   }
 
-  // All images
+  // All images list
   const allImages = [product.main_image, ...(product.gallery || [])]
     .filter(Boolean)
     .map(normalizeImg);
@@ -175,7 +175,7 @@ export default function ProductDetails() {
       </Button>
 
       <Row className="mb-4">
-        {/* LEFT IMAGES */}
+        {/* LEFT IMAGE SECTION */}
         <Col md={6} className="text-center">
           <Box
             sx={{
@@ -191,7 +191,7 @@ export default function ProductDetails() {
               <CardMedia
                 component="img"
                 image={selectedImage}
-                alt={product.name}
+                alt={product.name || product.product_name}
                 sx={{ objectFit: "contain", height: "100%" }}
                 onError={(e) => (e.target.src = "/images/no-image.jpg")}
               />
@@ -217,7 +217,9 @@ export default function ProductDetails() {
                   height: 80,
                   cursor: "pointer",
                   border:
-                    selectedImage === img ? "2px solid #2EA898" : "1px solid #ddd",
+                    selectedImage === img
+                      ? "2px solid #2EA898"
+                      : "1px solid #ddd",
                 }}
               >
                 <CardMedia
@@ -231,70 +233,24 @@ export default function ProductDetails() {
           </Box>
         </Col>
 
-        {/* RIGHT DETAILS */}
+        {/* RIGHT DETAILS SECTION */}
         <Col md={6}>
           <Card className="p-4 border-0">
-            <h2 className="fw-bold">{product.name || product.product_name}</h2>
+            <h2 className="fw-bold">
+              {product.name || product.product_name}
+            </h2>
 
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
 
-            {/* ⭐⭐⭐ NEW SPECIFICATIONS TABLE ⭐⭐⭐ */}
-            {Array.isArray(product.product_info) &&
-              product.product_info.length > 0 && (
-                <Card className="p-3 mt-3 shadow-sm border-0">
-                  <h5 className="mb-3">Specifications</h5>
-
-                  <table className="table table-bordered">
-                    <tbody>
-                      {(() => {
-                        const rows = [];
-                        for (let i = 0; i < product.product_info.length; i += 2) {
-                          const a = product.product_info[i];
-                          const b = product.product_info[i + 1];
-
-                          rows.push(
-                            <tr key={i}>
-                              <th
-                                style={{
-                                  width: "25%",
-                                  background: "#f8f9fa",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {a?.key}
-                              </th>
-                              <td style={{ width: "25%" }}>{a?.value}</td>
-
-                              {b ? (
-                                <>
-                                  <th
-                                    style={{
-                                      width: "25%",
-                                      background: "#f8f9fa",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    {b.key}
-                                  </th>
-                                  <td style={{ width: "25%" }}>{b.value}</td>
-                                </>
-                              ) : (
-                                <>
-                                  <th></th>
-                                  <td></td>
-                                </>
-                              )}
-                            </tr>
-                          );
-                        }
-                        return rows;
-                      })()}
-                    </tbody>
-                  </table>
-                </Card>
-              )}
+            {/* 🟢 MOVE DESCRIPTION HERE */}
+            {product.description && (
+              <Card className="p-3 mt-3 shadow-sm border-0">
+                <h5 className="mb-2">Description</h5>
+                <p className="mb-0">{product.description}</p>
+              </Card>
+            )}
 
             {/* WhatsApp Button */}
             <Button
@@ -307,7 +263,7 @@ export default function ProductDetails() {
             </Button>
           </Card>
 
-          {/* INQUIRY FORM */}
+          {/* Inquiry Form */}
           <Card className="p-4 shadow-sm mt-3">
             <h5>Submit your inquiry</h5>
 
@@ -368,15 +324,68 @@ export default function ProductDetails() {
         </Col>
       </Row>
 
-      {/* DESCRIPTION SECTION */}
+      {/* PRODUCT INFO SECTION */}
       <Row className="mt-4">
         <Col md={8}>
           <Card className="p-4 border-0">
-            <h5>Description</h5>
-            <p>{product.description}</p>
+            <h5>Specifications</h5>
+
+            {Array.isArray(product.product_info) &&
+            product.product_info.length > 0 ? (
+              <table className="table table-bordered mt-3">
+                <tbody>
+                  {(() => {
+                    const rows = [];
+                    for (let i = 0; i < product.product_info.length; i += 2) {
+                      const a = product.product_info[i];
+                      const b = product.product_info[i + 1];
+
+                      rows.push(
+                        <tr key={i}>
+                          <th
+                            style={{
+                              width: "25%",
+                              background: "#f8f9fa",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {a?.key}
+                          </th>
+                          <td style={{ width: "25%" }}>{a?.value}</td>
+
+                          {b ? (
+                            <>
+                              <th
+                                style={{
+                                  width: "25%",
+                                  background: "#f8f9fa",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {b.key}
+                              </th>
+                              <td style={{ width: "25%" }}>{b.value}</td>
+                            </>
+                          ) : (
+                            <>
+                              <th></th>
+                              <td></td>
+                            </>
+                          )}
+                        </tr>
+                      );
+                    }
+                    return rows;
+                  })()}
+                </tbody>
+              </table>
+            ) : (
+              <p>No specifications available.</p>
+            )}
           </Card>
         </Col>
       </Row>
     </Container>
   );
 }
+
