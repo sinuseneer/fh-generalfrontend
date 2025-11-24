@@ -77,7 +77,7 @@ export default function Contact() {
       <Container className="py-4">
         {/* ⭐ Equal Height Row */}
         <Row className="g-4 align-items-stretch">
-          
+
           {/* LEFT COLUMN */}
           <Col md={6} className="h-100">
             <div className="d-flex flex-column gap-4 h-100">
@@ -93,14 +93,17 @@ export default function Contact() {
                     gap: "18px",
                   }}
                 >
-                  <div className="icon-box" style={{
-                    backgroundColor: "#E8FAF6",
-                    borderRadius: "12px",
-                    padding: "14px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
+                  <div
+                    className="icon-box"
+                    style={{
+                      backgroundColor: "#E8FAF6",
+                      borderRadius: "12px",
+                      padding: "14px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     {item.icon}
                   </div>
 
@@ -130,7 +133,11 @@ export default function Contact() {
                 <Form.Group className="position-relative">
                   <User
                     className="position-absolute text-muted"
-                    style={{ left: "12px", top: "50%", transform: "translateY(-50%)" }}
+                    style={{
+                      left: "12px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    }}
                     size={20}
                   />
                   <Form.Control
@@ -149,7 +156,11 @@ export default function Contact() {
                 <Form.Group className="position-relative">
                   <Mail
                     className="position-absolute text-muted"
-                    style={{ left: "12px", top: "50%", transform: "translateY(-50%)" }}
+                    style={{
+                      left: "12px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    }}
                     size={20}
                   />
                   <Form.Control
@@ -168,7 +179,11 @@ export default function Contact() {
                 <Form.Group className="position-relative">
                   <Phone
                     className="position-absolute text-muted"
-                    style={{ left: "12px", top: "50%", transform: "translateY(-50%)" }}
+                    style={{
+                      left: "12px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    }}
                     size={20}
                   />
                   <Form.Control
@@ -183,7 +198,7 @@ export default function Contact() {
                   />
                 </Form.Group>
 
-                {/* MESSAGE BOX */}
+                {/* MESSAGE */}
                 <Form.Group>
                   <Form.Control
                     as="textarea"
@@ -198,7 +213,7 @@ export default function Contact() {
                   />
                 </Form.Group>
 
-                {/* BUTTON */}
+                {/* BUTTON — NOT FULL WIDTH */}
                 <Button
                   variant="dark"
                   type="submit"
@@ -208,6 +223,7 @@ export default function Contact() {
                     fontWeight: "600",
                     backgroundColor: "#2EA898",
                     borderColor: "#2EA898",
+                    width: "fit-content",
                   }}
                 >
                   Send Message
@@ -216,7 +232,6 @@ export default function Contact() {
                 <ToastContainer position="top-center" />
 
               </Form>
-
             </div>
           </Col>
 
