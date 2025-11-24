@@ -1,15 +1,12 @@
-/* ===========================================================
-   GLOBAL INPUT PLACEHOLDER STYLE
-   =========================================================== */
+/* 🌿 Custom placeholder styling */
 .form-control::placeholder {
-  font-size: 0.8rem;
-  color: #aeb1b4;
-  opacity: 1;
+  font-size: 0.8rem;   /* Change placeholder font size */
+  color: #aeb1b4;      /* Optional: slightly gray placeholder text */
+  opacity: 1;          /* Ensure color applies consistently */
+ 
 }
 
-/* ===========================================================
-   PRODUCT DESCRIPTION BULLETS
-   =========================================================== */
+/* Product description bullets: use arrow glyph (►) instead of default round marker */
 .product-bullets {
   list-style: none;
   margin: 0;
@@ -18,7 +15,7 @@
 
 .product-bullets li {
   position: relative;
-  padding-left: 0.25rem;
+  padding-left: 0.25rem; 
   margin-bottom: 0.35rem;
 }
 
@@ -26,75 +23,110 @@
   /* content: "►"; */
   position: absolute;
   left: 0;
-  color: #2EA898;
+  top: 0;
+  color: #2EA898; /* accent color to match buttons */
   font-size: 0.95rem;
+  line-height: 1;
 }
+
+/* Mobile view: increase main product image height only (not thumbnails) */
+@media (max-width: 768px) {
+  .text-center > div > .MuiCard-root:first-child {
+    max-height: 400px !important;
+    min-height: 350px;
+  }
+  
+  .text-center > div > .MuiCard-root:first-child .MuiCardMedia-root {
+    height: 370px !important;
+    max-height: 400px !important;
+  }
+
+  /* Enable smooth touch interaction for image */
+  .text-center > div:first-child {
+    touch-action: pan-x;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Hide thumbnails and navigation arrows on mobile */
+  .thumbnail-container {
+    display: none !important;
+  }
+
+  /* Show dots pagination on mobile */
+  .mobile-dots-container {
+    display: flex !important;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .mobile-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-dot.active {
+    background-color: #2EA898;
+    border-color: #2EA898;
+    transform: scale(1.2);
+  }
+
+  .mobile-dot:hover {
+    background-color: #37b24d;
+    border-color: #37b24d;
+  }
+}
+
+/* Desktop view: hide dots, show thumbnails */
+@media (min-width: 769px) {
+  .mobile-dots-container {
+    display: none !important;
+  }
+}
+
 
 /* ===========================================================
-   BACK TEXT STYLE (NO BUTTON)
+   PRODUCT DETAILS — RESPONSIVE IMAGE & THUMBNAIL FIX
    =========================================================== */
-.back-text {
-  cursor: pointer;
-  color: #222;
-  margin-bottom: 12px;
-  font-size: 15px;
-  user-select: none;
-}
 
-.back-text:hover {
-  text-decoration: none !important;
-  color: #444;
-}
-
-/* Remove all shadows */
-.no-shadow {
-  box-shadow: none !important;
-}
-
-/* ===========================================================
-   MAIN PRODUCT IMAGE (ALL DEVICES)
-   =========================================================== */
+/* Main image container */
 .product-main-card {
   width: 100%;
+  max-height: 520px;
   border-radius: 12px;
   overflow: hidden;
 }
 
+/* Main image */
 .product-main-card img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background-color: #fff;
 }
 
-/* ===========================================================
-   THUMBNAIL CONTAINER (SCROLLABLE)
-   =========================================================== */
-.thumb-wrapper {
-  position: relative;
-  margin-top: 10px;
-}
-
+/* Thumbnails container */
 .thumbnail-scroll {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 6px 4px;
+  padding: 8px 4px;
   scroll-behavior: smooth;
 }
 
-.thumbnail-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* Thumbnail card */
+/* Thumbnails */
 .thumbnail-card {
   width: 110px;
   height: 75px;
   flex: 0 0 auto;
   border-radius: 6px;
-  overflow: hidden;
   cursor: pointer;
+  overflow: hidden;
   border: 2px solid transparent;
 }
 
@@ -108,117 +140,51 @@
   border-color: #2EA898;
 }
 
-/* Arrow Buttons */
-.thumb-arrow {
-  position: absolute;
-  top: 35%;
-  transform: translateY(-50%);
-  background: white;
-  border: 1px solid #ccc;
-  width: 28px;
-  height: 40px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 20px;
-  line-height: 0;
-  z-index: 10;
-  opacity: 0.9;
-}
-
-.thumb-arrow:hover {
-  background: #f3f3f3;
-}
-
-.thumb-arrow.left {
-  left: -6px;
-}
-
-.thumb-arrow.right {
-  right: -6px;
-}
-
 /* ===========================================================
-   MOBILE RESPONSIVENESS (0px - 768px)
+   MOBILE RESPONSIVENESS
    =========================================================== */
 @media (max-width: 768px) {
   .product-main-card {
     max-height: 380px !important;
-    min-height: 310px;
+    min-height: 320px;
   }
 
   .product-main-card img {
     max-height: 380px !important;
   }
 
-  /* Hide desktop thumbnails? NO — We keep them visible */
+  /* Hide desktop thumbnails if needed */
   .desktop-thumbs {
-    display: block !important;
+    display: none !important;
   }
 
-  /* Thumbnails smaller on mobile */
-  .thumbnail-card {
-    width: 85px;
-    height: 60px;
-  }
-
-  /* Arrows smaller on mobile */
-  .thumb-arrow {
-    width: 24px;
-    height: 36px;
-    font-size: 16px;
-  }
-}
-
-/* ===========================================================
-   TABLET (769px - 1024px)
-   =========================================================== */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .product-main-card {
-    max-height: 480px;
-  }
-
-  .thumbnail-card {
-    width: 100px;
-    height: 70px;
-  }
-}
-
-/* ===========================================================
-   DESKTOP LARGE + EXTRA LARGE
-   =========================================================== */
-@media (min-width: 1025px) {
-  .product-main-card {
-    max-height: 520px;
-  }
-}
-
-/* ===========================================================
-   DOTS FOR MOBILE SWIPE (OPTIONAL READY)
-   =========================================================== */
-.mobile-dots-container {
-  display: none;
-}
-
-.mobile-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-@media (max-width: 768px) {
+  /* Mobile dots */
   .mobile-dots-container {
     display: flex !important;
     justify-content: center;
-    gap: 6px;
-    margin-top: 10px;
+    gap: 7px;
+    margin-top: 14px;
   }
 
   .mobile-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
     background-color: #ccc;
     border: 1px solid #aaa;
   }
 
   .mobile-dot.active {
     background-color: #2EA898;
+    transform: scale(1.2);
   }
 }
+
+/* Desktop: Hide dots */
+@media (min-width: 769px) {
+  .mobile-dots-container {
+    display: none !important;
+  }
+}
+
+
