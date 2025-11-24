@@ -32,7 +32,6 @@ export default function Contact() {
     };
 
     try {
-      // Send to admin
       await emailjs.send(
         "service_dq1kvps",
         "template_qzdnm8j",
@@ -75,45 +74,63 @@ export default function Contact() {
         <h2 className="fw-bold">Contact Us</h2>
       </div>
 
-      {/* CONTACT INFO + GET IN TOUCH (2 COLUMNS) */}
-      <Container className="py-5">
-        <Row className="g-4 align-items-start">
-          {/* Left Column – Contact Cards */}
-          <Col md={6}>
-            <Row className="g-4">
-              {contactDetails.map((item, index) => (
-                <Col md={12} key={index}>
-                  <Card className="contact-card horizontal border-1 p-1 ms-2 d-flex align-items-center ">
-                    <div className="icon-box">{item.icon}</div>
+      <Container className="py-4">
+        {/* ⭐ Equal Height Row */}
+        <Row className="g-4 align-items-stretch">
+          
+          {/* LEFT COLUMN */}
+          <Col md={6} className="h-100">
+            <div className="d-flex flex-column gap-4 h-100">
 
-                    <div className="contact-content ms-2">
-                      <h5 className="fw-bold mb-1">{item.title}</h5> 
-                      <p className="text-muted mb-0">{item.text}</p>
-                    </div>
-                  </Card>
-                </Col>
+              {contactDetails.map((item, index) => (
+                <Card
+                  key={index}
+                  className="p-4 shadow-sm border-0 rounded-4"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: "18px",
+                  }}
+                >
+                  <div className="icon-box" style={{
+                    backgroundColor: "#E8FAF6",
+                    borderRadius: "12px",
+                    padding: "14px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>
+                    {item.icon}
+                  </div>
+
+                  <div>
+                    <h5 className="fw-bold mb-2">{item.title}</h5>
+                    <p className="text-muted mb-0" style={{ lineHeight: "1.5" }}>
+                      {item.text}
+                    </p>
+                  </div>
+                </Card>
               ))}
-            </Row>
+
+            </div>
           </Col>
 
-          {/* Right Column – Contact Form */}
-          <Col md={6}>
-            <div className="p-4 rounded-4 bg-light shadow-sm">
+          {/* RIGHT COLUMN */}
+          <Col md={6} className="h-100">
+            <div className="p-4 rounded-4 bg-light shadow-sm h-100 d-flex flex-column">
               <h3 className="fw-bolder mb-3">Get In Touch</h3>
               <p className="text-muted mb-4">
                 Your email address is safe with us.
               </p>
 
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3 position-relative">
+              <Form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+
+                {/* NAME */}
+                <Form.Group className="position-relative">
                   <User
                     className="position-absolute text-muted"
-                    style={{
-                      left: "12px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      zIndex: 10,
-                    }}
+                    style={{ left: "12px", top: "50%", transform: "translateY(-50%)" }}
                     size={20}
                   />
                   <Form.Control
@@ -123,19 +140,16 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    style={{ paddingLeft: "40px" }}
+                    className="py-2"
+                    style={{ paddingLeft: "42px" }}
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3 position-relative">
+                {/* EMAIL */}
+                <Form.Group className="position-relative">
                   <Mail
                     className="position-absolute text-muted"
-                    style={{
-                      left: "12px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      zIndex: 10,
-                    }}
+                    style={{ left: "12px", top: "50%", transform: "translateY(-50%)" }}
                     size={20}
                   />
                   <Form.Control
@@ -145,19 +159,16 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    style={{ paddingLeft: "40px" }}
+                    className="py-2"
+                    style={{ paddingLeft: "42px" }}
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3 position-relative">
+                {/* PHONE */}
+                <Form.Group className="position-relative">
                   <Phone
                     className="position-absolute text-muted"
-                    style={{
-                      left: "12px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      zIndex: 10,
-                    }}
+                    style={{ left: "12px", top: "50%", transform: "translateY(-50%)" }}
                     size={20}
                   />
                   <Form.Control
@@ -167,11 +178,13 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    style={{ paddingLeft: "40px" }}
+                    className="py-2"
+                    style={{ paddingLeft: "42px" }}
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                {/* MESSAGE BOX */}
+                <Form.Group>
                   <Form.Control
                     as="textarea"
                     name="message"
@@ -180,22 +193,33 @@ export default function Contact() {
                     value={formData.message}
                     onChange={handleChange}
                     required
+                    className="py-2"
+                    style={{ resize: "none" }}
                   />
                 </Form.Group>
 
+                {/* BUTTON */}
                 <Button
                   variant="dark"
                   type="submit"
-                  className="px-4 py-2 rounded-3 custom-btn"
-                  style={{ fontSize: "12px" }}
+                  className="px-4 py-2 rounded-3 mt-2"
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    backgroundColor: "#2EA898",
+                    borderColor: "#2EA898",
+                  }}
                 >
                   Send Message
                 </Button>
 
                 <ToastContainer position="top-center" />
+
               </Form>
+
             </div>
           </Col>
+
         </Row>
       </Container>
     </div>
