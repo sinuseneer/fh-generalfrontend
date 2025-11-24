@@ -28,7 +28,7 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(!passedProduct);
   const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
-  // Touch/swipe
+  // Touch swipe
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
@@ -55,7 +55,7 @@ export default function ProductDetails() {
     }
   }, [passedProduct]);
 
-  // Fetch product data
+  // Fetch product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -70,14 +70,12 @@ export default function ProductDetails() {
             .filter(Boolean)
             .map(normalizeImg);
 
-          const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
-          setSelectedImage(firstImg);
+          setSelectedImage(mainImg || galleryImgs[0] || "/images/no-image.jpg");
         } else {
           setProduct(null);
         }
       } catch (err) {
         console.error("❌ Error loading product:", err);
-        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -86,25 +84,25 @@ export default function ProductDetails() {
     if (!passedProduct && id) fetchProduct();
   }, [id]);
 
-  // Form input handler
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // Swipe handlers
+  // Swipe logic
   const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
   const handleTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
 
   const handleTouchEnd = (allImages) => {
     if (!touchStart || !touchEnd) return;
 
-    const distance = touchStart - touchEnd;
-    if (Math.abs(distance) < 50) return;
+    const diff = touchStart - touchEnd;
+    if (Math.abs(diff) < 50) return;
 
     const i = allImages.findIndex((img) => img === selectedImage);
-    if (distance > 0 && i < allImages.length - 1) {
+
+    if (diff > 0 && i < allImages.length - 1) {
       setSelectedImage(allImages[i + 1]);
-    } else if (distance < 0 && i > 0) {
+    } else if (diff < 0 && i > 0) {
       setSelectedImage(allImages[i - 1]);
     }
 
@@ -112,7 +110,7 @@ export default function ProductDetails() {
     setTouchEnd(0);
   };
 
-  // Send inquiry email
+  // Send inquiry
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.info("Sending message...", { autoClose: false });
@@ -122,7 +120,7 @@ export default function ProductDetails() {
       from_email: formData.email,
       phone: formData.phone,
       message: formData.message,
-      product_name: product?.name || product?.product_name || "Unknown Product",
+      product_name: product?.product_name || "Unknown Product",
     };
 
     try {
@@ -135,8 +133,9 @@ export default function ProductDetails() {
 
       toast.dismiss(toastId);
       toast.success("Message sent successfully!");
+
       setFormData({ name: "", phone: "", email: "", message: "" });
-    } catch (err) {
+    } catch {
       toast.dismiss(toastId);
       toast.error("Failed to send message.");
     }
@@ -160,7 +159,6 @@ export default function ProductDetails() {
     );
   }
 
-  // All images list
   const allImages = [product.main_image, ...(product.gallery || [])]
     .filter(Boolean)
     .map(normalizeImg);
@@ -169,122 +167,88 @@ export default function ProductDetails() {
     <Container className="my-5">
       <ToastContainer position="top-center" />
 
-  <Button
-  variant="light"
-  style={{
-    color: "#333",
-    textDecoration: "none",
-    border: "1px solid #ddd",
-    padding: "6px 14px",
-    borderRadius: "6px",
-  }}
-  onClick={() => navigate("/product")}
->
-  ← Back to Products
-</Button>
-
-
+      {/* Back button */}
+      <p
+        onClick={() => navigate("/product")}
+        style={{
+          cursor: "pointer",
+          color: "#222",
+          fontSize: "15px",
+          marginBottom: "15px",
+          userSelect: "none",
+        }}
+      >
+        ← Back to Products
+      </p>
 
       <Row className="mb-4 mt-3">
-        {/* LEFT IMAGE SECTION */}
+        {/* LEFT — Main Image */}
         <Col md={6} className="text-center">
           <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              mb: 2,
-            }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={() => handleTouchEnd(allImages)}
           >
-            <MuiCard sx={{ borderRadius: 3, width: "100%", maxHeight: 560 }}>
+            <MuiCard className="product-main-card">
               <CardMedia
                 component="img"
                 image={selectedImage}
-                alt={product.name || product.product_name}
-                sx={{ objectFit: "contain", height: "100%" }}
+                alt={product.product_name}
                 onError={(e) => (e.target.src = "/images/no-image.jpg")}
               />
             </MuiCard>
           </Box>
 
           {/* Thumbnails */}
-          <Box
-            ref={thumbRef}
-            sx={{
-              display: "flex",
-              gap: 1,
-              overflowX: "auto",
-              p: 1,
-            }}
-          >
+          <Box ref={thumbRef} className="thumbnail-scroll desktop-thumbs">
             {allImages.map((img, index) => (
               <MuiCard
                 key={index}
+                className={`thumbnail-card ${
+                  selectedImage === img ? "active" : ""
+                }`}
                 onClick={() => setSelectedImage(img)}
-                sx={{
-                  width: 120,
-                  height: 80,
-                  cursor: "pointer",
-                  border:
-                    selectedImage === img
-                      ? "2px solid #2EA898"
-                      : "1px solid #ddd",
-                }}
               >
-                <CardMedia
-                  component="img"
-                  image={img}
-                  alt=""
-                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
+                <CardMedia component="img" image={img} />
               </MuiCard>
             ))}
           </Box>
         </Col>
 
-        {/* RIGHT DETAILS SECTION */}
+        {/* RIGHT — Details */}
         <Col md={6}>
           <Card className="p-4 border-0">
-            <h2 className="fw-bold">{product.name || product.product_name}</h2>
-
+            <h2 className="fw-bold">{product.product_name}</h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
 
-            {/* 🟢 MOVE DESCRIPTION HERE */}
+            {/* Description (NO HEADING) */}
             {product.description && (
-              <Card className="p-3 mt-3 shadow-sm border-0">
-                <h5 className="mb-2">Description</h5>
+              <Card className="p-3 mt-2 border-0">
                 <p className="mb-0">{product.description}</p>
               </Card>
             )}
 
             {/* WhatsApp Button */}
-           <Button
-  href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.name}`}
-  target="_blank"
-  variant="success"
-  className="mt-3 px-4 py-2"
-  style={{
-    width: "190px",
-    backgroundColor: "#128C7E",
-    border: "none",
-    borderRadius: "8px",
-    fontWeight: "400",
-    display: "inline-flex",
-    alignItems: "start",
-    gap: "8px",
-  }}
->
-  <i className="bi bi-whatsapp"></i> WhatsApp Now
-</Button>
-
+            <Button
+              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}`}
+              target="_blank"
+              variant="success"
+              className="mt-3 px-4 py-2"
+              style={{
+                width: "180px",
+                backgroundColor: "#128C7E",
+                border: "none",
+                borderRadius: "8px",
+              }}
+            >
+              WhatsApp Now
+            </Button>
           </Card>
 
-          {/* Inquiry Form */}
-          <Card className="p-4 shadow-sm mt-3">
+          {/* Inquiry form */}
+          <Card className="p-4 mt-3 border-0">
             <h5>Submit Your Inquiry to Know More</h5>
 
             <Form onSubmit={handleSubmit}>
@@ -348,15 +312,15 @@ export default function ProductDetails() {
         </Col>
       </Row>
 
-      {/* PRODUCT INFO SECTION */}
+      {/* FULL WIDTH SPECIFICATIONS */}
       <Row className="mt-4">
         <Col md={12}>
           <Card className="p-4 border-0">
-            <h5>Specifications</h5>
+            <h5 className="mb-3">Specifications</h5>
 
             {Array.isArray(product.product_info) &&
             product.product_info.length > 0 ? (
-              <table className="table table-bordered mt-3">
+              <table className="table table-bordered">
                 <tbody>
                   {(() => {
                     const rows = [];
@@ -366,26 +330,14 @@ export default function ProductDetails() {
 
                       rows.push(
                         <tr key={i}>
-                          <th
-                            style={{
-                              width: "25%",
-                              background: "#f8f9fa",
-                              fontWeight: "bold",
-                            }}
-                          >
+                          <th style={{ fontWeight: "bold", width: "25%" }}>
                             {a?.key}
                           </th>
                           <td style={{ width: "25%" }}>{a?.value}</td>
 
                           {b ? (
                             <>
-                              <th
-                                style={{
-                                  width: "25%",
-                                  background: "#f8f9fa",
-                                  fontWeight: "bold",
-                                }}
-                              >
+                              <th style={{ fontWeight: "bold", width: "25%" }}>
                                 {b.key}
                               </th>
                               <td style={{ width: "25%" }}>{b.value}</td>
