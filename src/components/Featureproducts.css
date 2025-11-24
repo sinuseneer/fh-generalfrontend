@@ -453,8 +453,6 @@
   /* reduce horizontal padding so first slide isn't pushed off-screen */
     padding-left: 0 !important;
   padding-right: 1rem;
-  
-
 }
 
 .mobile-slide {

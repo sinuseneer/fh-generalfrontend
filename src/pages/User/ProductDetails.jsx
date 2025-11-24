@@ -143,10 +143,10 @@ export default function ProductDetails() {
 
     try {
       await emailjs.send(
-        "service_lk58uuc", // EmailJS service ID
-        "template_h4n8zbn", // Template ID
+        "service_dq1kvps", // EmailJS service ID
+        "template_enjtl4e", // Template ID
         templateParams,
-        "Gc1PPygtgpQKGULIe" // Public key
+        "tGZK_yhhP8blh1oT-" // Public key
       );
 
       toast.dismiss(toastId);
