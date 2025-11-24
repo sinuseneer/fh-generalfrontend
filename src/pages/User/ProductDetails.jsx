@@ -251,14 +251,25 @@ export default function ProductDetails() {
             )}
 
             {/* WhatsApp Button */}
-            <Button
-              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.name}`}
-              target="_blank"
-              variant="success"
-              className="mt-3"
-            >
-              WhatsApp Now
-            </Button>
+           <Button
+  href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.name}`}
+  target="_blank"
+  variant="success"
+  className="mt-3 px-4 py-2"
+  style={{
+    width: "auto",
+    backgroundColor: "#128C7E",
+    border: "none",
+    borderRadius: "8px",
+    fontWeight: "600",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+>
+  <i className="bi bi-whatsapp"></i> WhatsApp Now
+</Button>
+
           </Card>
 
           {/* Inquiry Form */}
