@@ -174,7 +174,7 @@ export default function ProductDetails() {
         ← Back to Products
       </Button>
 
-      <Row className="mb-4">
+      <Row className="mb-4 mt-3">
         {/* LEFT IMAGE SECTION */}
         <Col md={6} className="text-center">
           <Box
@@ -236,9 +236,7 @@ export default function ProductDetails() {
         {/* RIGHT DETAILS SECTION */}
         <Col md={6}>
           <Card className="p-4 border-0">
-            <h2 className="fw-bold">
-              {product.name || product.product_name}
-            </h2>
+            <h2 className="fw-bold">{product.name || product.product_name}</h2>
 
             <p>
               <strong>ID:</strong> {product.prod_id}
@@ -265,7 +263,7 @@ export default function ProductDetails() {
 
           {/* Inquiry Form */}
           <Card className="p-4 shadow-sm mt-3">
-            <h5>Submit your inquiry</h5>
+            <h5>Submit Your Inquiry to Know More</h5>
 
             <Form onSubmit={handleSubmit}>
               <Row>
@@ -274,6 +272,7 @@ export default function ProductDetails() {
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                       name="name"
+                      placeholder="Enter your full name"
                       value={formData.name}
                       onChange={handleChange}
                       required
@@ -286,6 +285,7 @@ export default function ProductDetails() {
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
                       name="phone"
+                      placeholder="Enter your phone number"
                       value={formData.phone}
                       onChange={handleChange}
                       required
@@ -298,6 +298,7 @@ export default function ProductDetails() {
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   name="email"
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -310,6 +311,7 @@ export default function ProductDetails() {
                   as="textarea"
                   rows={3}
                   name="message"
+                  placeholder="Enter your message here..."
                   value={formData.message}
                   onChange={handleChange}
                   required
@@ -388,4 +390,3 @@ export default function ProductDetails() {
     </Container>
   );
 }
-
