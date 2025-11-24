@@ -217,15 +217,15 @@ export default function ProductDetails() {
 
         {/* RIGHT — Details */}
         <Col md={6}>
-          <Card className="p-4 border-0">
+          <Card className="p-2 border-0">
             <h2 className="fw-bold">{product.product_name}</h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
 
-            {/* Description (NO HEADING) */}
+            {/* Description */}
             {product.description && (
-              <Card className="p-3 mt-2 border-0">
+              <Card className="p-2 mt-1 border-0">
                 <p className="mb-0">{product.description}</p>
               </Card>
             )}
