@@ -257,13 +257,13 @@ export default function ProductDetails() {
   variant="success"
   className="mt-3 px-4 py-2"
   style={{
-    width: "auto",
+    width: "200px",
     backgroundColor: "#128C7E",
     border: "none",
     borderRadius: "8px",
-    fontWeight: "600",
+    fontWeight: "500",
     display: "inline-flex",
-    alignItems: "center",
+    alignItems: "start",
     gap: "8px",
   }}
 >
