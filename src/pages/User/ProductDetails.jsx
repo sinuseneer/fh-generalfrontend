@@ -169,10 +169,21 @@ export default function ProductDetails() {
     <Container className="my-5">
       <ToastContainer position="top-center" />
 
-      {/* Back button */}
-      <Button variant="link" onClick={() => navigate("/product")}>
-        ← Back to Products
-      </Button>
+  <Button
+  variant="light"
+  style={{
+    color: "#333",
+    textDecoration: "none",
+    border: "1px solid #ddd",
+    padding: "6px 14px",
+    borderRadius: "6px",
+  }}
+  onClick={() => navigate("/product")}
+>
+  ← Back to Products
+</Button>
+
+
 
       <Row className="mb-4 mt-3">
         {/* LEFT IMAGE SECTION */}
@@ -257,7 +268,7 @@ export default function ProductDetails() {
   variant="success"
   className="mt-3 px-4 py-2"
   style={{
-    width: "150px",
+    width: "190px",
     backgroundColor: "#128C7E",
     border: "none",
     borderRadius: "8px",
