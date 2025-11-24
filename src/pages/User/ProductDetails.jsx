@@ -218,7 +218,7 @@ export default function ProductDetails() {
         {/* RIGHT — Details */}
         <Col md={6}>
           <Card className="p-2 mt-1 border-0">
-            <h2 className="fw-bold">{product.product_name}</h2>
+            <h2 className="fw-bold">{product.name || product.product_name}</h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
@@ -248,7 +248,7 @@ export default function ProductDetails() {
           </Card>
 
           {/* Inquiry form */}
-          <Card className="p-4 mt-3 border-2">
+          <Card className="p-4 mt-3 border-1">
             <h5>Submit Your Inquiry to Know More</h5>
 
             <Form onSubmit={handleSubmit}>
