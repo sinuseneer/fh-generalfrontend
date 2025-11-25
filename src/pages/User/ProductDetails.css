@@ -203,8 +203,37 @@ Main image container
   display: none; /* Chrome, Safari */
 }
 
+
+
 /* THUMBNAILS */
+
 .thumbnail-card {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Selected thumbnail */
+.thumbnail-card.active {
+  border-color: #2fc19a !important; 
+}
+
+/* Fixed square images */
+.thumbnail-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* makes all look same size */
+}
+
+/* .thumbnail-card {
   min-width: 70px;
   max-width: 70px;
   border: 2px solid transparent;
@@ -212,15 +241,15 @@ Main image container
   cursor: pointer;
   overflow: hidden;
   transition: 0.2s;
-}
-.thumbnail-card img {
+} */
+/* .thumbnail-card img {
   width: 100%;
   height: 70px;
   object-fit: cover;
-}
-.thumbnail-card.active {
+} */
+/* .thumbnail-card.active {
   border-color: #28a745;
-}
+} */
 
 /* SCROLL BUTTONS */
 .thumb-btn {

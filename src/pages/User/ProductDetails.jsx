@@ -260,7 +260,7 @@ export default function ProductDetails() {
 
             {/* Description */}
             {product.description && (
-              <Card className="p-2 mt-0 border-0 text-start">
+              <Card className="p-1 mt-0 border-0 text-start">
                 <p className="mb-0 mt-0 ">{product.description}</p>
               </Card>
             )}
