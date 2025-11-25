@@ -26,7 +26,7 @@ export default function NavbarComp() {
       className="custom-navbar shadow-sm "
       expanded={expanded}
     >
-      <Container className="nav-container ms-2 me-2">
+      <Container className="nav-container ms-5 me-2">
         {/* Left: Logo */}
         <Navbar.Brand as={NavLink} to="/" onClick={handleNavClick}>
           <img
