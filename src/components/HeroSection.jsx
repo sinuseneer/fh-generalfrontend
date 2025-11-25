@@ -181,45 +181,54 @@ export default function HeroSection() {
                 <div className="slide-overlay" />
 
                 <div className="slide-content">
-                  <div className="slide-text-wrapper">
-                    
-                    {/* ⭐ Text Mode Applied */}
-                    <h1
-                      className="slide-title"
-                      style={{
-                        color: s.textMode === "light" ? "#ffffff" : "#000000",
-                        textShadow:
-                          s.textMode === "light"
-                            ? "0 1px 4px rgba(0,0,0,0.7)"
-                            : "0 1px 4px rgba(255,255,255,0.7)",
-                      }}
-                    >
-                      {s.title}
-                    </h1>
+                  <Row className="w-100 align-items-center">
+                    {/* left column: text (col-12 on xs, col-4 on md+) */}
+                    <Col xs={12} md={4} lg={5} className="slide-text-wrapper">
+                      <h1
+                        className="slide-title"
+                        style={{
+                          color: s.textMode === "light" ? "#ffffff" : "#000000",
+                          textShadow:
+                            s.textMode === "light"
+                              ? "0 1px 4px rgba(0,0,0,0.7)"
+                              : "0 1px 4px rgba(255,255,255,0.7)",
+                        }}
+                      >
+                        {s.title}
+                      </h1>
 
-                    <p
-                      className="slide-subtitle"
-                      style={{
-                        color:
-                          s.textMode === "light"
-                            ? "rgba(255,255,255,0.9)"
-                            : "rgba(0,0,0,0.9)",
-                        textShadow:
-                          s.textMode === "light"
-                            ? "0 1px 4px rgba(0,0,0,0.7)"
-                            : "0 1px 4px rgba(255,255,255,0.7)",
-                      }}
-                    >
-                      {s.subtitle}
-                    </p>
+                      <p
+                        className="slide-subtitle"
+                        style={{
+                          color:
+                            s.textMode === "light"
+                              ? "rgba(255,255,255,0.9)"
+                              : "rgba(0,0,0,0.9)",
+                          textShadow:
+                            s.textMode === "light"
+                              ? "0 1px 4px rgba(0,0,0,0.7)"
+                              : "0 1px 4px rgba(255,255,255,0.7)",
+                        }}
+                      >
+                        {s.subtitle}
+                      </p>
 
-                    <button
-                      className="learn-more-btn"
-                      onClick={() => navigate("/product")}
-                    >
-                      Learn More
-                    </button>
-                  </div>
+                      <button
+                        className="learn-more-btn"
+                        onClick={() => navigate("/product")}
+                      >
+                        Learn More
+                      </button>
+                    </Col>
+
+                    {/* right column: empty spacer (allows hero image to show) */}
+                    <Col
+                      xs={0}
+                      md={8}
+                      className="slide-spacer"
+                      aria-hidden="true"
+                    />
+                  </Row>
                 </div>
               </div>
             );
