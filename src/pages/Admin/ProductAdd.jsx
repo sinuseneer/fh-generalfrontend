@@ -195,7 +195,7 @@ function ProductAdd() {
 
           {/* DESCRIPTION FIELD */}
           <Form.Group className="mb-4">
-            <Form.Label>Description *</Form.Label>
+            <Form.Label>Description</Form.Label>
             <Form.Control
               as="textarea"
               rows={4}
