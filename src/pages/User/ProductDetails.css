@@ -1,124 +1,135 @@
-/* ============================================
-   INPUT PLACEHOLDER STYLING
-   ============================================ */
+/* 🌿 Custom placeholder styling */
 .form-control::placeholder {
-  font-size: 0.8rem;
-  color: #aeb1b4;
-  opacity: 1;
+  font-size: 0.8rem;   /* Change placeholder font size */
+  color: #aeb1b4;      /* Optional: slightly gray placeholder text */
+  opacity: 1;          /* Ensure color applies consistently */
+ 
 }
 
-/* ============================================
-   PRODUCT BULLET LIST
-   ============================================ */
+/* Product description bullets: use arrow glyph (►) instead of default round marker */
 .product-bullets {
   list-style: none;
   margin: 0;
   padding-left: 0;
 }
+
 .product-bullets li {
   position: relative;
-  padding-left: 0.25rem;
+  padding-left: 0.25rem; 
   margin-bottom: 0.35rem;
 }
+
 .product-bullets li::before {
-  content: "►";
+  /* content: "►"; */
   position: absolute;
   left: 0;
   top: 0;
-  color: #2EA898;
+  color: #2EA898; /* accent color to match buttons */
   font-size: 0.95rem;
   line-height: 1;
 }
 
-/* ============================================
-   MAIN PRODUCT IMAGE CARD
-   ============================================ */
+/* Mobile view: increase main product image height only (not thumbnails) */
+@media (max-width: 768px) {
+  .text-center > div > .MuiCard-root:first-child {
+    max-height: 400px !important;
+    min-height: 350px;
+  }
+  
+  .text-center > div > .MuiCard-root:first-child .MuiCardMedia-root {
+    height: 370px !important;
+    max-height: 400px !important;
+  }
+
+  /* Enable smooth touch interaction for image */
+  .text-center > div:first-child {
+    touch-action: pan-x;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Hide thumbnails and navigation arrows on mobile */
+  .thumbnail-container {
+    display: none !important;
+  }
+
+  /* Show dots pagination on mobile */
+  .mobile-dots-container {
+    display: flex !important;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .mobile-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-dot.active {
+    background-color: #2EA898;
+    border-color: #2EA898;
+    transform: scale(1.2);
+  }
+
+  .mobile-dot:hover {
+    background-color: #37b24d;
+    border-color: #37b24d;
+  }
+}
+
+/* Desktop view: hide dots, show thumbnails */
+@media (min-width: 769px) {
+  .mobile-dots-container {
+    display: none !important;
+  }
+}
+
+
+/* ===========================================================
+   PRODUCT DETAILS — RESPONSIVE IMAGE & THUMBNAIL FIX
+   =========================================================== */
+
+/* Main image container */
 .product-main-card {
   width: 100%;
   max-height: 520px;
   border-radius: 12px;
   overflow: hidden;
-  position: relative;
 }
-.product-main-card img,
-.main-product-image {
+
+/* Main image */
+.product-main-card img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  max-height: 520px;
-  display: block;
 }
 
-/* ============================================
-   MOBILE MAIN IMAGE SIZING
-   ============================================ */
-@media (max-width: 768px) {
-  .product-main-card {
-    max-height: 400px !important;
-    min-height: 320px;
-  }
-  .product-main-card img,
-  .main-product-image {
-    max-height: 400px !important;
-    height: auto;
-  }
-
-  /* Touch-friendly swiping */
-  .text-center > div:first-child {
-    touch-action: pan-x;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-}
-
-/* ============================================
-   THUMBNAIL SCROLLER
-   ============================================ */
+/* Thumbnails container */
 .thumbnail-scroll {
   display: flex;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 8px;
   overflow-x: auto;
+  padding: 8px 4px;
   scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  align-items: center;
-  margin-top: 12px;
-  width: 100%;
-  box-sizing: border-box;
 }
 
-/* Custom scrollbar */
-.thumbnail-scroll::-webkit-scrollbar {
-  height: 8px;
-}
-.thumbnail-scroll::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 999px;
-}
-.thumbnail-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.12) transparent;
-}
-
-/* ============================================
-   THUMBNAIL CARD
-   ============================================ */
+/* Thumbnails */
 .thumbnail-card {
+  width: 110px;
+  height: 75px;
   flex: 0 0 auto;
-  width: 86px;
-  height: 86px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  border-radius: 6px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  scroll-snap-align: center;
+  overflow: hidden;
+  border: 2px solid transparent;
 }
+
 .thumbnail-card img {
   width: 100%;
   height: 100%;
@@ -126,38 +137,210 @@
 }
 
 .thumbnail-card.active {
-  transform: scale(1.02);
-  border: 3px solid #111;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  border-color: #2EA898;
 }
 
-/* Larger thumbnails on bigger screens */
-@media (min-width: 576px) {
-  .thumbnail-card {
-    width: 96px;
-    height: 96px;
+/* ===========================================================
+   MOBILE RESPONSIVENESS
+   =========================================================== */
+@media (max-width: 768px) {
+  .product-main-card {
+    max-height: 380px !important;
+    min-height: 320px;
   }
-}
-@media (min-width: 992px) {
-  .thumbnail-card {
-    width: 110px;
-    height: 110px;
+
+  .product-main-card img {
+    max-height: 380px !important;
+  }
+
+  /* Hide desktop thumbnails if needed */
+  .desktop-thumbs {
+    display: none !important;
+  }
+
+  /* Mobile dots */
+  .mobile-dots-container {
+    display: flex !important;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 14px;
+  }
+
+  .mobile-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: 1px solid #aaa;
+  }
+
+  .mobile-dot.active {
+    background-color: #2EA898;
+    transform: scale(1.2);
   }
 }
 
-/* ============================================
-   THUMBNAIL SCROLL ARROWS
-   ============================================ */
+/* Desktop: Hide dots */
+@media (min-width: 769px) {
+  .mobile-dots-container {
+    display: none !important;
+  }
+}
+
+
+/* MAIN IMAGE */
+.main-product-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 400px;
+}
+
+/* THUMBNAILS SCROLL */
+.thumbnail-scroll {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 10px 0;
+  scrollbar-width: none; /* Firefox */
+}
+.thumbnail-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* THUMBNAILS */
+.thumbnail-card {
+  min-width: 70px;
+  max-width: 70px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: 0.2s;
+}
+.thumbnail-card img {
+  width: 100%;
+  height: 70px;
+  object-fit: cover;
+}
+.thumbnail-card.active {
+  border-color: #28a745;
+}
+
+/* SCROLL BUTTONS */
 .thumb-btn {
   position: absolute;
-  top: 50%;
+  top: 48%;
   transform: translateY(-50%);
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 22px;
+  padding: 6px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 20;
+}
+.thumb-btn-prev {
+  left: 10px;
+}
+.thumb-btn-next {
+  right: 10px;
+}
+
+/* Show buttons only on hover (desktop) */
+@media (hover: hover) {
+  .thumbnail-scroll:hover + .thumb-btn,
+  .thumb-btn:hover {
+    opacity: 1;
+  }
+}
+
+/* MOBILE: buttons always visible but small */
+@media (max-width: 600px) {
+  .thumb-btn {
+    font-size: 18px;
+    padding: 4px 8px;
+    opacity: 1;
+  }
+}
+/* THUMBNAILS */
+.thumbnail-scroll {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  margin-top: 12px;
+}
+
+/* hide native scrollbar but keep touch scroll */
+.thumbnail-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.thumbnail-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 999px;
+}
+.thumbnail-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
+}
+
+/* Thumbnail cards */
+.thumbnail-card {
+  flex: 0 0 auto; /* don't shrink, fixed basis */
+  scroll-snap-align: center;
+  width: 86px; /* mobile default */
+  height: 86px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  transition: transform 160ms ease, border-color 160ms ease;
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* thumbnail image fit */
+.thumbnail-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* active state */
+.thumbnail-card.active {
+  transform: scale(1.02);
+  border: 3px solid #111; /* or your theme color */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* Responsive sizes */
+@media (min-width: 576px) {
+  .thumbnail-card { width: 96px; height: 96px; }
+}
+@media (min-width: 992px) {
+  .thumbnail-card { width: 110px; height: 110px; }
+}
+
+/* Arrow buttons */
+.thumb-btn {
+  position: absolute;
+  top: calc(50% - 28px);
   z-index: 30;
   width: 52px;
   height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   border-radius: 10px;
   background: rgba(0,0,0,0.45);
   color: #fff;
@@ -165,87 +348,20 @@
   cursor: pointer;
   user-select: none;
   transition: opacity 180ms ease, transform 160ms ease;
-}
-.thumb-btn.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.thumb-btn.visible {
-  opacity: 1;
-}
-.thumb-btn.thumb-btn-prev {
-  left: 10px;
-}
-.thumb-btn.thumb-btn-next {
-  right: 10px;
+  pointer-events: auto;
 }
 
-/* Smaller arrows on small screens */
+/* hide helper classes */
+.thumb-btn.hidden { opacity: 0; pointer-events: none; transform: translateX(0); }
+.thumb-btn.visible { opacity: 1; pointer-events: auto; }
+
+/* exact left / right positions - adapt to your layout */
+.thumb-btn.thumb-btn-prev { left: 10px; }
+.thumb-btn.thumb-btn-next { right: 10px; }
+
+/* ensure arrows are subtle on small screens */
 @media (max-width: 480px) {
-  .thumb-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
-  }
-  .thumb-btn.thumb-btn-prev {
-    left: 6px;
-  }
-  .thumb-btn.thumb-btn-next {
-    right: 6px;
-  }
-}
-
-/* Hover-visible arrows for desktop */
-@media (hover: hover) {
-  .thumb-btn {
-    opacity: 0;
-  }
-  .thumbnail-scroll:hover ~ .thumb-btn,
-  .thumb-btn:hover {
-    opacity: 1;
-  }
-}
-
-/* ============================================
-   MOBILE DOT PAGINATION
-   ============================================ */
-.mobile-dots-container {
-  display: none;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
-.mobile-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #ddd;
-  border: 1px solid #aaa;
-  transition: 0.25s ease;
-}
-.mobile-dot.active {
-  background: #2EA898;
-  transform: scale(1.2);
-}
-
-/* show dots on mobile */
-@media (max-width: 768px) {
-  .mobile-dots-container {
-    display: flex;
-  }
-}
-
-/* hide on desktop */
-@media (min-width: 769px) {
-  .mobile-dots-container {
-    display: none !important;
-  }
-}
-
-/* ============================================
-   SMALL UI POLISH
-   ============================================ */
-.product-main-card,
-.thumbnail-card {
-  will-change: transform;
+  .thumb-btn { width: 44px; height: 44px; font-size: 20px; }
+  .thumb-btn.thumb-btn-prev { left: 6px; }
+  .thumb-btn.thumb-btn-next { right: 6px; }
 }

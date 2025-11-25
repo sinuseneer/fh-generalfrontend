@@ -21,17 +21,16 @@ export default function ProductDetails() {
   const { id } = useParams();
 
   const passedProduct = location.state?.product;
+
   const [product, setProduct] = useState(passedProduct || null);
   const [loading, setLoading] = useState(!passedProduct);
   const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
   const thumbRef = useRef(null);
 
-  // swipe
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // inquiry form
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -39,7 +38,6 @@ export default function ProductDetails() {
     message: "",
   });
 
-  // thumbnail nav visibility
   const [showThumbNav, setShowThumbNav] = useState(false);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -47,7 +45,6 @@ export default function ProductDetails() {
   const normalizeImg = (img) =>
     img ? (img.startsWith("http") ? img : `${base_uri}${img}`) : null;
 
-  // initial load if passed from previous page
   useEffect(() => {
     if (passedProduct) {
       const mainImg = normalizeImg(passedProduct.main_image);
@@ -55,12 +52,11 @@ export default function ProductDetails() {
         .filter(Boolean)
         .map(normalizeImg);
 
-      const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
-      setSelectedImage(firstImg);
+      setSelectedImage(mainImg || galleryImgs[0] || "/images/no-image.jpg");
     }
   }, [passedProduct]);
 
-  // fetch product if page loaded directly
+  // Fetch product data if not passed from previous page
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -95,66 +91,63 @@ export default function ProductDetails() {
       .filter(Boolean)
       .map(normalizeImg);
 
-  // form handler
-  const handleChange = (e) =>
+  const handleFormChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // swipe handlers
   const handleTouchStart = (e) =>
     setTouchStart(e.targetTouches[0].clientX);
+
   const handleTouchMove = (e) =>
     setTouchEnd(e.targetTouches[0].clientX);
 
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-
     const diff = touchStart - touchEnd;
-    if (Math.abs(diff) < 40) return;
+
+    if (Math.abs(diff) < 50) return;
 
     const index = allImages.findIndex((img) => img === selectedImage);
 
-    if (diff > 0 && index < allImages.length - 1) {
+    if (diff > 0 && index < allImages.length - 1)
       setSelectedImage(allImages[index + 1]);
-    } else if (diff < 0 && index > 0) {
+    else if (diff < 0 && index > 0)
       setSelectedImage(allImages[index - 1]);
-    }
 
     setTouchStart(0);
     setTouchEnd(0);
   };
 
-  // scroll logic for thumbnails
+  // Thumbnail scroll logic
   useEffect(() => {
     const el = thumbRef.current;
     if (!el) return;
 
-    const updateScrollState = () => {
-      const needsScroll = el.scrollWidth > el.clientWidth || allImages.length > 5;
-      setShowThumbNav(needsScroll);
+    const updateScroll = () => {
+      const needsNav = el.scrollWidth > el.clientWidth || allImages.length > 5;
+      setShowThumbNav(needsNav);
       setCanScrollPrev(el.scrollLeft > 10);
       setCanScrollNext(el.scrollLeft + el.clientWidth + 10 < el.scrollWidth);
     };
 
-    updateScrollState();
+    updateScroll();
 
-    el.addEventListener("scroll", updateScrollState);
-    window.addEventListener("resize", updateScrollState);
+    el.addEventListener("scroll", updateScroll);
+    window.addEventListener("resize", updateScroll);
 
     return () => {
-      el.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
+      el.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
     };
   }, [allImages?.length]);
 
   const scrollThumbs = (dir) => {
     const el = thumbRef.current;
     if (!el) return;
-
     const amount = dir === "next" ? el.clientWidth * 0.6 : -el.clientWidth * 0.6;
     el.scrollBy({ left: amount, behavior: "smooth" });
   };
 
-  // submit inquiry
+  // Send inquiry form
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.info("Sending...", { autoClose: false });
@@ -183,7 +176,7 @@ export default function ProductDetails() {
     return (
       <Container className="text-center my-5">
         <Spinner />
-        <p>Loading...</p>
+        <p>Loading product...</p>
       </Container>
     );
 
@@ -207,7 +200,7 @@ export default function ProductDetails() {
       </p>
 
       <Row className="mb-4">
-        {/* LEFT SIDE — IMAGES */}
+        {/* LEFT: IMAGES */}
         <Col md={6} className="text-center" style={{ position: "relative" }}>
           <Box
             onTouchStart={handleTouchStart}
@@ -223,7 +216,7 @@ export default function ProductDetails() {
             </MuiCard>
           </Box>
 
-          {/* Arrows */}
+          {/* SCROLL BUTTONS */}
           {showThumbNav && (
             <>
               <div
@@ -246,35 +239,38 @@ export default function ProductDetails() {
             </>
           )}
 
-          {/* Thumbnails */}
-          <Box ref={thumbRef} className="thumbnail-scroll">
-            {allImages.map((img, index) => (
-              <MuiCard
-                key={index}
-                className={`thumbnail-card ${
-                  selectedImage === img ? "active" : ""
-                }`}
-                onClick={() => setSelectedImage(img)}
-              >
-                <CardMedia component="img" image={img} />
-              </MuiCard>
-            ))}
-          </Box>
+          {/* THUMBNAILS with WRAPPER */}
+          <div className="thumbnail-wrapper">
+            <Box ref={thumbRef} className="thumbnail-scroll">
+              {allImages.map((img, index) => (
+                <MuiCard
+                  key={index}
+                  className={`thumbnail-card ${
+                    selectedImage === img ? "active" : ""
+                  }`}
+                  onClick={() => setSelectedImage(img)}
+                >
+                  <CardMedia component="img" image={img} />
+                </MuiCard>
+              ))}
+            </Box>
+          </div>
         </Col>
 
-        {/* RIGHT SIDE — DETAILS */}
+        {/* RIGHT: PRODUCT DETAILS */}
         <Col md={6}>
-          <Card className="p-2 pt-1 border-0">
-            <h2 className="fw-bold text-start">
+          <Card className="p-2 border-0">
+            <h2 className="fw-bold">
               {product.name || product.product_name}
             </h2>
+
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
 
             {product.description && (
-              <Card className="p-2 border-0 text-start">
-                <p className="mb-0">{product.description}</p>
+              <Card className="p-2 border-0">
+                <p>{product.description}</p>
               </Card>
             )}
 
@@ -293,8 +289,8 @@ export default function ProductDetails() {
             </Button>
           </Card>
 
-          {/* Inquiry form */}
-          <Card className="p-4 mt-3 border-1">
+          {/* INQUIRY FORM */}
+          <Card className="p-4 mt-3">
             <h5>Submit Inquiry</h5>
 
             <Form onSubmit={handleSubmit}>
@@ -304,9 +300,9 @@ export default function ProductDetails() {
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                       name="name"
-                      required
                       value={formData.name}
-                      onChange={handleChange}
+                      onChange={handleFormChange}
+                      required
                       placeholder="Enter your name"
                     />
                   </Form.Group>
@@ -317,9 +313,9 @@ export default function ProductDetails() {
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
                       name="phone"
-                      required
                       value={formData.phone}
-                      onChange={handleChange}
+                      onChange={handleFormChange}
+                      required
                       placeholder="Phone number"
                     />
                   </Form.Group>
@@ -330,9 +326,9 @@ export default function ProductDetails() {
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   name="email"
-                  required
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={handleFormChange}
+                  required
                   placeholder="Email address"
                 />
               </Form.Group>
@@ -343,14 +339,14 @@ export default function ProductDetails() {
                   as="textarea"
                   rows={3}
                   name="message"
-                  required
                   value={formData.message}
-                  onChange={handleChange}
+                  onChange={handleFormChange}
+                  required
                   placeholder="Message..."
                 />
               </Form.Group>
 
-              <Button type="submit" className="mt-3">
+              <Button className="mt-3" type="submit">
                 Send Message
               </Button>
             </Form>
@@ -362,27 +358,25 @@ export default function ProductDetails() {
       <Row className="mt-4">
         <Col md={12}>
           <Card className="p-4 border-0">
-            <h5 className="mb-3">Specifications</h5>
+            <h5>Specifications</h5>
 
             {Array.isArray(product.product_info) &&
             product.product_info.length > 0 ? (
               <table className="table table-bordered">
                 <tbody>
-                  {(() => {
-                    const rows = [];
-                    for (let i = 0; i < product.product_info.length; i += 2) {
+                  {product.product_info.map((row, i) => {
+                    if (i % 2 === 0) {
                       const a = product.product_info[i];
                       const b = product.product_info[i + 1];
-
-                      rows.push(
+                      return (
                         <tr key={i}>
-                          <th style={{ width: "25%" }}>{a?.key}</th>
-                          <td style={{ width: "25%" }}>{a?.value}</td>
+                          <th>{a?.key}</th>
+                          <td>{a?.value}</td>
 
                           {b ? (
                             <>
-                              <th style={{ width: "25%" }}>{b.key}</th>
-                              <td style={{ width: "25%" }}>{b.value}</td>
+                              <th>{b.key}</th>
+                              <td>{b.value}</td>
                             </>
                           ) : (
                             <>
@@ -393,12 +387,12 @@ export default function ProductDetails() {
                         </tr>
                       );
                     }
-                    return rows;
-                  })()}
+                    return null;
+                  })}
                 </tbody>
               </table>
             ) : (
-              <p>No specifications available</p>
+              <p>No specifications available.</p>
             )}
           </Card>
         </Col>
