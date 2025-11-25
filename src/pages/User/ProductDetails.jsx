@@ -13,34 +13,32 @@ import emailjs from "emailjs-com";
 import { Box, Card as MuiCard, CardMedia } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../../App.css";
+import "./ProductDetails.css";
 import api_uri, { base_uri } from "../../config/api";
 
 export default function ProductDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const thumbRef = useRef(null);
 
   const passedProduct = location.state?.product;
-
   const [product, setProduct] = useState(passedProduct || null);
   const [loading, setLoading] = useState(!passedProduct);
   const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
-  const thumbRef = useRef(null);
-
+  // Touch swipe
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
+  // Inquiry form
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     message: "",
   });
-
-  const [showThumbNav, setShowThumbNav] = useState(false);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
 
   const normalizeImg = (img) =>
     img ? (img.startsWith("http") ? img : `${base_uri}${img}`) : null;
@@ -52,11 +50,12 @@ export default function ProductDetails() {
         .filter(Boolean)
         .map(normalizeImg);
 
-      setSelectedImage(mainImg || galleryImgs[0] || "/images/no-image.jpg");
+      const firstImg = mainImg || galleryImgs[0] || "/images/no-image.jpg";
+      setSelectedImage(firstImg);
     }
   }, [passedProduct]);
 
-  // Fetch product data if not passed from previous page
+  // Fetch product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -75,8 +74,8 @@ export default function ProductDetails() {
         } else {
           setProduct(null);
         }
-      } catch {
-        setProduct(null);
+      } catch (err) {
+        console.error("❌ Error loading product:", err);
       } finally {
         setLoading(false);
       }
@@ -85,213 +84,200 @@ export default function ProductDetails() {
     if (!passedProduct && id) fetchProduct();
   }, [id]);
 
-  const allImages =
-    product &&
-    [product.main_image, ...(product.gallery || [])]
-      .filter(Boolean)
-      .map(normalizeImg);
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  const handleFormChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Swipe logic
+  const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
 
-  const handleTouchStart = (e) =>
-    setTouchStart(e.targetTouches[0].clientX);
-
-  const handleTouchMove = (e) =>
-    setTouchEnd(e.targetTouches[0].clientX);
-
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (allImages) => {
     if (!touchStart || !touchEnd) return;
-    const diff = touchStart - touchEnd;
 
+    const diff = touchStart - touchEnd;
     if (Math.abs(diff) < 50) return;
 
-    const index = allImages.findIndex((img) => img === selectedImage);
+    const i = allImages.findIndex((img) => img === selectedImage);
 
-    if (diff > 0 && index < allImages.length - 1)
-      setSelectedImage(allImages[index + 1]);
-    else if (diff < 0 && index > 0)
-      setSelectedImage(allImages[index - 1]);
+    if (diff > 0 && i < allImages.length - 1) {
+      setSelectedImage(allImages[i + 1]);
+    } else if (diff < 0 && i > 0) {
+      setSelectedImage(allImages[i - 1]);
+    }
 
     setTouchStart(0);
     setTouchEnd(0);
   };
 
-  // Thumbnail scroll logic
-  useEffect(() => {
-    const el = thumbRef.current;
-    if (!el) return;
-
-    const updateScroll = () => {
-      const needsNav = el.scrollWidth > el.clientWidth || allImages.length > 5;
-      setShowThumbNav(needsNav);
-      setCanScrollPrev(el.scrollLeft > 10);
-      setCanScrollNext(el.scrollLeft + el.clientWidth + 10 < el.scrollWidth);
-    };
-
-    updateScroll();
-
-    el.addEventListener("scroll", updateScroll);
-    window.addEventListener("resize", updateScroll);
-
-    return () => {
-      el.removeEventListener("scroll", updateScroll);
-      window.removeEventListener("resize", updateScroll);
-    };
-  }, [allImages?.length]);
-
-  const scrollThumbs = (dir) => {
-    const el = thumbRef.current;
-    if (!el) return;
-    const amount = dir === "next" ? el.clientWidth * 0.6 : -el.clientWidth * 0.6;
-    el.scrollBy({ left: amount, behavior: "smooth" });
-  };
-
-  // Send inquiry form
+  // Send inquiry
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const toastId = toast.info("Sending...", { autoClose: false });
+    const toastId = toast.info("Sending message...", { autoClose: false });
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+      product_name: product?.product_name || "Unknown Product",
+    };
 
     try {
       await emailjs.send(
         "service_dq1kvps",
         "template_enjtl4e",
-        {
-          ...formData,
-          product_name: product?.product_name,
-        },
+        templateParams,
         "tGZK_yhhP8blh1oT-"
       );
 
       toast.dismiss(toastId);
-      toast.success("Message sent!");
+      toast.success("Message sent successfully!");
+
       setFormData({ name: "", phone: "", email: "", message: "" });
     } catch {
       toast.dismiss(toastId);
-      toast.error("Failed to send.");
+      toast.error("Failed to send message.");
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <Container className="text-center my-5">
-        <Spinner />
-        <p>Loading product...</p>
+        <Spinner animation="border" />
+        <p>Loading product details...</p>
       </Container>
     );
+  }
 
-  if (!product)
+  if (!product) {
     return (
-      <Container className="text-center my-5">
-        <h4>Product not found</h4>
+      <Container className="my-5 text-center">
+        <h3>Product not found</h3>
         <Button onClick={() => navigate("/product")}>Back</Button>
       </Container>
     );
+  }
+
+  const allImages = [product.main_image, ...(product.gallery || [])]
+    .filter(Boolean)
+    .map(normalizeImg);
+
+
+    const scrollThumbs = (amount) => {
+  if (!thumbRef.current) return;
+  thumbRef.current.scrollBy({
+    left: amount,
+    behavior: "smooth",
+  });
+
+  // Auto-hide based on scroll
+  setTimeout(() => {
+    const el = thumbRef.current;
+    const atStart = el.scrollLeft === 0;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth;
+
+    document.querySelector(".thumb-btn-prev").style.opacity = atStart ? 0 : 1;
+    document.querySelector(".thumb-btn-next").style.opacity = atEnd ? 0 : 1;
+  }, 400);
+};
+
 
   return (
     <Container className="my-5">
-      <ToastContainer />
+      <ToastContainer position="top-center" />
 
+      {/* Back button */}
       <p
         onClick={() => navigate("/product")}
-        style={{ cursor: "pointer", fontSize: "15px", marginBottom: "15px" }}
+        style={{
+          cursor: "pointer",
+          color: "#222",
+          fontSize: "15px",
+          marginBottom: "15px",
+          userSelect: "none",
+        }}
       >
         ← Back to Products
       </p>
 
-      <Row className="mb-4">
-        {/* LEFT: IMAGES */}
-        <Col md={6} className="text-center" style={{ position: "relative" }}>
-          <Box
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <MuiCard className="product-main-card">
-              <CardMedia
-                component="img"
-                image={selectedImage}
-                className="main-product-image"
-              />
-            </MuiCard>
-          </Box>
+      <Row className="mb-4 mt-3">
+      {/* LEFT — Main Image */}
+<Col md={6} className="text-center">
+  <Box
+    onTouchStart={handleTouchStart}
+    onTouchMove={handleTouchMove}
+    onTouchEnd={() => handleTouchEnd(allImages)}
+  >
+    <MuiCard className="product-main-card">
+      <CardMedia
+        component="img"
+        image={selectedImage}
+        alt={product.product_name}
+        className="main-product-image"
+        onError={(e) => (e.target.src = "/images/no-image.jpg")}
+      />
+    </MuiCard>
+  </Box>
 
-          {/* SCROLL BUTTONS */}
-          {showThumbNav && (
-            <>
-              <div
-                className={`thumb-btn thumb-btn-prev ${
-                  canScrollPrev ? "visible" : "hidden"
-                }`}
-                onClick={() => scrollThumbs("prev")}
-              >
-                ❮
-              </div>
+  {/* Scroll Buttons */}
+  <div className="thumb-btn thumb-btn-prev" onClick={() => scrollThumbs(-120)}>
+    ❮
+  </div>
+  <div className="thumb-btn thumb-btn-next" onClick={() => scrollThumbs(120)}>
+    ❯
+  </div>
 
-              <div
-                className={`thumb-btn thumb-btn-next ${
-                  canScrollNext ? "visible" : "hidden"
-                }`}
-                onClick={() => scrollThumbs("next")}
-              >
-                ❯
-              </div>
-            </>
-          )}
+  {/* THUMBNAILS */}
+  <Box ref={thumbRef} className="thumbnail-scroll">
+    {allImages.map((img, index) => (
+      <MuiCard
+        key={index}
+        className={`thumbnail-card ${selectedImage === img ? "active" : ""}`}
+        onClick={() => setSelectedImage(img)}
+      >
+        <CardMedia component="img" image={img} />
+      </MuiCard>
+    ))}
+  </Box>
+</Col>
 
-          {/* THUMBNAILS with WRAPPER */}
-          <div className="thumbnail-wrapper">
-            <Box ref={thumbRef} className="thumbnail-scroll">
-              {allImages.map((img, index) => (
-                <MuiCard
-                  key={index}
-                  className={`thumbnail-card ${
-                    selectedImage === img ? "active" : ""
-                  }`}
-                  onClick={() => setSelectedImage(img)}
-                >
-                  <CardMedia component="img" image={img} />
-                </MuiCard>
-              ))}
-            </Box>
-          </div>
-        </Col>
 
-        {/* RIGHT: PRODUCT DETAILS */}
+        {/* RIGHT — Details */}
         <Col md={6}>
-          <Card className="p-2 border-0">
-            <h2 className="fw-bold">
-              {product.name || product.product_name}
-            </h2>
-
+          <Card className="p-2 mt-1 border-0">
+            <h2 className="fw-bold text-start">{product.name || product.product_name}</h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
 
+            {/* Description */}
             {product.description && (
-              <Card className="p-2 border-0">
-                <p>{product.description}</p>
+              <Card className="p-2 mt-0 border-0 text-start">
+                <p className="mb-0 mt-0 ">{product.description}</p>
               </Card>
             )}
 
+            {/* WhatsApp Button */}
             <Button
-              href={`https://wa.me/13478694095?text=Hi, I'm interested in ${product.product_name}`}
+              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}`}
               target="_blank"
+              variant="success"
               className="mt-3 px-4 py-2"
               style={{
                 width: "180px",
-                background: "#128C7E",
-                borderRadius: "8px",
+                backgroundColor: "#128C7E",
                 border: "none",
+                borderRadius: "8px",
               }}
             >
               WhatsApp Now
             </Button>
           </Card>
 
-          {/* INQUIRY FORM */}
-          <Card className="p-4 mt-3">
-            <h5>Submit Inquiry</h5>
+          {/* Inquiry form */}
+          <Card className="p-4 mt-3 border-1">
+            <h5>Submit Your Inquiry to Know More</h5>
 
             <Form onSubmit={handleSubmit}>
               <Row>
@@ -300,10 +286,10 @@ export default function ProductDetails() {
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                       name="name"
+                      placeholder="Enter your full name"
                       value={formData.name}
-                      onChange={handleFormChange}
+                      onChange={handleChange}
                       required
-                      placeholder="Enter your name"
                     />
                   </Form.Group>
                 </Col>
@@ -313,10 +299,10 @@ export default function ProductDetails() {
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
                       name="phone"
+                      placeholder="Enter your phone number"
                       value={formData.phone}
-                      onChange={handleFormChange}
+                      onChange={handleChange}
                       required
-                      placeholder="Phone number"
                     />
                   </Form.Group>
                 </Col>
@@ -326,10 +312,10 @@ export default function ProductDetails() {
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   name="email"
+                  placeholder="Enter your email"
                   value={formData.email}
-                  onChange={handleFormChange}
+                  onChange={handleChange}
                   required
-                  placeholder="Email address"
                 />
               </Form.Group>
 
@@ -339,10 +325,10 @@ export default function ProductDetails() {
                   as="textarea"
                   rows={3}
                   name="message"
+                  placeholder="Enter your message here..."
                   value={formData.message}
-                  onChange={handleFormChange}
+                  onChange={handleChange}
                   required
-                  placeholder="Message..."
                 />
               </Form.Group>
 
@@ -354,29 +340,35 @@ export default function ProductDetails() {
         </Col>
       </Row>
 
-      {/* SPECIFICATIONS */}
+      {/* FULL WIDTH SPECIFICATIONS */}
       <Row className="mt-4">
         <Col md={12}>
           <Card className="p-4 border-0">
-            <h5>Specifications</h5>
+            <h5 className="mb-3">Specifications</h5>
 
             {Array.isArray(product.product_info) &&
             product.product_info.length > 0 ? (
               <table className="table table-bordered">
                 <tbody>
-                  {product.product_info.map((row, i) => {
-                    if (i % 2 === 0) {
+                  {(() => {
+                    const rows = [];
+                    for (let i = 0; i < product.product_info.length; i += 2) {
                       const a = product.product_info[i];
                       const b = product.product_info[i + 1];
-                      return (
+
+                      rows.push(
                         <tr key={i}>
-                          <th>{a?.key}</th>
-                          <td>{a?.value}</td>
+                          <th style={{ fontWeight: "bold", width: "25%" }}>
+                            {a?.key}
+                          </th>
+                          <td style={{ width: "25%" }}>{a?.value}</td>
 
                           {b ? (
                             <>
-                              <th>{b.key}</th>
-                              <td>{b.value}</td>
+                              <th style={{ fontWeight: "bold", width: "25%" }}>
+                                {b.key}
+                              </th>
+                              <td style={{ width: "25%" }}>{b.value}</td>
                             </>
                           ) : (
                             <>
@@ -387,8 +379,8 @@ export default function ProductDetails() {
                         </tr>
                       );
                     }
-                    return null;
-                  })}
+                    return rows;
+                  })()}
                 </tbody>
               </table>
             ) : (
