@@ -77,11 +77,7 @@ function ProductAdd() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.prod_id ||
-      !formData.product_name ||
-      !formData.CAT_ID
-    ) {
+    if (!formData.prod_id || !formData.product_name || !formData.CAT_ID) {
       return toast.warning("Please fill all required fields");
     }
 
@@ -197,6 +193,25 @@ function ProductAdd() {
             </Form.Select>
           </Form.Group>
 
+          {/* DESCRIPTION FIELD */}
+          <Form.Group className="mb-4">
+            <Form.Label>Description *</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Enter a short description about the product..."
+              style={{
+                backgroundColor: "#2a2d33",
+                border: "1px solid #333",
+                color: "#fff",
+                resize: "vertical",
+              }}
+            />
+          </Form.Group>
+
           {/* PRODUCT INFO DYNAMIC KEY VALUE TABLE */}
           <Form.Group className="mb-4">
             <Form.Label>Product Info (Key - Value)</Form.Label>
@@ -207,9 +222,7 @@ function ProductAdd() {
                   <Form.Control
                     value={row.key}
                     placeholder="Feature Name"
-                    onChange={(e) =>
-                      updateRow(index, "key", e.target.value)
-                    }
+                    onChange={(e) => updateRow(index, "key", e.target.value)}
                     style={{
                       backgroundColor: "#2a2d33",
                       border: "1px solid #444",
@@ -222,9 +235,7 @@ function ProductAdd() {
                   <Form.Control
                     value={row.value}
                     placeholder="Feature Value"
-                    onChange={(e) =>
-                      updateRow(index, "value", e.target.value)
-                    }
+                    onChange={(e) => updateRow(index, "value", e.target.value)}
                     style={{
                       backgroundColor: "#2a2d33",
                       border: "1px solid #444",
@@ -246,11 +257,7 @@ function ProductAdd() {
               </Row>
             ))}
 
-            <Button
-              variant="success"
-              className="mt-2"
-              onClick={addRow}
-            >
+            <Button variant="success" className="mt-2" onClick={addRow}>
               <FaPlus /> Add Row
             </Button>
           </Form.Group>
@@ -285,7 +292,7 @@ function ProductAdd() {
             type="submit"
             className="w-100 fw-semibold py-2"
             style={{
-              backgroundColor: "#007bff",
+              backgroundColor: "#2577cfff",
               border: "none",
               borderRadius: "10px",
               fontSize: "1rem",

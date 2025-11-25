@@ -248,3 +248,65 @@
     display: none !important;
   }
 }
+
+
+
+/* =================================================
+                  new queries for laptops less than    
+  =======================================================
+  */
+
+
+  /* LESS THAN 15-INCH SCREENS (1366px and below) */
+@media (max-width: 1366px) {
+
+  .custom-carousel {
+    height: 620px;  /* reduce height */
+  }
+
+  .slide-content {
+    padding-left: 8%;
+    padding-right: 20px;
+  }
+
+  .slide-text-wrapper {
+    width: 40%;
+    max-width: 40%;
+    margin-top: 10px;
+  }
+
+  .slide-title {
+    font-size: 2.6rem;
+    margin-top: -20px;
+  }
+
+  .slide-subtitle {
+    font-size: 1.1rem;
+  }
+}
+/* LESS THAN 13-INCH SCREENS (1280px and below) */
+@media (max-width: 1280px) {  
+  .custom-carousel {
+    height: 580px;  /* reduce height */
+  }
+
+  .slide-content {
+    padding-left: 6%;
+    padding-right: 15px;
+  }
+
+  .slide-text-wrapper {
+    width: 45%;
+    max-width: 45%;
+    margin-top: 10px;
+  }
+
+  .slide-title {
+    font-size: 2.4rem;
+    margin-top: -15px;
+  }
+
+  .slide-subtitle {
+    font-size: 1rem;
+  }
+}
