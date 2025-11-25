@@ -144,13 +144,10 @@ Main image container
    MOBILE RESPONSIVENESS
    =========================================================== */
 @media (max-width: 768px) {
-  .product-main-card {
-    max-height: 380px !important;
-    min-height: 320px;
-  }
+  
 
   .product-main-card img {
-    max-height: 380px !important;
+    max-height: none ;
   }
 
   /* Hide desktop thumbnails if needed */
@@ -184,6 +181,25 @@ Main image container
 @media (min-width: 769px) {
   .mobile-dots-container {
     display: none !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  /* Remove forced height */
+  .product-main-card {
+    max-height: none !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  /* Allow image to resize naturally */
+  .product-main-card img {
+    max-height: none !important;
+    height: auto !important;
+    width: 100% !important;
+    object-fit: contain !important;
   }
 }
 
