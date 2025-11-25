@@ -163,25 +163,23 @@ export default function ProductDetails() {
     .filter(Boolean)
     .map(normalizeImg);
 
+  const scrollThumbs = (amount) => {
+    if (!thumbRef.current) return;
+    thumbRef.current.scrollBy({
+      left: amount,
+      behavior: "smooth",
+    });
 
-    const scrollThumbs = (amount) => {
-  if (!thumbRef.current) return;
-  thumbRef.current.scrollBy({
-    left: amount,
-    behavior: "smooth",
-  });
+    // Auto-hide based on scroll
+    setTimeout(() => {
+      const el = thumbRef.current;
+      const atStart = el.scrollLeft === 0;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth;
 
-  // Auto-hide based on scroll
-  setTimeout(() => {
-    const el = thumbRef.current;
-    const atStart = el.scrollLeft === 0;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth;
-
-    document.querySelector(".thumb-btn-prev").style.opacity = atStart ? 0 : 1;
-    document.querySelector(".thumb-btn-next").style.opacity = atEnd ? 0 : 1;
-  }, 400);
-};
-
+      document.querySelector(".thumb-btn-prev").style.opacity = atStart ? 0 : 1;
+      document.querySelector(".thumb-btn-next").style.opacity = atEnd ? 0 : 1;
+    }, 400);
+  };
 
   return (
     <Container className="my-5">
@@ -202,51 +200,60 @@ export default function ProductDetails() {
       </p>
 
       <Row className="mb-4 mt-3">
-      {/* LEFT — Main Image */}
-<Col md={6} className="text-center">
-  <Box
-    onTouchStart={handleTouchStart}
-    onTouchMove={handleTouchMove}
-    onTouchEnd={() => handleTouchEnd(allImages)}
-  >
-    <MuiCard className="product-main-card">
-      <CardMedia
-        component="img"
-        image={selectedImage}
-        alt={product.product_name}
-        className="main-product-image"
-        onError={(e) => (e.target.src = "/images/no-image.jpg")}
-      />
-    </MuiCard>
-  </Box>
+        {/* LEFT — Main Image */}
+        <Col md={6} className="text-center">
+          <Box
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={() => handleTouchEnd(allImages)}
+          >
+            <MuiCard className="product-main-card">
+              <CardMedia
+                component="img"
+                image={selectedImage}
+                alt={product.product_name}
+                className="main-product-image w-100"
+                onError={(e) => (e.target.src = "/images/no-image.jpg")}
+              />
+            </MuiCard>
+          </Box>
 
-  {/* Scroll Buttons */}
-  <div className="thumb-btn thumb-btn-prev" onClick={() => scrollThumbs(-120)}>
-    ❮
-  </div>
-  <div className="thumb-btn thumb-btn-next" onClick={() => scrollThumbs(120)}>
-    ❯
-  </div>
+          {/* Scroll Buttons */}
+          <div
+            className="thumb-btn thumb-btn-prev"
+            onClick={() => scrollThumbs(-120)}
+          >
+            ❮
+          </div>
+          <div
+            className="thumb-btn thumb-btn-next"
+            onClick={() => scrollThumbs(120)}
+          >
+            ❯
+          </div>
 
-  {/* THUMBNAILS */}
-  <Box ref={thumbRef} className="thumbnail-scroll">
-    {allImages.map((img, index) => (
-      <MuiCard
-        key={index}
-        className={`thumbnail-card ${selectedImage === img ? "active" : ""}`}
-        onClick={() => setSelectedImage(img)}
-      >
-        <CardMedia component="img" image={img} />
-      </MuiCard>
-    ))}
-  </Box>
-</Col>
-
+          {/* THUMBNAILS */}
+          <Box ref={thumbRef} className="thumbnail-scroll">
+            {allImages.map((img, index) => (
+              <MuiCard
+                key={index}
+                className={`thumbnail-card ${
+                  selectedImage === img ? "active" : ""
+                }`}
+                onClick={() => setSelectedImage(img)}
+              >
+                <CardMedia component="img" image={img} />
+              </MuiCard>
+            ))}
+          </Box>
+        </Col>
 
         {/* RIGHT — Details */}
         <Col md={6}>
           <Card className="p-2 mt-1 border-0">
-            <h2 className="fw-bold text-start">{product.name || product.product_name}</h2>
+            <h2 className="fw-bold text-start">
+              {product.name || product.product_name}
+            </h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>

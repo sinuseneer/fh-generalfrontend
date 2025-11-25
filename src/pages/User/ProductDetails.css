@@ -94,14 +94,14 @@
 /* ===========================================================
    PRODUCT DETAILS — RESPONSIVE IMAGE & THUMBNAIL FIX
    =========================================================== */
-
-/* Main image container */
+/* 
+Main image container
 .product-main-card {
   width: 100%;
   max-height: 520px;
   border-radius: 12px;
   overflow: hidden;
-}
+} */
 
 /* Main image */
 .product-main-card img {
@@ -188,13 +188,7 @@
 }
 
 
-/* MAIN IMAGE */
-.main-product-image {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  max-height: 400px;
-}
+
 
 /* THUMBNAILS SCROLL */
 .thumbnail-scroll {
@@ -364,4 +358,29 @@
   .thumb-btn { width: 44px; height: 44px; font-size: 20px; }
   .thumb-btn.thumb-btn-prev { left: 6px; }
   .thumb-btn.thumb-btn-next { right: 6px; }
+}
+
+.product-main-card {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.main-product-image {
+  width: 100% !important;
+  height: auto;
+  object-fit: contain;
+}
+/* ----- MOBILE VIEW FIXES ----- */
+@media (max-width: 768px) {
+  .product-main-card {
+    padding: 0;              /* No extra space */
+    background: #c0c0c0;
+  }
+
+  .main-product-image {
+    width: 100% !important;  /* Fill container */
+    height: auto !important;
+  }
 }
