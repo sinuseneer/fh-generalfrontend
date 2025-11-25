@@ -23,10 +23,10 @@ export default function NavbarComp() {
     <Navbar
       expand="lg"
       sticky="top"
-      className="custom-navbar shadow-sm"
+      className="custom-navbar shadow-sm "
       expanded={expanded}
     >
-      <Container className="nav-container">
+      <Container className="nav-container ms-2 me-2">
         {/* Left: Logo */}
         <Navbar.Brand as={NavLink} to="/" onClick={handleNavClick}>
           <img
