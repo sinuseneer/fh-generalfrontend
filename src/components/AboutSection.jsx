@@ -28,7 +28,7 @@ export default function AboutSection() {
             <br />
             General Equipment
           </h1>
-          <p className="text-white-50 mb-4 me-1" style={{textAlign:"start"}}>
+          <p className="text-white-50 mb-4 me-5 p-2" style={{textAlign:"start"}}>
             FH General Equipment is a trusted provider of medical, industrial, and general equipment solutions in Guyana, USA. We are committed to delivering reliable, high-quality products that support healthcare institutions, industries, and professional environments. Our focus on quality, innovation, and service excellence ensures that every solution we provide meets international standards. By working closely with our customers, we deliver equipment that enhances safety, efficiency, and long-term performance. With a growing portfolio and a dedication to continuous improvement, we strive to be a dependable partner for organizations seeking durable and high-standard equipment solutions across Guyana and beyond.
           </p>
           <Button
