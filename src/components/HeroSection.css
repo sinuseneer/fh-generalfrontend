@@ -343,12 +343,16 @@
 /* For large desktops: 27", 32", 34", Ultrawide */
 @media (min-width: 1900px) {
   .slide-text-wrapper {
-    max-width: 500px !important;   /* increase text width slightly */
+    max-width: 480px !important;   /* increase text width slightly */
   }
 
   .slide-content {
-    padding-left: 15% !important;  /* align with logo */
+    padding-left: 17% !important;  /* align with logo */
   }
+
+    .slide-content p{
+      max-width: 450px !important
+    }
 
   .slide-title {
     font-size: 3.2rem !important;  /* improve balance */
