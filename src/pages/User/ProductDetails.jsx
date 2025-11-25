@@ -13,26 +13,25 @@ import emailjs from "emailjs-com";
 import { Box, Card as MuiCard, CardMedia } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../App.css";
-import "./ProductDetails.css";
 import api_uri, { base_uri } from "../../config/api";
 
 export default function ProductDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const thumbRef = useRef(null);
 
   const passedProduct = location.state?.product;
   const [product, setProduct] = useState(passedProduct || null);
   const [loading, setLoading] = useState(!passedProduct);
   const [selectedImage, setSelectedImage] = useState("/images/no-image.jpg");
 
-  // Touch swipe
+  const thumbRef = useRef(null);
+
+  // swipe
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // Inquiry form
+  // inquiry form
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -40,9 +39,15 @@ export default function ProductDetails() {
     message: "",
   });
 
+  // thumbnail nav visibility
+  const [showThumbNav, setShowThumbNav] = useState(false);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
   const normalizeImg = (img) =>
     img ? (img.startsWith("http") ? img : `${base_uri}${img}`) : null;
 
+  // initial load if passed from previous page
   useEffect(() => {
     if (passedProduct) {
       const mainImg = normalizeImg(passedProduct.main_image);
@@ -55,7 +60,7 @@ export default function ProductDetails() {
     }
   }, [passedProduct]);
 
-  // Fetch product
+  // fetch product if page loaded directly
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -74,8 +79,8 @@ export default function ProductDetails() {
         } else {
           setProduct(null);
         }
-      } catch (err) {
-        console.error("❌ Error loading product:", err);
+      } catch {
+        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -84,123 +89,165 @@ export default function ProductDetails() {
     if (!passedProduct && id) fetchProduct();
   }, [id]);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const allImages =
+    product &&
+    [product.main_image, ...(product.gallery || [])]
+      .filter(Boolean)
+      .map(normalizeImg);
 
-  // Swipe logic
-  const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
-  const handleTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+  // form handler
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleTouchEnd = (allImages) => {
+  // swipe handlers
+  const handleTouchStart = (e) =>
+    setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchMove = (e) =>
+    setTouchEnd(e.targetTouches[0].clientX);
+
+  const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
 
     const diff = touchStart - touchEnd;
-    if (Math.abs(diff) < 50) return;
+    if (Math.abs(diff) < 40) return;
 
-    const i = allImages.findIndex((img) => img === selectedImage);
+    const index = allImages.findIndex((img) => img === selectedImage);
 
-    if (diff > 0 && i < allImages.length - 1) {
-      setSelectedImage(allImages[i + 1]);
-    } else if (diff < 0 && i > 0) {
-      setSelectedImage(allImages[i - 1]);
+    if (diff > 0 && index < allImages.length - 1) {
+      setSelectedImage(allImages[index + 1]);
+    } else if (diff < 0 && index > 0) {
+      setSelectedImage(allImages[index - 1]);
     }
 
     setTouchStart(0);
     setTouchEnd(0);
   };
 
-  // Send inquiry
+  // scroll logic for thumbnails
+  useEffect(() => {
+    const el = thumbRef.current;
+    if (!el) return;
+
+    const updateScrollState = () => {
+      const needsScroll = el.scrollWidth > el.clientWidth || allImages.length > 5;
+      setShowThumbNav(needsScroll);
+      setCanScrollPrev(el.scrollLeft > 10);
+      setCanScrollNext(el.scrollLeft + el.clientWidth + 10 < el.scrollWidth);
+    };
+
+    updateScrollState();
+
+    el.addEventListener("scroll", updateScrollState);
+    window.addEventListener("resize", updateScrollState);
+
+    return () => {
+      el.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+    };
+  }, [allImages?.length]);
+
+  const scrollThumbs = (dir) => {
+    const el = thumbRef.current;
+    if (!el) return;
+
+    const amount = dir === "next" ? el.clientWidth * 0.6 : -el.clientWidth * 0.6;
+    el.scrollBy({ left: amount, behavior: "smooth" });
+  };
+
+  // submit inquiry
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const toastId = toast.info("Sending message...", { autoClose: false });
-
-    const templateParams = {
-      from_name: formData.name,
-      from_email: formData.email,
-      phone: formData.phone,
-      message: formData.message,
-      product_name: product?.product_name || "Unknown Product",
-    };
+    const toastId = toast.info("Sending...", { autoClose: false });
 
     try {
       await emailjs.send(
         "service_dq1kvps",
         "template_enjtl4e",
-        templateParams,
+        {
+          ...formData,
+          product_name: product?.product_name,
+        },
         "tGZK_yhhP8blh1oT-"
       );
 
       toast.dismiss(toastId);
-      toast.success("Message sent successfully!");
-
+      toast.success("Message sent!");
       setFormData({ name: "", phone: "", email: "", message: "" });
     } catch {
       toast.dismiss(toastId);
-      toast.error("Failed to send message.");
+      toast.error("Failed to send.");
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <Container className="text-center my-5">
-        <Spinner animation="border" />
-        <p>Loading product details...</p>
+        <Spinner />
+        <p>Loading...</p>
       </Container>
     );
-  }
 
-  if (!product) {
+  if (!product)
     return (
-      <Container className="my-5 text-center">
-        <h3>Product not found</h3>
+      <Container className="text-center my-5">
+        <h4>Product not found</h4>
         <Button onClick={() => navigate("/product")}>Back</Button>
       </Container>
     );
-  }
-
-  const allImages = [product.main_image, ...(product.gallery || [])]
-    .filter(Boolean)
-    .map(normalizeImg);
 
   return (
     <Container className="my-5">
-      <ToastContainer position="top-center" />
+      <ToastContainer />
 
-      {/* Back button */}
       <p
         onClick={() => navigate("/product")}
-        style={{
-          cursor: "pointer",
-          color: "#222",
-          fontSize: "15px",
-          marginBottom: "15px",
-          userSelect: "none",
-        }}
+        style={{ cursor: "pointer", fontSize: "15px", marginBottom: "15px" }}
       >
         ← Back to Products
       </p>
 
-      <Row className="mb-4 mt-3">
-        {/* LEFT — Main Image */}
-        <Col md={6} className="text-center">
+      <Row className="mb-4">
+        {/* LEFT SIDE — IMAGES */}
+        <Col md={6} className="text-center" style={{ position: "relative" }}>
           <Box
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
-            onTouchEnd={() => handleTouchEnd(allImages)}
+            onTouchEnd={handleTouchEnd}
           >
             <MuiCard className="product-main-card">
               <CardMedia
                 component="img"
                 image={selectedImage}
-                alt={product.product_name}
-                onError={(e) => (e.target.src = "/images/no-image.jpg")}
+                className="main-product-image"
               />
             </MuiCard>
           </Box>
 
+          {/* Arrows */}
+          {showThumbNav && (
+            <>
+              <div
+                className={`thumb-btn thumb-btn-prev ${
+                  canScrollPrev ? "visible" : "hidden"
+                }`}
+                onClick={() => scrollThumbs("prev")}
+              >
+                ❮
+              </div>
+
+              <div
+                className={`thumb-btn thumb-btn-next ${
+                  canScrollNext ? "visible" : "hidden"
+                }`}
+                onClick={() => scrollThumbs("next")}
+              >
+                ❯
+              </div>
+            </>
+          )}
+
           {/* Thumbnails */}
-          <Box ref={thumbRef} className="thumbnail-scroll desktop-thumbs">
+          <Box ref={thumbRef} className="thumbnail-scroll">
             {allImages.map((img, index) => (
               <MuiCard
                 key={index}
@@ -215,32 +262,31 @@ export default function ProductDetails() {
           </Box>
         </Col>
 
-        {/* RIGHT — Details */}
+        {/* RIGHT SIDE — DETAILS */}
         <Col md={6}>
-          <Card className="p-2 mt-1 border-0">
-            <h2 className="fw-bold">{product.name || product.product_name}</h2>
+          <Card className="p-2 pt-1 border-0">
+            <h2 className="fw-bold text-start">
+              {product.name || product.product_name}
+            </h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
             </p>
 
-            {/* Description */}
             {product.description && (
-              <Card className="p-2 mt-1 border-0">
+              <Card className="p-2 border-0 text-start">
                 <p className="mb-0">{product.description}</p>
               </Card>
             )}
 
-            {/* WhatsApp Button */}
             <Button
-              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}`}
+              href={`https://wa.me/13478694095?text=Hi, I'm interested in ${product.product_name}`}
               target="_blank"
-              variant="success"
               className="mt-3 px-4 py-2"
               style={{
                 width: "180px",
-                backgroundColor: "#128C7E",
-                border: "none",
+                background: "#128C7E",
                 borderRadius: "8px",
+                border: "none",
               }}
             >
               WhatsApp Now
@@ -249,7 +295,7 @@ export default function ProductDetails() {
 
           {/* Inquiry form */}
           <Card className="p-4 mt-3 border-1">
-            <h5>Submit Your Inquiry to Know More</h5>
+            <h5>Submit Inquiry</h5>
 
             <Form onSubmit={handleSubmit}>
               <Row>
@@ -258,10 +304,10 @@ export default function ProductDetails() {
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                       name="name"
-                      placeholder="Enter your full name"
+                      required
                       value={formData.name}
                       onChange={handleChange}
-                      required
+                      placeholder="Enter your name"
                     />
                   </Form.Group>
                 </Col>
@@ -271,10 +317,10 @@ export default function ProductDetails() {
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
                       name="phone"
-                      placeholder="Enter your phone number"
+                      required
                       value={formData.phone}
                       onChange={handleChange}
-                      required
+                      placeholder="Phone number"
                     />
                   </Form.Group>
                 </Col>
@@ -284,10 +330,10 @@ export default function ProductDetails() {
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   name="email"
-                  placeholder="Enter your email"
+                  required
                   value={formData.email}
                   onChange={handleChange}
-                  required
+                  placeholder="Email address"
                 />
               </Form.Group>
 
@@ -297,14 +343,14 @@ export default function ProductDetails() {
                   as="textarea"
                   rows={3}
                   name="message"
-                  placeholder="Enter your message here..."
+                  required
                   value={formData.message}
                   onChange={handleChange}
-                  required
+                  placeholder="Message..."
                 />
               </Form.Group>
 
-              <Button className="mt-3" type="submit">
+              <Button type="submit" className="mt-3">
                 Send Message
               </Button>
             </Form>
@@ -312,7 +358,7 @@ export default function ProductDetails() {
         </Col>
       </Row>
 
-      {/* FULL WIDTH SPECIFICATIONS */}
+      {/* SPECIFICATIONS */}
       <Row className="mt-4">
         <Col md={12}>
           <Card className="p-4 border-0">
@@ -330,16 +376,12 @@ export default function ProductDetails() {
 
                       rows.push(
                         <tr key={i}>
-                          <th style={{ fontWeight: "bold", width: "25%" }}>
-                            {a?.key}
-                          </th>
+                          <th style={{ width: "25%" }}>{a?.key}</th>
                           <td style={{ width: "25%" }}>{a?.value}</td>
 
                           {b ? (
                             <>
-                              <th style={{ fontWeight: "bold", width: "25%" }}>
-                                {b.key}
-                              </th>
+                              <th style={{ width: "25%" }}>{b.key}</th>
                               <td style={{ width: "25%" }}>{b.value}</td>
                             </>
                           ) : (
@@ -356,7 +398,7 @@ export default function ProductDetails() {
                 </tbody>
               </table>
             ) : (
-              <p>No specifications available.</p>
+              <p>No specifications available</p>
             )}
           </Card>
         </Col>
