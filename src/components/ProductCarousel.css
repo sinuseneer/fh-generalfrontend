@@ -26,8 +26,8 @@
 
 /* Circle image container */
 .image-wrapper {
-  width: 200px;
-  height: 200px;
+  width: 190px;
+  height: 190px;
   background-color: #eaf5f4;
   border-radius: 50%;
   margin-bottom: 15px;
@@ -64,8 +64,12 @@
 /* Slick container adjustments */
 .slick-track {
   display: flex !important;
-  flex-wrap: nowrap !important;
-  align-items: stretch !important;
+  /* flex-wrap: nowrap !important; */
+  /* align-items: stretch !important; */
+  justify-content: center !important; /* 👈 Center the whole slider */
+  align-items: center !important;
+
+
 }
 
 .slick-slide {
@@ -75,7 +79,38 @@
   margin: 0 4px;
   flex: 0 0 auto !important;
   height: auto !important;
+   overflow: hidden !important;
+  margin: 0 auto !important; /* 👈 Keep it centered */
+  width: 95% !important; /* Add left+right breathing space */
 }
+
+/* Position arrows outside the circles */
+.slick-prev {
+  left: -50px !important; /* Move slightly outside */
+}
+
+.slick-next {
+  right: -50px !important; /* Move slightly outside */
+}
+
+/* Change arrow icon color */
+.slick-prev:before,
+.slick-next:before {
+  color: #fff !important;
+  opacity: 1;
+  font-size: 20px;
+}
+
+/* Smaller screens adjustments */
+@media (max-width: 768px) {
+  .slick-prev {
+    left: -30px !important;
+  }
+  .slick-next {
+    right: -30px !important;
+  }
+}
+
 
 .slick-list {
   overflow: hidden !important;
