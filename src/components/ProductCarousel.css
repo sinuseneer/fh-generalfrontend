@@ -1,135 +1,147 @@
-/* ==============================
-   Section Style
-   ============================== */
+/* SECTION */
 .product-carousel-section {
-  background-color: #ffffff;
-  padding: 40px 0;
+  background: #fff;
+  padding: 30px 0 45px;
 }
 
-
+/* Heading */
 .carousel-heading {
   font-size: 2rem;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 38px;
   color: #000;
 }
 
-/* ==============================
-   Slider Layout
-   ============================== */
+/* Keep slider width centered */
+.category-slider {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Ensure circles stay aligned */
 .category-slider .slick-track {
   display: flex !important;
   align-items: center;
+  justify-content: center;
 }
 
 .category-slider .slick-slide {
   display: flex !important;
   justify-content: center;
+  align-items: center;
 }
 
-/* Completely remove any rectangular card box */
-.category-card {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 auto;
-  text-align: center;
+/* ONLY circle element visible */
+.circle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
+  gap: 10px;
 }
 
-/* Circle background – exact mint shade */
+/* Circle design */
 .image-wrapper {
-  width: 200px;
-  height: 200px;
-  background: #eaf5f4;
+  width: 160px;
+  height: 160px;
+  background-color: #e9f7f5; /* Same mint green */
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  margin-bottom: 12px;
 }
 
-/* Images inside – clean sizing */
+/* Images inside circle */
 .image-wrapper img {
-  width: 70%;
-  height: 70%;
+  width: 75%;
+  height: 75%;
   object-fit: contain;
 }
 
-/* Text under image */
-.product-title {
-  font-size: 1rem;
+/* Title under circle */
+.circle-title {
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-top: 8px;
-  color: #000;
-  text-transform: none;
-  line-height: 1.3;
+  margin: 0;
+  text-align: center;
+  color: #1a1a1a;
 }
 
-/* ==============================
-   Arrows like screenshot
-   ============================== */
+/* ARROW CENTER ALIGNMENT */
 .slick-prev,
 .slick-next {
-  width: 40px;
-  height: 40px;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
   z-index: 10;
 }
 
 .slick-prev:before,
 .slick-next:before {
-  font-size: 28px;
+  font-size: 26px;
+  color: #bfbfbf;
   opacity: 1;
-  color: #b5b5b5; /* light gray arrow */
 }
 
-/* Hide dots */
+/* Remove dots */
 .slick-dots {
   display: none !important;
 }
 
-/* Remove any unwanted focus outline */
+/* Remove unwanted focus */
 button:focus,
-.slick-slide:focus,
-.slick-prev:focus,
-.slick-next:focus {
+.slick-slide:focus {
   outline: none !important;
   box-shadow: none !important;
 }
 
-/* ==============================
-   Responsive – keep exact look
-   ============================== */
-@media (max-width: 1200px) {
-  .image-wrapper {
-    width: 180px;
-    height: 180px;
-  }
-}
+/* ========================
+   RESPONSIVENESS
+========================= */
 
+/* Tablet */
 @media (max-width: 992px) {
   .image-wrapper {
-    width: 160px;
-    height: 160px;
+    width: 135px;
+    height: 135px;
   }
 }
 
+/* Small Tablet */
 @media (max-width: 768px) {
-  .carousel-heading {
-    text-align: center;
+  .image-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+  .circle-title {
+    font-size: 0.9rem;
   }
 }
 
-/* Mobile scroll adjustment */
+/* Mobile — 3 per row */
 @media (max-width: 576px) {
   .image-wrapper {
-    width: 100px;
-    height: 100px;
+    width: 85px;
+    height: 85px;
   }
-  .product-title {
-    font-size: 0.8rem;
+  .circle-title {
+    font-size: 0.75rem;
+  }
+
+  /* hide arrows on mobile */
+  .slick-prev,
+  .slick-next {
+    display: none !important;
+  }
+}
+/* Extra Small Mobile — 2 per row */
+@media (max-width: 400px) {
+  .image-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+  .circle-title {
+    font-size: 0.7rem;
   }
 }
