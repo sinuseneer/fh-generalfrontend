@@ -112,7 +112,22 @@ function ProductAdd() {
       }
     } catch (error) {
       console.error("Error adding product:", error);
-      toast.error("Server error while adding product");
+
+      if (error.response?.status === 409) {
+        toast.warning(
+          "⚠️ This Product ID already exists. Please enter a new one.",
+          {
+            style: {
+              backgroundColor: "#664d03",
+              color: "#fff3cd",
+              border: "1px solid #fff3cd",
+              borderRadius: "8px",
+            },
+          }
+        );
+      } else {
+        toast.error("Server error while adding product");
+      }
     }
   };
 
