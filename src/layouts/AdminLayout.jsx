@@ -5,7 +5,6 @@ import { Box, useMediaQuery } from "@mui/material";
 import Sidebar from "../pages/Admin/components/Sidebar";
 import Topbar from "../pages/Admin/components/Topbar";
 
-
 const AdminLayout = () => {
   const isMobile = useMediaQuery("(max-width:900px)");
 
@@ -13,12 +12,19 @@ const AdminLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Desktop collapsed state: true => collapsed mini (70px), false => expanded (250px)
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem("sidebarCollapsed");
+    return saved ? JSON.parse(saved) : false; // Default → Expanded
+  });
+
+  const toggleDesktop = () => {
+    setCollapsed((prev) => {
+      localStorage.setItem("sidebarCollapsed", JSON.stringify(!prev));
+      return !prev;
+    });
+  };
 
   const toggleMobile = () => setMobileOpen((s) => !s);
-
-  // On desktop we toggle collapsed/expanded
-  const toggleDesktop = () => setCollapsed((s) => !s);
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#121212" }}>
