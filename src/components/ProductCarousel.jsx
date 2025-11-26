@@ -18,13 +18,13 @@ const CustomMobileCategorySlider = ({ categories, navigate }) => {
           {categories.map((cat) => (
             <div key={cat._id} className="mobile-category-slide">
               <div
-                className="product-card"
+                className="product-card text-center"
                 onClick={() =>
                   navigate("/product", { state: { category: cat.category_name } })
                 }
                 style={{ cursor: "pointer" }}
               >
-                <div className="image-wrapper">
+                <div className="image-wrapper text-center">
                   <img
                     src={
                       cat.category_image
@@ -35,7 +35,7 @@ const CustomMobileCategorySlider = ({ categories, navigate }) => {
                     loading="lazy"
                   />
                 </div>
-                <h3 className="product-title">{cat.category_name}</h3>
+                <h3 className="product-title text-center">{cat.category_name}</h3>
               </div>
             </div>
           ))}
@@ -137,7 +137,7 @@ export default function ProductCarousel() {
     <div className="product-carousel-section mt-2 mb-1">
       <Container style={{ paddingRight: 0 }}>
         <div className="mb-4">
-          <h2 className="fw-bold text-start">Categories</h2>
+          <h2 className="fw-bold text-center">Categories</h2>
         </div>
 
         {loading ? (
@@ -151,7 +151,7 @@ export default function ProductCarousel() {
               {categories.map((cat) => (
                 <div
                   key={cat._id}
-                  className="product-card"
+                  className="product-card text-center"
                   onClick={() =>
                     navigate("/product", { state: { category: cat.category_name } })
                   }
@@ -168,7 +168,7 @@ export default function ProductCarousel() {
                       loading="lazy"
                     />
                   </div>
-                  <h3 className="product-title">{cat.category_name}</h3>
+                  <h3 className="product-title text-center">{cat.category_name}</h3>
                 </div>
               ))}
             </Slider>
