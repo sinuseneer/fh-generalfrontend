@@ -1,5 +1,5 @@
 // src/pages/Admin/components/Sidebar.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Drawer,
   List,
@@ -24,6 +24,7 @@ import {
   ListAlt as ListIcon,
 } from "@mui/icons-material";
 
+import CategoryIcon from "@mui/icons-material/Category";
 import { useNavigate, useLocation } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 
@@ -39,9 +40,17 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
     { text: "Media", icon: <MediaIcon />, path: "/admin/media" },
 
     {
+      text: "Categories",
+      icon: <CategoryIcon />,
+      subMenu: [
+        { text: "Add Category", icon: <AddIcon />, path: "/admin/categories/add" },
+        { text: "View Categories", icon: <ListIcon />, path: "/admin/categories/list" },
+      ],
+    },
+
+    {
       text: "Products",
       icon: <ProductIcon />,
-      key: "products",
       subMenu: [
         { text: "Add Product", icon: <AddIcon />, path: "/admin/products/add" },
         { text: "View Products", icon: <ListIcon />, path: "/admin/products/list" },
@@ -51,7 +60,6 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
     {
       text: "Posts",
       icon: <PostIcon />,
-      key: "posts",
       subMenu: [
         { text: "Add New Post", icon: <AddIcon />, path: "/admin/posts/add" },
         { text: "View Posts", icon: <ListIcon />, path: "/admin/posts/list" },
@@ -59,14 +67,11 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
     },
 
     { text: "Banner Settings", icon: <MediaIcon />, path: "/admin/banner" },
-
-    // LOGOUT option
     { text: "Logout", icon: <LogoutIcon />, path: "/logout" },
   ];
 
   return (
     <>
-      {/* MOBILE SIDEBAR */}
       {isMobile ? (
         <Drawer
           variant="temporary"
@@ -88,11 +93,9 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
             navigate={navigate}
             locationPath={location.pathname}
             onNavigate={toggleMobile}
-            toggleDesktop={toggleDesktop}
           />
         </Drawer>
       ) : (
-        // DESKTOP SIDEBAR
         <Drawer
           variant="permanent"
           open
@@ -113,7 +116,6 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
             navigate={navigate}
             locationPath={location.pathname}
             onNavigate={() => {}}
-            toggleDesktop={toggleDesktop}
           />
         </Drawer>
       )}
@@ -124,9 +126,9 @@ const Sidebar = ({ isMobile, mobileOpen, toggleMobile, collapsed, toggleDesktop 
 export default Sidebar;
 
 /* --------------------------------------------------------------------------
-   SIDEBAR CONTENT (Shared for mobile and desktop)
+   CONTENT
 --------------------------------------------------------------------------- */
-function SidebarContent({ menuItems, collapsed, navigate, locationPath, onNavigate, toggleDesktop }) {
+function SidebarContent({ menuItems, collapsed, navigate, locationPath, onNavigate }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {/* HEADER */}
@@ -158,7 +160,7 @@ function SidebarContent({ menuItems, collapsed, navigate, locationPath, onNaviga
         )}
       </Box>
 
-      {/* MENU AREA */}
+      {/* MENU */}
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <List disablePadding>
           {menuItems.map((item) => (
@@ -173,67 +175,50 @@ function SidebarContent({ menuItems, collapsed, navigate, locationPath, onNaviga
           ))}
         </List>
       </Box>
-
-      {/* FOOTER BUTTON: collapse toggle */}
-      {!collapsed ? (
-        <ListItemButton onClick={toggleDesktop} sx={{ borderTop: "1px solid #1c1c1c" }}>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Collapse" />
-        </ListItemButton>
-      ) : (
-        <Tooltip title="Expand" placement="right">
-          <ListItemButton
-            onClick={toggleDesktop}
-            sx={{ justifyContent: "center", borderTop: "1px solid #1c1c1c" }}
-          >
-            <ListItemIcon sx={{ justifyContent: "center" }}>
-              <DashboardIcon />
-            </ListItemIcon>
-          </ListItemButton>
-        </Tooltip>
-      )}
     </Box>
   );
 }
 
 /* --------------------------------------------------------------------------
-   MENU ITEM + SUBMENU HANDLING
+   ITEM + SUBMENU HANDLING
 --------------------------------------------------------------------------- */
 function MenuItemRow({ item, collapsed, navigate, locationPath, onNavigate }) {
   const [open, setOpen] = useState(false);
+  const hasSubMenu = item.subMenu && item.subMenu.length > 0;
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_expiry");
-    localStorage.removeItem("admin_info");
-    navigate("/login");
-  };
+  const isActive =
+    (item.path && locationPath === item.path) ||
+    (hasSubMenu && item.subMenu.some((sub) => locationPath.startsWith(sub.path)));
+
+  useEffect(() => {
+    if (hasSubMenu) {
+      const shouldOpen = item.subMenu.some((sub) => locationPath.startsWith(sub.path));
+      setOpen(shouldOpen);
+    }
+  }, [locationPath]);
 
   const handleClick = () => {
-    if (item.text === "Logout") return handleLogout();
-
-    if (item.subMenu) {
-      setOpen((prev) => !prev);
-    } else {
-      navigate(item.path);
-      onNavigate();
+    if (item.text === "Logout") {
+      localStorage.clear();
+      navigate("/login");
+      return;
     }
+    if (hasSubMenu) return setOpen(!open);
+
+    navigate(item.path);
+    onNavigate();
   };
 
   return (
     <>
-      {/* MAIN MENU BUTTON */}
       <Tooltip title={collapsed ? item.text : ""} placement="right">
         <ListItemButton
           onClick={handleClick}
           sx={{
             pl: collapsed ? 1 : 3,
             py: 1.2,
-            bgcolor: locationPath === item.path ? "#1b1b1b" : "transparent",
-            borderLeft:
-              locationPath === item.path ? "3px solid #5fbe90" : "3px solid transparent",
+            bgcolor: isActive ? "#1b1b1b" : "transparent",
+            borderLeft: isActive ? "3px solid #5fbe90" : "3px solid transparent",
             justifyContent: collapsed ? "center" : "flex-start",
           }}
         >
@@ -243,37 +228,37 @@ function MenuItemRow({ item, collapsed, navigate, locationPath, onNavigate }) {
 
           {!collapsed && <ListItemText primary={item.text} sx={{ ml: 1 }} />}
 
-          {!collapsed && item.subMenu && (open ? <ExpandLess /> : <ExpandMore />)}
+          {!collapsed && hasSubMenu && (open ? <ExpandLess /> : <ExpandMore />)}
         </ListItemButton>
       </Tooltip>
 
-      {/* SUBMENU */}
-      {item.subMenu && (
+      {hasSubMenu && (
         <Collapse in={open} unmountOnExit>
-          {item.subMenu.map((subItem) => (
-            <ListItemButton
-              key={subItem.text}
-              onClick={() => {
-                navigate(subItem.path);
-                onNavigate();
-              }}
-              sx={{
-                pl: collapsed ? 1 : 6,
-                py: 1.1,
-                bgcolor: locationPath === subItem.path ? "#1b1b1b" : "transparent",
-                borderLeft:
-                  locationPath === subItem.path
+          {item.subMenu.map((sub) => {
+            const isSubActive = locationPath.startsWith(sub.path);
+            return (
+              <ListItemButton
+                key={sub.text}
+                onClick={() => {
+                  navigate(sub.path);
+                  onNavigate();
+                }}
+                sx={{
+                  pl: collapsed ? 1 : 6,
+                  py: 1.1,
+                  bgcolor: isSubActive ? "#1b1b1b" : "transparent",
+                  borderLeft: isSubActive
                     ? "3px solid #5fbe90"
                     : "3px solid transparent",
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 0, justifyContent: "center", color: "#fff" }}>
-                {subItem.icon}
-              </ListItemIcon>
-
-              {!collapsed && <ListItemText primary={subItem.text} sx={{ ml: 1 }} />}
-            </ListItemButton>
-          ))}
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 0, justifyContent: "center", color: "#fff" }}>
+                  {sub.icon}
+                </ListItemIcon>
+                {!collapsed && <ListItemText primary={sub.text} sx={{ ml: 1 }} />}
+              </ListItemButton>
+            );
+          })}
         </Collapse>
       )}
     </>
