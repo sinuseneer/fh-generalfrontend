@@ -20,15 +20,11 @@
 }
 
 /* Ensure circles stay aligned */
-/* .category-slider .slick-track {
-  display: flex !important;
-  align-items: center;
-  
-} */
-
 .category-slider .slick-slide {
-  display: block !important; /* Let slick auto width */
+  display: block !important;
 }
+
+
 
 .category-slider .slick-slide {
   display: flex !important;
@@ -111,6 +107,38 @@ button:focus,
     height: 135px;
   }
 }
+/* Mobile — 3 per row */
+@media (max-width: 576px) {
+  .category-slider {
+    max-width: 100%;
+    padding: 0 8px;          /* small side padding inside container */
+  }
+
+  /* space between circles ONLY on mobile */
+  .category-slider .slick-slide {
+    padding: 0 6px;          /* 👈 gap between items */
+    box-sizing: border-box;
+  }
+
+  .image-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .circle-title {
+    font-size: 0.75rem;
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;     /* allow two-line titles */
+  }
+
+  /* hide arrows on mobile */
+  .slick-prev,
+  .slick-next {
+    display: none !important;
+  }
+}
+
 
 /* Small Tablet */
 @media (max-width: 768px) {
@@ -124,7 +152,7 @@ button:focus,
 }
 
 /* Mobile — 3 per row */
-@media (max-width: 576px) {
+/* @media (max-width: 576px) {
   .image-wrapper {
     width: 85px;
     height: 85px;
@@ -133,12 +161,13 @@ button:focus,
     font-size: 0.75rem;
   }
 
+
   /* hide arrows on mobile */
-  .slick-prev,
+  /* .slick-prev,
   .slick-next {
     display: none !important;
   }
-}
+} */ 
 /* Extra Small Mobile — 2 per row */
 @media (max-width: 400px) {
   .image-wrapper {
