@@ -1,7 +1,7 @@
 /* SECTION */
 .product-carousel-section {
   background: #fff;
-  padding: 20px 0 20px;
+  padding: 30px 0 45px;
 }
 
 /* Heading */
@@ -43,8 +43,8 @@
 
 /* Circle design */
 .image-wrapper {
-  width: 160px;
-  height: 160px;
+  width: 150px;
+  height: 150px;
   background-color: #e9f7f5; /* Same mint green */
   border-radius: 50%;
   display: flex;
