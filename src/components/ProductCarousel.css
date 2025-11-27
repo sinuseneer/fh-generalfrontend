@@ -14,8 +14,13 @@
 }
 
 /* Keep slider width centered */
-.category-slider {
+/* .category-slider {
   max-width: 1000px;
+  margin: 0 auto;
+} */
+.category-slider {
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -26,11 +31,11 @@
 
 
 
-.category-slider .slick-slide {
+/* .category-slider .slick-slide {
   display: flex !important;
   justify-content: center;
   align-items: center;
-}
+} */
 
 /* ONLY circle element visible */
 .circle-content {
@@ -99,6 +104,12 @@ button:focus,
 /* ========================
    RESPONSIVENESS
 ========================= */
+/* desktop */
+@media (min-width: 992px) {
+  .category-slider {
+    max-width: 1000px;
+  }
+}
 
 /* Tablet */
 @media (max-width: 992px) {
