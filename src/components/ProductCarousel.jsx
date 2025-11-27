@@ -13,41 +13,41 @@ export default function ProductCarousel() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 6,
-        },
+const settings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 6,
+  slidesToScroll: 1,
+  arrows: true,
+  responsive: [
+    {
+      breakpoint: 576,
+      settings: {
+        slidesToShow: 3,
+        arrows: false,
       },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 5,
-        },
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 4,
       },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 4,
-        },
+    },
+    {
+      breakpoint: 992,
+      settings: {
+        slidesToShow: 5,
       },
-      {
-        breakpoint: 576, // Mobile => 3 items in row
-        settings: {
-          slidesToShow: 3,
-          arrows: false,
-        },
+    },
+    {
+      breakpoint: 1200,
+      settings: {
+        slidesToShow: 6,
       },
-    ],
-  };
+    },
+  ],
+};
 
   useEffect(() => {
     const fetchCategories = async () => {
