@@ -104,8 +104,14 @@ button:focus,
 /* ========================
    RESPONSIVENESS
 ========================= */
-/* desktop */
+/* Desktop alignment */
 @media (min-width: 992px) {
+  .category-slider .slick-track {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+  }
+
   .category-slider {
     max-width: 1000px;
   }
@@ -119,36 +125,24 @@ button:focus,
   }
 }
 /* Mobile — 3 per row */
+/* Mobile — perfect 3 cards */
 @media (max-width: 576px) {
   .category-slider {
-    max-width: 100%;
-    padding: 0 8px;          /* small side padding inside container */
+    width: 100%;
+    padding: 0 12px; /* container padding */
   }
 
-  /* space between circles ONLY on mobile */
   .category-slider .slick-slide {
-    padding: 0 6px;          /* 👈 gap between items */
+    padding: 0 10px; /* spacing between circles */
     box-sizing: border-box;
   }
 
   .image-wrapper {
-    width: 80px;
-    height: 80px;
-  }
-
-  .circle-title {
-    font-size: 0.75rem;
-    line-height: 1.1;
-    text-align: center;
-    white-space: normal;     /* allow two-line titles */
-  }
-
-  /* hide arrows on mobile */
-  .slick-prev,
-  .slick-next {
-    display: none !important;
+    width: 90px;
+    height: 90px;
   }
 }
+
 
 
 /* Small Tablet */
