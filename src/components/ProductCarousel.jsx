@@ -42,7 +42,7 @@ export default function ProductCarousel() {
       {
         breakpoint: 576, // Mobile => 3 items in row
         settings: {
-          slidesToShow: 4,
+          slidesToShow: 3,
           arrows: false,
         },
       },
