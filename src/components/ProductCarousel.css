@@ -1,31 +1,43 @@
-/* SECTION */
+/* =============================
+   CATEGORY PRODUCT CAROUSEL
+============================= */
+
+/* Section wrapper */
 .product-carousel-section {
   background: #fff;
   padding: 30px 0 45px;
 }
 
-/* Centering slider */
+/* Heading */
+.carousel-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 38px;
+  color: #000;
+}
+
+/* Slick slider container */
 .category-slider {
   width: 100%;
   margin: 0 auto;
 }
 
-/* Slick slide default */
+/* Slick slide - Let slick control width */
 .category-slider .slick-slide {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: block !important;
 }
 
-/* Circle content */
+/* Center items inside each slide */
 .circle-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 
-/* Circle */
+/* Circle style */
 .image-wrapper {
   width: 150px;
   height: 150px;
@@ -38,35 +50,85 @@
 }
 
 .image-wrapper img {
-  width: 70%;
-  height: 70%;
+  width: 75%;
+  height: 75%;
   object-fit: contain;
 }
 
-/* Title */
+/* Title text */
 .circle-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #1a1a1a;
   text-align: center;
+  margin: 0;
+  color: #1a1a1a;
 }
 
-/* DESKTOP – Center-align track */
+/* Slick arrows */
+.slick-prev,
+.slick-next {
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  font-size: 26px;
+  color: #bfbfbf;
+  opacity: 1;
+}
+
+/* Remove dots */
+.slick-dots {
+  display: none !important;
+}
+
+/* Remove focus blue border */
+button:focus,
+.slick-slide:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* =============================
+   RESPONSIVENESS
+============================= */
+
+/* Desktop — Center align track */
 @media (min-width: 992px) {
   .category-slider .slick-track {
     display: flex !important;
     justify-content: center !important;
-    gap: 30px;
+    align-items: center;
+    gap: 28px; /* spacing */
   }
 }
 
-/* MOBILE VIEW – EXACT DESKTOP LOOK but 3 items */
+/* Tablet */
+@media (max-width: 992px) {
+  .image-wrapper {
+    width: 135px;
+    height: 135px;
+  }
+}
+
+/* Mobile - EXACT desktop look but 3 visible */
 @media (max-width: 576px) {
+
+  /* Remove container padding to avoid squeeze */
+  .product-carousel-section .container {
+    padding: 0 !important;
+  }
+
+  .category-slider {
+    width: 100%;
+  }
 
   .category-slider .slick-track {
     display: flex !important;
     justify-content: center !important;
-    gap: 12px; /* spacing between circles */
+    gap: 10px; /* spacing between circles */
   }
 
   .image-wrapper {
@@ -76,6 +138,8 @@
 
   .circle-title {
     font-size: 0.75rem;
+    line-height: 1.1;
+    white-space: normal; /* allow 2-line labels */
   }
 
   .slick-prev,
@@ -83,18 +147,27 @@
     display: none !important;
   }
 }
-/* ----------------------------------
-   CAROUSEL INDICATORS STYLES 
----------------------------------- */
-.custom-carousel .slick-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  border: none;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 26px;
-  cursor: pointer;
-}
 
+/* Extra Small */
+@media (max-width: 400px) {
+  .image-wrapper {
+    width: 75px;
+    height: 75px;
+  }
+  .circle-title {
+    font-size: 0.7rem;
+  }
+}
+/* Hide arrows on all mobile */
+@media (max-width: 768px) {
+  .slick-prev,
+  .slick-next {
+    display: none !important;
+  }
+}
+/* Hide dots on all mobile */
+@media (max-width: 768px) {
+  .slick-dots {
+    display: none !important;
+  }
+} 
