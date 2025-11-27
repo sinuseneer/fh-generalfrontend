@@ -20,10 +20,14 @@
 }
 
 /* Ensure circles stay aligned */
-.category-slider .slick-track {
+/* .category-slider .slick-track {
   display: flex !important;
   align-items: center;
   
+} */
+
+.category-slider .slick-slide {
+  display: block !important; /* Let slick auto width */
 }
 
 .category-slider .slick-slide {
