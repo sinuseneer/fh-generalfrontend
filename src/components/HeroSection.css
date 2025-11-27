@@ -173,12 +173,15 @@
   border-radius: 50%;
   cursor: pointer;
   transition: 0.4s;
+  /* hide */
+  display: none !important;
 }
 
 .carousel-dot.active {
   width: 15px;
   border-radius: 8px;
   background: #fff;
+  display: none !important;
 }
 
 /* ----------------------------------
