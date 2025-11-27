@@ -24,12 +24,13 @@ export default function Contact() {
     e.preventDefault();
     const toastId = toast.info("Sending message...", { autoClose: false });
 
-    const templateParams = {
-      from_name: formData.name,
-      from_email: formData.email,
-      phone: formData.phone,
-      message: formData.message,
-    };
+ const templateParams = {
+  name: formData.name,
+  email: formData.email,  // shown inside email body
+  phone: formData.phone,
+  message: formData.message,
+  reply_to: formData.email, // NEW – used for reply
+};
 
     try {
       await emailjs.send(

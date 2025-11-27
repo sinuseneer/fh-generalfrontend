@@ -121,6 +121,7 @@ export default function ProductDetails() {
       phone: formData.phone,
       message: formData.message,
       product_name: product?.product_name || "Unknown Product",
+      reply_to: formData.email, // NEW – used for reply
     };
 
     try {
