@@ -4,53 +4,32 @@
   padding: 30px 0 45px;
 }
 
-/* Heading */
-.carousel-heading {
-  font-size: 2rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 38px;
-  color: #000;
-}
-
-/* Keep slider width centered */
-/* .category-slider {
-  max-width: 1000px;
-  margin: 0 auto;
-} */
+/* Centering slider */
 .category-slider {
   width: 100%;
-  max-width: 100%;
   margin: 0 auto;
 }
 
-/* Ensure circles stay aligned */
+/* Slick slide default */
 .category-slider .slick-slide {
-  display: block !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
-
-
-/* .category-slider .slick-slide {
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-} */
-
-/* ONLY circle element visible */
+/* Circle content */
 .circle-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  gap: 15px;
+  gap: 12px;
 }
 
-/* Circle design */
+/* Circle */
 .image-wrapper {
   width: 150px;
   height: 150px;
-  background-color: #e9f7f5; /* Same mint green */
+  background-color: #e9f7f5;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -58,75 +37,36 @@
   overflow: hidden;
 }
 
-/* Images inside circle */
 .image-wrapper img {
-  width: 75%;
-  height: 75%;
+  width: 70%;
+  height: 70%;
   object-fit: contain;
 }
 
-/* Title under circle */
+/* Title */
 .circle-title {
   font-size: 0.95rem;
   font-weight: 600;
-  margin: 0;
-  text-align: center;
   color: #1a1a1a;
+  text-align: center;
 }
 
-/* ARROW CENTER ALIGNMENT */
-.slick-prev,
-.slick-next {
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  z-index: 10;
-}
-
-.slick-prev:before,
-.slick-next:before {
-  font-size: 26px;
-  color: #bfbfbf;
-  opacity: 1;
-}
-
-/* Remove dots */
-.slick-dots {
-  display: none !important;
-}
-
-/* Remove unwanted focus */
-button:focus,
-.slick-slide:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* ========================
-   RESPONSIVENESS
-========================= */
-
-
-/* Disable center-aligned flex on mobile */
-@media (max-width: 576px) {
+/* DESKTOP – Center-align track */
+@media (min-width: 992px) {
   .category-slider .slick-track {
-    display: block !important; /* Let Slick calculate widths */
+    display: flex !important;
+    justify-content: center !important;
+    gap: 30px;
   }
 }
 
-/* Mobile — 3 per row */
+/* MOBILE VIEW – EXACT DESKTOP LOOK but 3 items */
 @media (max-width: 576px) {
-  .container {
-    max-width: 100% !important;
-    padding: 0 !important; /* Remove Bootstrap side gaps */
-  }
 
-  .category-slider {
-    width: 100%;
-  }
-
-  .slick-slide {
-    padding: 0 12px !important; /* Spacing between circles */
-    box-sizing: border-box;
+  .category-slider .slick-track {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 12px; /* spacing between circles */
   }
 
   .image-wrapper {
@@ -140,71 +80,21 @@ button:focus,
 
   .slick-prev,
   .slick-next {
-    display: none !important; /* Hide arrows on mobile */
-  }
-}
-
-/* Desktop alignment */
-@media (min-width: 992px) {
-  .category-slider .slick-track {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center;
-  }
-
-  .category-slider {
-    max-width: 1000px;
-  }
-}
-
-/* Tablet */
-@media (max-width: 992px) {
-  .image-wrapper {
-    width: 135px;
-    height: 135px;
-  }
-}
-/* Mobile — 3 per row */
-/* Mobile — perfect 3 cards */
-
-
-
-
-/* Small Tablet */
-@media (max-width: 768px) {
-  .image-wrapper {
-    width: 120px;
-    height: 120px;
-  }
-  .circle-title {
-    font-size: 0.9rem;
-  }
-}
-
-/* Mobile — 3 per row */
-/* @media (max-width: 576px) {
-  .image-wrapper {
-    width: 85px;
-    height: 85px;
-  }
-  .circle-title {
-    font-size: 0.75rem;
-  }
-
-
-  /* hide arrows on mobile */
-  /* .slick-prev,
-  .slick-next {
     display: none !important;
   }
-} */ 
-/* Extra Small Mobile — 2 per row */
-@media (max-width: 400px) {
-  .image-wrapper {
-    width: 70px;
-    height: 70px;
-  }
-  .circle-title {
-    font-size: 0.7rem;
-  }
 }
+/* ----------------------------------
+   CAROUSEL INDICATORS STYLES 
+---------------------------------- */
+.custom-carousel .slick-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 26px;
+  cursor: pointer;
+}
+

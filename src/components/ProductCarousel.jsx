@@ -17,9 +17,8 @@ const settings = {
   dots: false,
   infinite: false,
   speed: 500,
-  slidesToShow: 6,
-  slidesToScroll: 1,
   arrows: true,
+  slidesToShow: 6,
   responsive: [
     {
       breakpoint: 576,
@@ -28,26 +27,9 @@ const settings = {
         arrows: false,
       },
     },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 3,
-      },
-    },
-    {
-      breakpoint: 992,
-      settings: {
-        slidesToShow: 5,
-      },
-    },
-    {
-      breakpoint: 1200,
-      settings: {
-        slidesToShow: 6,
-      },
-    },
   ],
 };
+
 
   useEffect(() => {
     const fetchCategories = async () => {
