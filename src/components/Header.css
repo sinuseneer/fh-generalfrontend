@@ -1,24 +1,40 @@
-/* Desktop default */
-.contact-info span {
-  font-size: 14px;
+/* Default desktop style */
+.contact-info {
+  gap: 24px;
+  flex-wrap: nowrap;
 }
 
-/* Mobile View Adjustments */
-@media (max-width: 768px) {
-  .header-top {
-    padding: 4px 0;
-  }
+.contact-item span {
+  font-size: 14px;
+  white-space: nowrap;
+}
 
+/* Tablet and Medium screens (576px - 992px) */
+@media (min-width: 576px) and (max-width: 992px) {
   .contact-info {
-    gap: 8px !important;
+    gap: 12px !important;
   }
+  .contact-item span {
+    font-size: 12px !important;
+  }
+  .contact-item svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
 
-  .contact-info span {
+/* Small Mobile screens (<576px) */
+@media (max-width: 576px) {
+  .contact-info {
+    flex-direction: column;
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+  .contact-item {
+    justify-content: center;
+    width: 100%;
+  }
+  .contact-item span {
     font-size: 11px !important;
-  }
-
-  .contact-info svg {
-    width: 12px !important;
-    height: 12px !important;
   }
 }
