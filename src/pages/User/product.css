@@ -290,7 +290,7 @@ button {
   flex-direction: row;
   align-items: center;
   gap: 18px;
-  min-height: 180px; /* Adjust if needed */
+  min-height: 150px; /* Adjust if needed */
 }
 
 /* Ensure left column takes full available height */
