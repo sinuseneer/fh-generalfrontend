@@ -284,3 +284,21 @@ button {
 }
 
 
+/* Make each card stretch equally in vertical space */
+.contact-info-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  min-height: 180px; /* Adjust if needed */
+}
+
+/* Ensure left column takes full available height */
+.contact-page .col-md-6 {
+  display: flex;
+}
+
+/* Ensure card wrapper takes height */
+.contact-page .flex-column {
+  flex: 1;
+}

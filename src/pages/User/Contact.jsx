@@ -86,7 +86,7 @@ export default function Contact() {
               {contactDetails.map((item, index) => (
                 <Card
                   key={index}
-                  className="p-4 shadow-sm border-0 rounded-4"
+                  className="contact-info-card p-5 shadow-sm border-0 rounded-4 flex-grow-1"
                   style={{
                     display: "flex",
                     flexDirection: "row",
@@ -108,9 +108,9 @@ export default function Contact() {
                     {item.icon}
                   </div>
 
-                  <div>
+                  <div className="">
                     <h5 className="fw-bold mb-2">{item.title}</h5>
-                    <p className="text-muted mb-0" style={{ lineHeight: "1.5" }}>
+                    <p className="text-start text-muted mb-0 " style={{ lineHeight: "1.5" }}>
                       {item.text}
                     </p>
                   </div>
