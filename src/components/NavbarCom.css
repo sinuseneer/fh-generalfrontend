@@ -31,7 +31,7 @@
 /* Nav links default */
 .custom-nav-links a {
   color: #000000;
-  font-family: "Europa Regular", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   font-size: 16px;
   text-decoration: none;
   position: relative;
@@ -41,13 +41,13 @@
 /* Hover effect */
 .custom-nav-links a:hover {
   color: #2ea898;
-  font-family: "Europa Bold", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
 }
 
 /* Active link */
 .custom-nav-links a.active {
   color: #2ea898 !important;
-  font-family: "Europa Bold", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   border-bottom: 2px solid #2ea898;
   padding-bottom: 3px;
 }

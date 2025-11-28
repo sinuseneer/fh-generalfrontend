@@ -212,7 +212,7 @@ body, html {
 }
 
 .about-content h2 {
-  font-family: "Europa Bold", sans-serif;
+  
   font-size: 2rem;
 }
 
@@ -223,7 +223,7 @@ body, html {
 .learn-btn {
   background-color: #18b0a8 !important;
   border: none !important;
-  font-family: "Europa Regular", sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   padding: 10px 25px;
   border-radius: 6px;
 }
@@ -234,7 +234,7 @@ body, html {
 
 @media (max-width: 768px) {
   .about-title h2 {
-  font-family: "Europa Bold", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   font-size: 2rem;
   text-align: left !important;
 }
