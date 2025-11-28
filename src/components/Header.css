@@ -1,40 +1,49 @@
-/* Default desktop style */
+/* Desktop default */
 .contact-info {
-  gap: 24px;
-  flex-wrap: nowrap;
+  display: flex;
+  gap: 22px;
+  flex-wrap: nowrap !important; /* Force in one line always */
 }
 
 .contact-item span {
   font-size: 14px;
-  white-space: nowrap;
+  white-space: nowrap !important;
 }
 
-/* Tablet and Medium screens (576px - 992px) */
-@media (min-width: 576px) and (max-width: 992px) {
+/* Tablet + Mobile Fix */
+@media (max-width: 992px) {
   .contact-info {
-    gap: 12px !important;
+    gap: 10px !important;
   }
+
   .contact-item span {
-    font-size: 12px !important;
+    font-size: 11px !important;
   }
+
   .contact-item svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: 12px !important;
+    height: 12px !important;
   }
 }
 
-/* Small Mobile screens (<576px) */
+/* Very small screens */
 @media (max-width: 576px) {
   .contact-info {
-    flex-direction: column;
     justify-content: center !important;
     gap: 6px !important;
   }
-  .contact-item {
-    justify-content: center;
-    width: 100%;
+}
+
+/* Avoid touching hamburger menu */
+@media (max-width: 992px) {
+  .contact-info {
+    margin-right: 12px !important; /* Adjust if needed */
   }
-  .contact-item span {
-    font-size: 11px !important;
+}
+
+/* Even smaller phones */
+@media (max-width: 576px) {
+  .contact-info {
+    margin-right: 8px !important;
   }
 }
