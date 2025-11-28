@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Envelope, Telephone } from "react-bootstrap-icons";
 import  '../App.css';
+import './Header.css';
 
 function Header() {
   return (
@@ -14,11 +15,11 @@ function Header() {
             className="d-flex justify-content-end align-items-center gap-4 text-white"
           >
             <div className="d-flex align-items-center gap-2">
-              <Envelope size={16} />
+              <Envelope size={15} />
               <span>info@fhgeneralequipment.com</span>
             </div>
             <div className="d-flex align-items-center gap-2">
-              <Telephone size={16} />
+              <Telephone size={15} />
               <span>+1 347 869 4095</span>
             </div>
           </Col>

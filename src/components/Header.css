@@ -1,0 +1,24 @@
+/* Desktop default */
+.contact-info span {
+  font-size: 14px;
+}
+
+/* Mobile View Adjustments */
+@media (max-width: 768px) {
+  .header-top {
+    padding: 4px 0;
+  }
+
+  .contact-info {
+    gap: 8px !important;
+  }
+
+  .contact-info span {
+    font-size: 11px !important;
+  }
+
+  .contact-info svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+}
