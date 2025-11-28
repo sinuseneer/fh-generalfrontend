@@ -168,7 +168,7 @@ useEffect(() => {
 
         {/* 🧩 Product Grid */}
         {loading ? (
-          <Box textAlign="center" mt={6}>
+          <Box textAlign="center" mt={6} mb={5}>
             <CircularProgress />
             <Typography mt={2}>Loading products...</Typography>
           </Box>
@@ -181,14 +181,14 @@ useEffect(() => {
             ))}
           </div>
         ) : (
-          <Typography variant="body1" align="center" sx={{ mt: 5 }}>
+          <Typography variant="body1" align="center" sx={{ mt: 5, mb: 5 }}>
             No products found.
           </Typography>
         )}
 
         {/* 🧭 Pagination */}
         {!loading && totalPages > 1 && (
-          <Box display="flex" justifyContent="center" mt={5} mb={5}>
+          <Box display="flex" justifyContent="center" mb={5}>
             <Pagination
               count={totalPages}
               page={currentPage}

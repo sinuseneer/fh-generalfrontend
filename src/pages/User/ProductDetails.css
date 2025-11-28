@@ -454,3 +454,17 @@ Main image container
     height: auto !important;
   }
 }
+
+/* Mobile and Tablet (<= 768px) */
+@media (max-width: 768px) {
+  .table.table-bordered th:nth-child(3),
+  .table.table-bordered td:nth-child(4) {
+    display: none !important; /* Hide the 3rd and 4th columns */
+  }
+
+  .table.table-bordered th,
+  .table.table-bordered td {
+    width: 50% !important; /* Each remaining column take 50% */
+    display: table-cell !important;
+  }
+}
