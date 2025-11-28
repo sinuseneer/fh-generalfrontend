@@ -58,6 +58,7 @@
   /* FIX: allow expansion */
   min-height: 80px;
   height: auto;
+  margin-bottom: 20px;
 }
 
 /* .product-title {
