@@ -24,6 +24,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   width: 100%;
+  margin-bottom: 40px;
 }
 
 .product-grid-item {
@@ -35,6 +36,7 @@
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+    margin-bottom: 20px;
   }
 }
 
@@ -44,6 +46,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     justify-items: center;
+    margin-bottom: 20px;
   }
 }
 
