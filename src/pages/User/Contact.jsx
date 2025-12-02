@@ -5,6 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
 import "./product.css";
+import api_uri from "../../config/api";
+
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -31,7 +33,7 @@ const handleSubmit = async (e) => {
   };
 
   try {
-    const res = await fetch(`${api_uri}api/contact/`, {
+    const res = await fetch(`${api_uri}contact/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

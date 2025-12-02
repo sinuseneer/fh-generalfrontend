@@ -127,7 +127,7 @@ export default function ProductDetails() {
     };
 
     try {
-      const res = await fetch(`${api_uri}api/contact/`, {
+      const res = await fetch(`${api_uri}contact/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
