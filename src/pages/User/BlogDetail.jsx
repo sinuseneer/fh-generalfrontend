@@ -26,12 +26,12 @@ export default function BlogDetail({ blog }) {
       {/* SOCIAL ICONS */}
       <div className="social-column">
         <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`}
+          href="https://www.instagram.com/fhgeneralequipment/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Share on Facebook"
+          aria-label="Instagram"
         >
-          <i className="bi bi-facebook"></i>
+          <i className="bi bi-instagram"></i>
         </a>
 
         <a
@@ -62,12 +62,12 @@ export default function BlogDetail({ blog }) {
         </a>
 
         <a
-          href="https://instagram.com"
+          href="https://www.facebook.com/profile.php?id=61583930025453"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Instagram"
+          aria-label="Facebook"
         >
-          <i className="bi bi-instagram"></i>
+          <i className="bi bi-facebook"></i>
         </a>
       </div>
 

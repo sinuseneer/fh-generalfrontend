@@ -60,8 +60,25 @@ export default function Footer() {
 
             <h6 className="fw-bold mb-3 mt-4">Follow Us</h6>
             <div className="d-flex gap-4 align-items-center footer-social-icons">
-              <FaFacebookF size={24} />
-              <FaInstagram size={24} />
+              <a
+                href="https://www.facebook.com/profile.php?id=61583930025453"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="social-icon"
+              >
+                <FaFacebookF size={24} />
+              </a>
+
+              <a
+                href="https://www.instagram.com/fhgeneralequipment/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="social-icon"
+              >
+                <FaInstagram size={24} />
+              </a>
               <FaLinkedinIn size={24} />
             </div>
           </Col>
@@ -107,20 +124,26 @@ export default function Footer() {
                   {loading ? (
                     <li className="my-1">Loading...</li>
                   ) : categories && categories.length > 0 ? (
-                    categories.slice(0, Math.ceil(categories.length / 2)).map((cat) => (
-                      <li key={cat._id} className="my-1">
-                        <a
-                          href={`/product?category=${encodeURIComponent(cat.category_name)}`}
-                          className="footer-link"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/product", { state: { category: cat.category_name } });
-                          }}
-                        >
-                          {cat.category_name}
-                        </a>
-                      </li>
-                    ))
+                    categories
+                      .slice(0, Math.ceil(categories.length / 2))
+                      .map((cat) => (
+                        <li key={cat._id} className="my-1">
+                          <a
+                            href={`/product?category=${encodeURIComponent(
+                              cat.category_name
+                            )}`}
+                            className="footer-link"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate("/product", {
+                                state: { category: cat.category_name },
+                              });
+                            }}
+                          >
+                            {cat.category_name}
+                          </a>
+                        </li>
+                      ))
                   ) : (
                     // Fallback static list if API empty / fails
                     <>
@@ -135,20 +158,26 @@ export default function Footer() {
                   {loading ? (
                     <li className="my-1">&nbsp;</li>
                   ) : categories && categories.length > 0 ? (
-                    categories.slice(Math.ceil(categories.length / 2)).map((cat) => (
-                      <li key={cat._id} className="my-1">
-                        <a
-                          href={`/product?category=${encodeURIComponent(cat.category_name)}`}
-                          className="footer-link"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/product", { state: { category: cat.category_name } });
-                          }}
-                        >
-                          {cat.category_name}
-                        </a>
-                      </li>
-                    ))
+                    categories
+                      .slice(Math.ceil(categories.length / 2))
+                      .map((cat) => (
+                        <li key={cat._id} className="my-1">
+                          <a
+                            href={`/product?category=${encodeURIComponent(
+                              cat.category_name
+                            )}`}
+                            className="footer-link"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate("/product", {
+                                state: { category: cat.category_name },
+                              });
+                            }}
+                          >
+                            {cat.category_name}
+                          </a>
+                        </li>
+                      ))
                   ) : (
                     <>
                       <li className="my-1">Operation Table</li>
@@ -173,7 +202,10 @@ export default function Footer() {
               <FiMapPin className="me-2" />
               Lot 4 Bel Air, Georgetown Guyana, South America
             </p>
-            <Button className="rounded-1 mt-3 custom-btn px-4 py-2" onClick={handleContactClick}>
+            <Button
+              className="rounded-1 mt-3 custom-btn px-4 py-2"
+              onClick={handleContactClick}
+            >
               Get in Touch
             </Button>
           </Col>
