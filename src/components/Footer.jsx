@@ -79,7 +79,15 @@ export default function Footer() {
               >
                 <FaInstagram size={24} />
               </a>
-              <FaLinkedinIn size={24} />
+              <a
+                href="https://www.linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="social-icon"
+              >
+                <FaLinkedinIn size={24} />
+              </a>
             </div>
           </Col>
 

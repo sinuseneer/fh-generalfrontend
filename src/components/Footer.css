@@ -29,3 +29,14 @@ footer {
   text-decoration: underline;
   color: white;
 }
+
+
+.footer-social-icons .social-icon {
+  color: #000 !important; /* default color */
+  transition: 0.3s ease;
+}
+
+.footer-social-icons .social-icon:hover {
+  color: #2EA898 !important;
+  
+}
