@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { MapPin, Phone, Mail, User } from "lucide-react";
-import emailjs from "emailjs-com";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
@@ -20,35 +19,40 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const toastId = toast.info("Sending message...", { autoClose: false });
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const toastId = toast.info("Sending message...", { autoClose: false });
 
- const templateParams = {
-  name: formData.name,
-  email: formData.email,  // shown inside email body
-  phone: formData.phone,
-  message: formData.message,
-  reply_to: formData.email, // NEW – used for reply
-};
-
-    try {
-      await emailjs.send(
-        "service_dq1kvps",
-        "template_qzdnm8j",
-        templateParams,
-        "tGZK_yhhP8blh1oT-"
-      );
-
-      toast.dismiss(toastId);
-      toast.success("✅ Message sent successfully!");
-      setFormData({ name: "", email: "", phone: "", message: "" });
-    } catch (error) {
-      toast.dismiss(toastId);
-      console.error("❌ Email send failed:", error);
-      toast.error("⚠️ Failed to send message. Please try again.");
-    }
+  const payload = {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    message: formData.message,
   };
+
+  try {
+    const res = await fetch(`${api_uri}contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    toast.dismiss(toastId);
+
+    if (data.success) {
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", phone: "", message: "" });
+    } else {
+      toast.error("Failed to send message.");
+    }
+  } catch (error) {
+    toast.dismiss(toastId);
+    toast.error("Something went wrong!");
+  }
+};
 
   const contactDetails = [
     {

@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import emailjs from "emailjs-com";
+// import emailjs from "emailjs-com";
 import { Box, Card as MuiCard, CardMedia } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -115,30 +115,38 @@ export default function ProductDetails() {
     e.preventDefault();
     const toastId = toast.info("Sending message...", { autoClose: false });
 
-    const templateParams = {
-      from_name: formData.name,
-      from_email: formData.email,
+    const payload = {
+      name: formData.name,
       phone: formData.phone,
+      email: formData.email,
       message: formData.message,
-      product_name: product?.product_name || "Unknown Product",
-      reply_to: formData.email, // NEW – used for reply
+      product: product?.product_name || "Unknown Product",
+      // 👇 Auto-attached from product page
+      product_name: product?.product_name,
+      prod_id: product?.prod_id,
     };
 
     try {
-      await emailjs.send(
-        "service_dq1kvps",
-        "template_enjtl4e",
-        templateParams,
-        "tGZK_yhhP8blh1oT-"
-      );
+      const res = await fetch(`${api_uri}contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
+      const data = await res.json();
       toast.dismiss(toastId);
-      toast.success("Message sent successfully!");
 
-      setFormData({ name: "", phone: "", email: "", message: "" });
-    } catch {
+      if (data.success) {
+        toast.success("Message sent successfully!");
+        setFormData({ name: "", phone: "", email: "", message: "" });
+      } else {
+        toast.error("Failed to send message.");
+      }
+    } catch (error) {
       toast.dismiss(toastId);
-      toast.error("Failed to send message.");
+      toast.error("Something went wrong!");
     }
   };
 

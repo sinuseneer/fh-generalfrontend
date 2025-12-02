@@ -50,7 +50,7 @@ export default function Footer() {
         <Row className="gy-4 my-4">
           {/* Logo */}
           <Col md={3}>
-            <div className="mb-3">
+            <div className="mb-4">
               <img
                 src="/images/LogoGeneralEquipments.svg"
                 alt="General Equipment Logo"
@@ -58,7 +58,7 @@ export default function Footer() {
               />
             </div>
 
-            <h6 className="fw-bold mb-3 mt-4">Follow Us</h6>
+            <h6 className="fw-bold mb-3 mt-5">Follow Us</h6>
             <div className="d-flex gap-4 align-items-center footer-social-icons">
               <a
                 href="https://www.facebook.com/profile.php?id=61583930025453"
