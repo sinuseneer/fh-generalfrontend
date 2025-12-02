@@ -31,7 +31,7 @@ const handleSubmit = async (e) => {
   };
 
   try {
-    const res = await fetch(`${api_uri}contact`, {
+    const res = await fetch(`${api_uri}api/contact/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
