@@ -92,7 +92,7 @@ export default function ProductDetails() {
       // don't overwrite if user already typed something
       if (prev.message && prev.message.trim().length > 0) return prev;
 
-      const pname = product.product_name || "";
+      const pname = product.name || product.product_name || "";
       const pid = product.prod_id || "";
 
       return {
