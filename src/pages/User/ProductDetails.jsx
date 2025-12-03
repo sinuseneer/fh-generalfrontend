@@ -281,7 +281,7 @@ export default function ProductDetails() {
         <Col md={6}>
           <Card className="p-2 mt-1 border-0">
             <h2 className="fw-bold text-start">
-              {product.product_name}
+             {product.name} || {product.product_name} 
             </h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
