@@ -84,6 +84,24 @@ export default function ProductDetails() {
     if (!passedProduct && id) fetchProduct();
   }, [id]);
 
+  // 👇 Auto-fill message with product name + ID when product is available
+  useEffect(() => {
+    if (!product) return;
+
+    setFormData((prev) => {
+      // don't overwrite if user already typed something
+      if (prev.message && prev.message.trim().length > 0) return prev;
+
+      const pname = product.product_name || "";
+      const pid = product.prod_id || "";
+
+      return {
+        ...prev,
+        message: `Hi, I'm interested in ${pname} (Product ID: ${pid}). Please provide more information.`,
+      };
+    });
+  }, [product]);
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -120,9 +138,8 @@ export default function ProductDetails() {
       phone: formData.phone,
       email: formData.email,
       message: formData.message,
-      product: product?.product_name || "Unknown Product",
       // 👇 Auto-attached from product page
-      product_name: product?.product_name,
+      product_name: product?.product_name || "Unknown Product",
       prod_id: product?.prod_id,
     };
 
@@ -185,8 +202,11 @@ export default function ProductDetails() {
       const atStart = el.scrollLeft === 0;
       const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth;
 
-      document.querySelector(".thumb-btn-prev").style.opacity = atStart ? 0 : 1;
-      document.querySelector(".thumb-btn-next").style.opacity = atEnd ? 0 : 1;
+      const prevBtn = document.querySelector(".thumb-btn-prev");
+      const nextBtn = document.querySelector(".thumb-btn-next");
+
+      if (prevBtn) prevBtn.style.opacity = atStart ? 0 : 1;
+      if (nextBtn) nextBtn.style.opacity = atEnd ? 0 : 1;
     }, 400);
   };
 
@@ -261,7 +281,7 @@ export default function ProductDetails() {
         <Col md={6}>
           <Card className="p-2 mt-1 border-0">
             <h2 className="fw-bold text-start">
-              {product.name || product.product_name}
+              {product.product_name}
             </h2>
             <p>
               <strong>ID:</strong> {product.prod_id}
@@ -276,7 +296,7 @@ export default function ProductDetails() {
 
             {/* WhatsApp Button */}
             <Button
-              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}`}
+              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}%20(Product%20ID:%20${product.prod_id})`}
               target="_blank"
               variant="success"
               className="mt-3 px-4 py-2"
