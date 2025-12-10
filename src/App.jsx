@@ -46,6 +46,7 @@ import PartnerSection from "./components/PartnerSection.jsx";
 import MediaGallery from "./pages/Admin/MediaGallery.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import SEOContentSection from "./components/SEOContentSection.jsx";
 
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
               <WhyChooseUs />
               <LatestNews />
               <PartnerSection />
+              <SEOContentSection/>
             </UserLayout>
           }
         />
