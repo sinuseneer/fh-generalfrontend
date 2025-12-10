@@ -534,10 +534,19 @@ margin-bottom: 50px;
 
 /* seo content alignment */
 .seo-content-section .container {
-  max-width: 1100px;  /* adjust if needed */
+  max-width: 1600px;  /* adjust if needed */
   margin: 0 auto;
   padding: 30px 30px;    /* left & right margins */
 }
+
+.seo-content-section p {
+  margin-bottom: 8px !important;
+}
+
+.seo-content-section p {
+  margin-bottom: 4px !important;
+}
+
 
 @media (max-width: 768px) {
   .seo-content-section .container {
