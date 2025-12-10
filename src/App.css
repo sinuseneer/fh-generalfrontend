@@ -530,3 +530,24 @@ margin-bottom: 50px;
     font-size: 1.75rem;
   }
 }
+
+
+/* seo content alignment */
+.seo-content-section .container {
+  max-width: 1100px;  /* adjust if needed */
+  margin: 0 auto;
+  padding: 30px 30px;    /* left & right margins */
+}
+
+@media (max-width: 768px) {
+  .seo-content-section .container {
+    padding: 7px 18px;
+  }
+  .seo-content-section h1 {
+    font-size: 22px;
+  }
+  .seo-content-section p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
