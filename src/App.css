@@ -536,7 +536,11 @@ margin-bottom: 50px;
 .seo-content-section .container {
   max-width: 1400px;  /* adjust if needed */
   margin: 0 auto;
-  padding: 40px 40px;    /* left & right margins */
+  padding: 45px 40px;    /* left & right margins */
+}
+
+.seo-content-section{
+  background-color: #F8F9FA;
 }
 
 .seo-content-section p {
@@ -559,4 +563,9 @@ margin-bottom: 50px;
     font-size: 15px;
     line-height: 1.6;
   }
+}
+
+.seo-link{
+  text-decoration: none;
+  color: #2EA898;
 }
