@@ -534,9 +534,9 @@ margin-bottom: 50px;
 
 /* seo content alignment */
 .seo-content-section .container {
-  max-width: 1600px;  /* adjust if needed */
+  max-width: 1400px;  /* adjust if needed */
   margin: 0 auto;
-  padding: 30px 30px;    /* left & right margins */
+  padding: 40px 40px;    /* left & right margins */
 }
 
 .seo-content-section p {
