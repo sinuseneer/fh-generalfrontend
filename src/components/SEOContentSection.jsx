@@ -19,7 +19,7 @@ const SEOContentSection = () => {
             equipment in Guyana
           </Link>{" "}
           and the USA. As a new Trusted emerging provider bringing new value to
-          the market, we provide <Link to="/blog/69204654f555219d182919e0" className="seo-link">high-quality</Link>, reliable, and affordable
+          the market, we provide <Link to="/blog/69200a659c54eb9d505f6c39" className="seo-link">high-quality</Link>, reliable, and affordable
           equipment solutions for hospitals, clinics, laboratories, factories,
           and businesses. Our mission is to offer <Link to="/products" className="seo-link">products </Link>that meet
           international standards, reliable service, and effective support to
