@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
 import "./product.css";
 import api_uri from "../../config/api";
+import SEO from "../../components/SEO/SEO";
 
 
 export default function Contact() {
