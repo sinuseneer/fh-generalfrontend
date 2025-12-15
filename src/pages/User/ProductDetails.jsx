@@ -211,220 +211,234 @@ export default function ProductDetails() {
   };
 
   return (
-    <Container className="my-5">
-      <ToastContainer position="top-center" />
-
-      {/* Back button */}
-      <p
-        onClick={() => navigate("/product")}
-        style={{
-          cursor: "pointer",
-          color: "#222",
-          fontSize: "15px",
-          marginBottom: "15px",
-          userSelect: "none",
-        }}
-      >
-        ← Back to Products
-      </p>
-
-      <Row className="mb-4 mt-3">
-        {/* LEFT — Main Image */}
-        <Col md={6} className="text-center">
-          <Box
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={() => handleTouchEnd(allImages)}
-          >
-            <MuiCard className="product-main-card">
-              <CardMedia
-                component="img"
-                image={selectedImage}
-                alt={product.product_name}
-                className="main-product-image w-100"
-                onError={(e) => (e.target.src = "/images/no-image.jpg")}
-              />
-            </MuiCard>
-          </Box>
-
-          {/* Scroll Buttons */}
-          <div
-            className="thumb-btn thumb-btn-prev"
-            onClick={() => scrollThumbs(-120)}
-          >
-            ❮
-          </div>
-          <div
-            className="thumb-btn thumb-btn-next"
-            onClick={() => scrollThumbs(120)}
-          >
-            ❯
-          </div>
-
-          {/* THUMBNAILS */}
-          <Box ref={thumbRef} className="thumbnail-scroll">
-            {allImages.map((img, index) => (
-              <MuiCard
-                key={index}
-                className={`thumbnail-card ${
-                  selectedImage === img ? "active" : ""
-                }`}
-                onClick={() => setSelectedImage(img)}
-              >
-                <CardMedia component="img" image={img} />
-              </MuiCard>
-            ))}
-          </Box>
-        </Col>
-
-        {/* RIGHT — Details */}
-        <Col md={6}>
-          <Card className="p-2 mt-1 border-0">
-            <h2 className="fw-bold text-start">
-             {product.name} || {product.product_name} 
-            </h2>
-            <p>
-              <strong>ID:</strong> {product.prod_id}
-            </p>
-
-            {/* Description */}
-            {product.description && (
-              <Card className="p-1 mt-0 border-0 text-start">
-                <p className="mb-0 mt-0 ">{product.description}</p>
-              </Card>
-            )}
-
-            {/* WhatsApp Button */}
-            <Button
-              href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}%20(Product%20ID:%20${product.prod_id})`}
-              target="_blank"
-              variant="success"
-              className="mt-3 px-4 py-2"
-              style={{
-                width: "180px",
-                backgroundColor: "#128C7E",
-                border: "none",
-                borderRadius: "8px",
-              }}
+   <>
+    {product && (
+      <SEO
+        title={`${product.product_name} Supplier in the USA`}
+        description={`Buy ${product.product_name} from FH General Equipment, a US-focused supplier of medical and industrial equipment serving customers across the United States.`}
+        canonical={`https://fhgeneralequipments.com/product/${id}`}
+        ogImage={
+          product.main_image
+            ? `${base_uri}${product.main_image}`
+            : "https://fhgeneralequipments.com/images/no-image.jpg"
+        }
+      />
+    )}
+      <Container className="my-5">
+        <ToastContainer position="top-center" />
+  
+        {/* Back button */}
+        <p
+          onClick={() => navigate("/product")}
+          style={{
+            cursor: "pointer",
+            color: "#222",
+            fontSize: "15px",
+            marginBottom: "15px",
+            userSelect: "none",
+          }}
+        >
+          ← Back to Products
+        </p>
+  
+        <Row className="mb-4 mt-3">
+          {/* LEFT — Main Image */}
+          <Col md={6} className="text-center">
+            <Box
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={() => handleTouchEnd(allImages)}
             >
-              WhatsApp Now
-            </Button>
-          </Card>
-
-          {/* Inquiry form */}
-          <Card className="p-4 mt-3 border-1">
-            <h5>Submit Your Inquiry to Know More</h5>
-
-            <Form onSubmit={handleSubmit}>
-              <Row>
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                      name="name"
-                      placeholder="Enter your full name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label>Phone</Form.Label>
-                    <Form.Control
-                      name="phone"
-                      placeholder="Enter your phone number"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Form.Group className="mt-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  name="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
+              <MuiCard className="product-main-card">
+                <CardMedia
+                  component="img"
+                  image={selectedImage}
+                  alt={product.product_name}
+                  className="main-product-image w-100"
+                  onError={(e) => (e.target.src = "/images/no-image.jpg")}
                 />
-              </Form.Group>
-
-              <Form.Group className="mt-3">
-                <Form.Label>Message</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  name="message"
-                  placeholder="Enter your message here..."
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-
-              <Button className="mt-3" type="submit">
-                Send Message
+              </MuiCard>
+            </Box>
+  
+            {/* Scroll Buttons */}
+            <div
+              className="thumb-btn thumb-btn-prev"
+              onClick={() => scrollThumbs(-120)}
+            >
+              ❮
+            </div>
+            <div
+              className="thumb-btn thumb-btn-next"
+              onClick={() => scrollThumbs(120)}
+            >
+              ❯
+            </div>
+  
+            {/* THUMBNAILS */}
+            <Box ref={thumbRef} className="thumbnail-scroll">
+              {allImages.map((img, index) => (
+                <MuiCard
+                  key={index}
+                  className={`thumbnail-card ${
+                    selectedImage === img ? "active" : ""
+                  }`}
+                  onClick={() => setSelectedImage(img)}
+                >
+                  <CardMedia component="img" image={img} />
+                </MuiCard>
+              ))}
+            </Box>
+          </Col>
+  
+          {/* RIGHT — Details */}
+          <Col md={6}>
+            <Card className="p-2 mt-1 border-0">
+              <h2 className="fw-bold text-start">
+               {product.name} || {product.product_name} 
+              </h2>
+              <p>
+                <strong>ID:</strong> {product.prod_id}
+              </p>
+  
+              {/* Description */}
+              {product.description && (
+                <Card className="p-1 mt-0 border-0 text-start">
+                  <p className="mb-0 mt-0 ">{product.description}</p>
+                </Card>
+              )}
+  
+              {/* WhatsApp Button */}
+              <Button
+                href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}%20(Product%20ID:%20${product.prod_id})`}
+                target="_blank"
+                variant="success"
+                className="mt-3 px-4 py-2"
+                style={{
+                  width: "180px",
+                  backgroundColor: "#128C7E",
+                  border: "none",
+                  borderRadius: "8px",
+                }}
+              >
+                WhatsApp Now
               </Button>
-            </Form>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* FULL WIDTH SPECIFICATIONS */}
-      <Row className="mt-4">
-        <Col md={12}>
-          <Card className="p-4 border-0">
-            <h5 className="mb-3">Specifications</h5>
-
-            {Array.isArray(product.product_info) &&
-            product.product_info.length > 0 ? (
-              <table className="table table-bordered">
-                <tbody>
-                  {(() => {
-                    const rows = [];
-                    for (let i = 0; i < product.product_info.length; i += 2) {
-                      const a = product.product_info[i];
-                      const b = product.product_info[i + 1];
-
-                      rows.push(
-                        <tr key={i}>
-                          <th style={{ fontWeight: "bold", width: "25%" }}>
-                            {a?.key}
-                          </th>
-                          <td style={{ width: "25%" }}>{a?.value}</td>
-
-                          {b ? (
-                            <>
-                              <th style={{ fontWeight: "bold", width: "25%" }}>
-                                {b.key}
-                              </th>
-                              <td style={{ width: "25%" }}>{b.value}</td>
-                            </>
-                          ) : (
-                            <>
-                              <th></th>
-                              <td></td>
-                            </>
-                          )}
-                        </tr>
-                      );
-                    }
-                    return rows;
-                  })()}
-                </tbody>
-              </table>
-            ) : (
-              <p>No specifications available.</p>
-            )}
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+            </Card>
+  
+            {/* Inquiry form */}
+            <Card className="p-4 mt-3 border-1">
+              <h5>Submit Your Inquiry to Know More</h5>
+  
+              <Form onSubmit={handleSubmit}>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Name</Form.Label>
+                      <Form.Control
+                        name="name"
+                        placeholder="Enter your full name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+  
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Phone</Form.Label>
+                      <Form.Control
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+  
+                <Form.Group className="mt-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    name="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+  
+                <Form.Group className="mt-3">
+                  <Form.Label>Message</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    name="message"
+                    placeholder="Enter your message here..."
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+  
+                <Button className="mt-3" type="submit">
+                  Send Message
+                </Button>
+              </Form>
+            </Card>
+          </Col>
+        </Row>
+  
+        {/* FULL WIDTH SPECIFICATIONS */}
+        <Row className="mt-4">
+          <Col md={12}>
+            <Card className="p-4 border-0">
+              <h5 className="mb-3">Specifications</h5>
+  
+              {Array.isArray(product.product_info) &&
+              product.product_info.length > 0 ? (
+                <table className="table table-bordered">
+                  <tbody>
+                    {(() => {
+                      const rows = [];
+                      for (let i = 0; i < product.product_info.length; i += 2) {
+                        const a = product.product_info[i];
+                        const b = product.product_info[i + 1];
+  
+                        rows.push(
+                          <tr key={i}>
+                            <th style={{ fontWeight: "bold", width: "25%" }}>
+                              {a?.key}
+                            </th>
+                            <td style={{ width: "25%" }}>{a?.value}</td>
+  
+                            {b ? (
+                              <>
+                                <th style={{ fontWeight: "bold", width: "25%" }}>
+                                  {b.key}
+                                </th>
+                                <td style={{ width: "25%" }}>{b.value}</td>
+                              </>
+                            ) : (
+                              <>
+                                <th></th>
+                                <td></td>
+                              </>
+                            )}
+                          </tr>
+                        );
+                      }
+                      return rows;
+                    })()}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No specifications available.</p>
+              )}
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+   </>
   );
 }

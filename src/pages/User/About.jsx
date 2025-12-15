@@ -3,6 +3,8 @@ import { Container, Row, Col, Image, Button } from "react-bootstrap";
 import "./About.css";
 import WhyChooseUs from "../../components/WhyChooseUs";
 import { useNavigate } from "react-router-dom";
+import SEO from "../../components/SEO/SEO";
+
 
 export default function About() {
   const [activeTab, setActiveTab] = useState("story");
@@ -31,6 +33,13 @@ export default function About() {
 
   return (
     <>
+      <SEO
+      title="About FH General Equipment | General Equipment Supplier in USA & Guyana"
+      description="Learn about FH General Equipment, a reliable medical and industrial 
+equipment supplier serving healthcare and industrial sectors in Guyana 
+and the USA."
+      canonical="https://fhgeneralequipments.com/about"
+    />
       <Container fluid className="about-section pt-5 pb-2">
         <Container>
           <Row className="align-items-center">

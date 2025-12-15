@@ -61,7 +61,7 @@ export default function Footer() {
             <h6 className="fw-bold mb-3 mt-5">Follow Us</h6>
             <div className="d-flex gap-4 align-items-center footer-social-icons">
               <a
-                href="https://www.facebook.com/profile.php?id=61583930025453"
+                href="https://www.facebook.com/profile.php?id=61584453625741"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -80,7 +80,7 @@ export default function Footer() {
                 <FaInstagram size={24} />
               </a>
               <a
-                href="https://www.linkedin.com"
+                href="https://www.linkedin.com/in/fh-general-equipment/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"

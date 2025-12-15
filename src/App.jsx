@@ -13,6 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import UserLayout from "./layouts/UserLayout.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 
+import SEO from "./components/SEO/SEO.jsx";
 // User Pages
 import About from "./pages/User/About.jsx";
 import Product from "./pages/User/Product.jsx";
@@ -61,6 +62,11 @@ function App() {
           path="/"
           element={
             <UserLayout>
+               <SEO
+        title="Medical & Industrial Equipment Supplier in the USA"
+        description="FH General Equipment is a US-focused supplier of medical, industrial, and general equipment serving customers across the United States with operational support in Guyana."
+        canonical="https://fhgeneralequipments.com/"
+      />
               <HeroSection />
               <ProductCarousel />
               <AboutSection />

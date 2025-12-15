@@ -17,6 +17,8 @@ import ProductCarousel from "../../components/ProductCarousel";
 import ProductCard from "../../components/ProductCard";
 import "./product.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import SEO from "../../components/SEO/SEO";
+
 
 export default function Product() {
   const [products, setProducts] = useState([]);
@@ -101,6 +103,24 @@ useEffect(() => {
 
   return (
     <>
+
+    <SEO
+      title={
+        selectedCategory
+          ? `${selectedCategory} Equipment Supplier in the USA & Guyana`
+          : "Medical & Industrial Equipment Supplier in the USA & Guyana"
+      }
+      description={
+        selectedCategory
+          ? `Browse ${selectedCategory} equipment supplied by FH General Equipment, serving businesses and healthcare facilities across the United States.`
+          : "Explore medical and industrial equipment supplied by FH General Equipment for hospitals, clinics and industrial use."
+      }
+      canonical={
+        selectedCategory
+          ? `https://fhgeneralequipments.com/product`
+          : "https://fhgeneralequipments.com/product"
+      }
+    />
       <div className="hide-banner-mobile">
   <Banner />
 </div>
