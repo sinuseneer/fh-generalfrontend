@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import BlogDetail from "./BlogDetail.jsx";
 import api_uri, { base_uri } from "../../config/api";
+import SEO from "../../components/SEO/SEO";
 
 /**
  * Convert timestamp → "DEC 24 2024"
@@ -68,13 +69,26 @@ export default function BlogDetailPage() {
     fetchBlog();
   }, [id]);
 
-  if (loading) {
-    return <p style={{ textAlign: "center", padding: 50 }}>Loading...</p>;
-  }
+   if (loading) return <p style={{ textAlign: "center", padding: 50 }}>Loading…</p>;
+  if (!blog) return <p style={{ textAlign: "center", padding: 50 }}>Blog not found.</p>;
 
-  if (!blog) {
-    return <p style={{ textAlign: "center", padding: 50 }}>Blog not found.</p>;
-  }
+  return (
+    <>
+      {/* ✅ SEO FOR BLOG DETAIL PAGE */}
+      <SEO
+        title={blog.title}
+        description={
+          blog.shortDescription ||
+          `Read ${blog.title} – medical and industrial equipment insights by FH General Equipment.`
+        }
+        canonical={`https://fhgeneralequipments.com/blog/${id}`}
+        ogImage={
+          blog.image ||
+          "https://fhgeneralequipments.com/images/no-image.jpg"
+        }
+      />
 
-  return <BlogDetail blog={blog} />;
+      <BlogDetail blog={blog} />
+    </>
+  );
 }

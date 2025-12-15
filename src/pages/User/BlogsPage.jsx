@@ -6,7 +6,7 @@ import axios from "axios";
 import api_uri, { base_uri } from "../../config/api";
 import "./Blog.css";
 import SEO from "../../components/SEO/SEO";
-SEO
+
 function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
