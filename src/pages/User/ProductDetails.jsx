@@ -16,6 +16,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
 import "./ProductDetails.css";
 import api_uri, { base_uri } from "../../config/api";
+import SEO from "../../components/SEO/SEO";
+
 
 export default function ProductDetails() {
   const navigate = useNavigate();
