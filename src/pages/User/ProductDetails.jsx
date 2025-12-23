@@ -311,7 +311,7 @@ export default function ProductDetails() {
   
               {/* WhatsApp Button */}
               <Button
-                href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.product_name}%20(Product%20ID:%20${product.prod_id})`}
+                href={`https://wa.me/13478694095?text=Hi,%20I'm%20interested%20in%20${product.name}%20(Product%20ID:%20${product.prod_id})`}
                 target="_blank"
                 variant="success"
                 className="mt-3 px-4 py-2"
