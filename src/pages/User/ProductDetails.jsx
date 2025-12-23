@@ -216,8 +216,8 @@ export default function ProductDetails() {
    <>
     {product && (
       <SEO
-        title={`${product.product_name} Supplier in the USA`}
-        description={`Buy ${product.product_name} from FH General Equipment, a US-focused supplier of medical and industrial equipment serving customers across the United States.`}
+        title={`${product.name} Supplier in the USA`}
+        description={`Buy ${product.name} from FH General Equipment, a US-focused supplier of medical and industrial equipment serving customers across the United States.`}
         canonical={`https://fhgeneralequipments.com/product/${id}`}
         ogImage={
           product.main_image
