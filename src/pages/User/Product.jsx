@@ -135,7 +135,7 @@ export default function Product() {
           {/* 🏷️ Left: Heading with Category Name */}
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Box display="flex" alignItems="center" gap={1}>
-              {/* <Typography
+              <Typography
                 variant="h5"
                 fontWeight="bold"
                 sx={{
@@ -145,15 +145,8 @@ export default function Product() {
                 }}
               >
                 {selectedCategory ? selectedCategory : "All Products"}
-              </Typography> */}
-              <Typography
-                component="h1"
-                variant="h4"
-                fontWeight="bold"
-                sx={{ mb: 2 }}
-              >
-                Industrial Equipment Supplier for Commercial and Business Use
               </Typography>
+           
 
               {selectedCategory && (
                 <Button
