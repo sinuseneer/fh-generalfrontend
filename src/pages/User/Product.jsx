@@ -19,7 +19,6 @@ import "./product.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import SEO from "../../components/SEO/SEO";
 
-
 export default function Product() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,44 +45,42 @@ export default function Product() {
   }, [location.state?.category]);
 
   // ✅ Fetch products whenever category changes
-useEffect(() => {
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-      let res;
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        let res;
 
-      if (selectedCategory) {
-        // 🔍 Fetch only products for this category
-        res = await axios.get(
-          `${api_uri}product/category/${selectedCategory}`
-        );
-      } else {
-        // 🔍 Otherwise, fetch all products
-        res = await axios.get(`${api_uri}product/userview`);
+        if (selectedCategory) {
+          // 🔍 Fetch only products for this category
+          res = await axios.get(
+            `${api_uri}product/category/${selectedCategory}`
+          );
+        } else {
+          // 🔍 Otherwise, fetch all products
+          res = await axios.get(`${api_uri}product/userview`);
+        }
+
+        if (res.data.success) {
+          // ⭐ Sort using product.date
+          const sortedProducts = res.data.products.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+
+          setProducts(sortedProducts);
+        } else {
+          toast.warning("No products found");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching products:", error);
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      if (res.data.success) {
-        // ⭐ Sort using product.date
-        const sortedProducts = res.data.products.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-
-        setProducts(sortedProducts);
-      } else {
-        toast.warning("No products found");
-      }
-
-    } catch (error) {
-      console.error("❌ Error fetching products:", error);
-      toast.error("Failed to load products");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  loadProducts();
-}, [selectedCategory]);
-
+    loadProducts();
+  }, [selectedCategory]);
 
   // ✅ Frontend search (local filtering)
   const filtered = products.filter((p) =>
@@ -103,27 +100,26 @@ useEffect(() => {
 
   return (
     <>
-
-    <SEO
-      title={
-        selectedCategory
-          ? `${selectedCategory} Equipment Supplier in the USA & Guyana`
-          : "Medical & Industrial Equipment Supplier in the USA & Guyana"
-      }
-      description={
-        selectedCategory
-          ? `Browse ${selectedCategory} equipment supplied by FH General Equipment, serving businesses and healthcare facilities across the United States.`
-          : "Explore medical and industrial equipment supplied by FH General Equipment for hospitals, clinics and industrial use."
-      }
-      canonical={
-        selectedCategory
-          ? `https://fhgeneralequipments.com/product`
-          : "https://fhgeneralequipments.com/product"
-      }
-    />
+      <SEO
+        title={
+          selectedCategory
+            ? `${selectedCategory} Equipment Supplier in the USA & Guyana`
+            : "Medical & Industrial Equipment Supplier in the USA & Guyana"
+        }
+        description={
+          selectedCategory
+            ? `Browse ${selectedCategory} equipment supplied by FH General Equipment, serving businesses and healthcare facilities across the United States.`
+            : "Explore medical and industrial equipment supplied by FH General Equipment for hospitals, clinics and industrial use."
+        }
+        canonical={
+          selectedCategory
+            ? `https://fhgeneralequipments.com/product`
+            : "https://fhgeneralequipments.com/product"
+        }
+      />
       <div className="hide-banner-mobile">
-  <Banner />
-</div>
+        <Banner />
+      </div>
 
       <Container sx={{ my: 0 }}>
         {/* 🧭 Category Carousel */}
@@ -139,7 +135,7 @@ useEffect(() => {
           {/* 🏷️ Left: Heading with Category Name */}
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Box display="flex" alignItems="center" gap={1}>
-              <Typography
+              {/* <Typography
                 variant="h5"
                 fontWeight="bold"
                 sx={{
@@ -149,6 +145,14 @@ useEffect(() => {
                 }}
               >
                 {selectedCategory ? selectedCategory : "All Products"}
+              </Typography> */}
+              <Typography
+                component="h1"
+                variant="h4"
+                fontWeight="bold"
+                sx={{ mb: 2 }}
+              >
+                Industrial Equipment Supplier for Commercial and Business Use
               </Typography>
 
               {selectedCategory && (
