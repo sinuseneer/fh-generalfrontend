@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /login
 
-Sitemap: https://fhgeneralequipments.com/sitemap.xml
+Sitemap: https://www.fhgeneralequipment.com/sitemap.xml
