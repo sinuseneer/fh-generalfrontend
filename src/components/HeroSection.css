@@ -386,3 +386,162 @@
   clip-path: inset(0 0 0 0);
 } */
 
+/* hero-bg in HEROSECTION */
+.hero-bg {
+  background-color: #EFF8F7; 
+}
+.hero-image {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Hero Section Responsive Styles */
+.hero-slide-bg {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.hero-content-wrapper {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.hero-content-wrapper .row {
+  width: 100%;
+}
+
+.hero-text-content {
+  padding-left: 0;
+  text-align: left;
+}
+
+.hero-text-content h1 {
+  line-height: 1.2;
+  font-size: 2rem;
+}
+
+.hero-text-content p {
+  line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (min-width: 1441px) {
+  .hero-slide-bg {
+    height: 700px;
+  }
+  
+  .hero-text-content h1 {
+    font-size: 3.5rem;
+  }
+  
+  .hero-text-content p {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .hero-slide-bg {
+    height: 800px;
+  }
+  
+  .hero-text-content h1 {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 1440px) {
+  .hero-slide-bg {
+    height: 600px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-slide-bg {
+    height: 500px;
+  }
+  
+  .hero-text-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-text-content {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-slide-bg {
+    height: 450px;
+  }
+  
+  .hero-text-content {
+    padding: 0 20px;
+    text-align: start !important;
+  }
+  
+  .hero-text-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-text-content p {
+    font-size: 1rem;
+  }
+
+  /* Smaller button for mobile */
+  .hero-text-content .custom-btn {
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    max-width: 120px;
+    width: auto;
+  }
+
+  /* Hide carousel arrows on mobile */
+  .hero-carousel .carousel-control-prev,
+  .hero-carousel .carousel-control-next {
+    display: none !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-slide-bg {
+    height: 400px;
+  }
+  
+  .hero-text-content {
+    padding: 35px 25px;
+  }
+  
+  .hero-text-content h1 {
+    font-size: 1.75rem;
+  }
+  
+  .hero-text-content p {
+    font-size: 0.95rem;
+  }
+
+  /* Even smaller button for extra small devices */
+  .hero-text-content .custom-btn {
+    padding: 7px 15px;
+    font-size: 0.85rem;
+    max-width: 110px;
+    width: auto;
+  }
+}
+
