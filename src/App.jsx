@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,77 +13,128 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import UserLayout from "./layouts/UserLayout.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 
+// Core Components (NOT lazy)
 import SEO from "./components/SEO/SEO.jsx";
-// User Pages
-import About from "./pages/User/About.jsx";
-import Product from "./pages/User/Product.jsx";
-import BlogsPage from "./pages/User/BlogsPage.jsx";
-import Contact from "./pages/User/Contact.jsx";
-import ProductDetails from "./pages/User/ProductDetails.jsx";
-import BlogDetailPage from "./pages/User/BlogDetailPage.jsx";
-
-// Admin Pages
-import Login from "./pages/Admin/Login.jsx";
-import Dashboard from "./pages/Admin/Dashboard.jsx";
-import Categories from "./pages/Admin/Categories.jsx";
-import AddCategory from "./pages/Admin/AddCategory.jsx";
-import Products from "./pages/Admin/Products.jsx";
-import ProductAdd from "./pages/Admin/ProductAdd.jsx";
-import ProductEdit from "./pages/Admin/ProductEdit.jsx";
-import ProductImages from "./pages/Admin/ProductImages.jsx";
-import AccountSettings from "./pages/Admin/AccountSettings.jsx";
-import AddPost from "./pages/Admin/AddPost.jsx";
-import PostsList from "./pages/Admin/PostsList.jsx";
-import BannerSettings from "./pages/Admin/BannerSettings.jsx";
-
-// Components (for Home)
 import HeroSection from "./components/HeroSection.jsx";
-import ProductCarousel from "./components/ProductCarousel.jsx";
-import AboutSection from "./components/AboutSection.jsx";
-import FeatureProducts from "./components/FeatureProducts.jsx";
-import WhyChooseUs from "./components/WhyChooseUs.jsx";
-import LatestNews from "./components/LatestNews.jsx";
-import PartnerSection from "./components/PartnerSection.jsx";
-import MediaGallery from "./pages/Admin/MediaGallery.jsx";
-import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
-import SEOContentSection from "./components/SEOContentSection.jsx";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx";
 
+// ---------- LAZY LOADED USER COMPONENTS ----------
+const ProductCarousel = lazy(() =>
+  import("./components/ProductCarousel.jsx")
+);
+const AboutSection = lazy(() =>
+  import("./components/AboutSection.jsx")
+);
+const FeatureProducts = lazy(() =>
+  import("./components/FeatureProducts.jsx")
+);
+const WhyChooseUs = lazy(() =>
+  import("./components/WhyChooseUs.jsx")
+);
+const LatestNews = lazy(() =>
+  import("./components/LatestNews.jsx")
+);
+const PartnerSection = lazy(() =>
+  import("./components/PartnerSection.jsx")
+);
+const SEOContentSection = lazy(() =>
+  import("./components/SEOContentSection.jsx")
+);
+
+// ---------- LAZY LOADED USER PAGES ----------
+const About = lazy(() => import("./pages/User/About.jsx"));
+const Product = lazy(() => import("./pages/User/Product.jsx"));
+const BlogsPage = lazy(() => import("./pages/User/BlogsPage.jsx"));
+const Contact = lazy(() => import("./pages/User/Contact.jsx"));
+const ProductDetails = lazy(() =>
+  import("./pages/User/ProductDetails.jsx")
+);
+const BlogDetailPage = lazy(() =>
+  import("./pages/User/BlogDetailPage.jsx")
+);
+
+// ---------- LAZY LOADED ADMIN PAGES ----------
+const Login = lazy(() => import("./pages/Admin/Login.jsx"));
+const Dashboard = lazy(() =>
+  import("./pages/Admin/Dashboard.jsx")
+);
+const Categories = lazy(() =>
+  import("./pages/Admin/Categories.jsx")
+);
+const AddCategory = lazy(() =>
+  import("./pages/Admin/AddCategory.jsx")
+);
+const Products = lazy(() =>
+  import("./pages/Admin/Products.jsx")
+);
+const ProductAdd = lazy(() =>
+  import("./pages/Admin/ProductAdd.jsx")
+);
+const ProductEdit = lazy(() =>
+  import("./pages/Admin/ProductEdit.jsx")
+);
+const ProductImages = lazy(() =>
+  import("./pages/Admin/ProductImages.jsx")
+);
+const AccountSettings = lazy(() =>
+  import("./pages/Admin/AccountSettings.jsx")
+);
+const AddPost = lazy(() =>
+  import("./pages/Admin/AddPost.jsx")
+);
+const PostsList = lazy(() =>
+  import("./pages/Admin/PostsList.jsx")
+);
+const BannerSettings = lazy(() =>
+  import("./pages/Admin/BannerSettings.jsx")
+);
+const MediaGallery = lazy(() =>
+  import("./pages/Admin/MediaGallery.jsx")
+);
 
 function App() {
   return (
     <Router>
-      {/* ⭐ Scroll to top on every route change */}
       <ScrollToTop />
 
       <Routes>
-        {/* ========== User Routes ========== */}
+        {/* ========== HOME ROUTE ========== */}
         <Route
           path="/"
           element={
             <UserLayout>
-               <SEO
-        title="Medical & Industrial Equipment Supplier in the USA"
-        description="FH General Equipment is a US-focused supplier of medical, industrial, and general equipment serving customers across the United States with operational support in Guyana."
-        canonical="https://fhgeneralequipments.com/"
-      />
+              <SEO
+                title="Medical & Industrial Equipment Supplier in the USA"
+                description="FH General Equipment is a US-focused supplier of medical, industrial, and general equipment serving customers across the United States with operational support in Guyana."
+                canonical="https://fhgeneralequipments.com/"
+              />
+
+              {/* LCP CRITICAL */}
               <HeroSection />
-              <ProductCarousel />
-              <AboutSection />
-              <FeatureProducts />
-              <WhyChooseUs />
-              <LatestNews />
-              <PartnerSection />
-              <SEOContentSection/>
+
+              {/* BELOW THE FOLD */}
+              <Suspense fallback={null}>
+                <ProductCarousel />
+                <AboutSection />
+                <FeatureProducts />
+                <WhyChooseUs />
+                <LatestNews />
+                <PartnerSection />
+                <SEOContentSection />
+              </Suspense>
             </UserLayout>
           }
         />
 
+        {/* ========== USER ROUTES ========== */}
         <Route
           path="/about"
           element={
             <UserLayout>
-              <About />
+              <Suspense fallback={null}>
+                <About />
+              </Suspense>
             </UserLayout>
           }
         />
@@ -92,7 +143,9 @@ function App() {
           path="/product"
           element={
             <UserLayout>
-              <Product />
+              <Suspense fallback={null}>
+                <Product />
+              </Suspense>
             </UserLayout>
           }
         />
@@ -101,7 +154,9 @@ function App() {
           path="/product/:id"
           element={
             <UserLayout>
-              <ProductDetails />
+              <Suspense fallback={null}>
+                <ProductDetails />
+              </Suspense>
             </UserLayout>
           }
         />
@@ -110,7 +165,9 @@ function App() {
           path="/blog"
           element={
             <UserLayout>
-              <BlogsPage />
+              <Suspense fallback={null}>
+                <BlogsPage />
+              </Suspense>
             </UserLayout>
           }
         />
@@ -119,7 +176,9 @@ function App() {
           path="/blog/:id"
           element={
             <UserLayout>
-              <BlogDetailPage />
+              <Suspense fallback={null}>
+                <BlogDetailPage />
+              </Suspense>
             </UserLayout>
           }
         />
@@ -128,13 +187,22 @@ function App() {
           path="/contact"
           element={
             <UserLayout>
-              <Contact />
+              <Suspense fallback={null}>
+                <Contact />
+              </Suspense>
             </UserLayout>
           }
         />
 
-        {/* ========== Admin Routes ========== */}
-        <Route path="/login" element={<Login />} />
+        {/* ========== ADMIN ROUTES ========== */}
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={null}>
+              <Login />
+            </Suspense>
+          }
+        />
 
         <Route
           element={
@@ -143,33 +211,109 @@ function App() {
             </ProtectedAdminRoute>
           }
         >
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/categories/list" element={<Categories />} />
-          <Route path="/admin/categories/add" element={<AddCategory />} />
-          <Route path="/admin/products/list" element={<Products />} />
-          <Route path="/admin/products/add" element={<ProductAdd />} />
-          <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <Suspense fallback={null}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/categories/list"
+            element={
+              <Suspense fallback={null}>
+                <Categories />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/categories/add"
+            element={
+              <Suspense fallback={null}>
+                <AddCategory />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/products/list"
+            element={
+              <Suspense fallback={null}>
+                <Products />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/products/add"
+            element={
+              <Suspense fallback={null}>
+                <ProductAdd />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/products/edit/:id"
+            element={
+              <Suspense fallback={null}>
+                <ProductEdit />
+              </Suspense>
+            }
+          />
           <Route
             path="/admin/product-images/:productId"
-            element={<ProductImages />}
+            element={
+              <Suspense fallback={null}>
+                <ProductImages />
+              </Suspense>
+            }
           />
-          <Route path="/admin/settings" element={<AccountSettings />} />
-          <Route path="/admin/banner" element={<BannerSettings />} />
-          <Route path="/admin/posts/add" element={<AddPost />} />
-          <Route path="/admin/posts/list" element={<PostsList />} />
-          <Route path="/admin/media" element={<MediaGallery />} />
+          <Route
+            path="/admin/settings"
+            element={
+              <Suspense fallback={null}>
+                <AccountSettings />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/banner"
+            element={
+              <Suspense fallback={null}>
+                <BannerSettings />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/posts/add"
+            element={
+              <Suspense fallback={null}>
+                <AddPost />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/posts/list"
+            element={
+              <Suspense fallback={null}>
+                <PostsList />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/media"
+            element={
+              <Suspense fallback={null}>
+                <MediaGallery />
+              </Suspense>
+            }
+          />
         </Route>
 
-        {/* ========== Fallback ========== */}
+        {/* ========== FALLBACK ========== */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {/* Global Toast Notifications */}
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-      />
+      <ToastContainer position="top-right" autoClose={2000} />
     </Router>
   );
 }
