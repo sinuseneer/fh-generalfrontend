@@ -110,7 +110,6 @@ export default function HeroSection() {
   ----------------------------------------- */
   const startX = useRef(0);
   const deltaX = useRef(0);
-  
 
   const onTouchStart = (e) => {
     stopAutoplay();
@@ -172,26 +171,18 @@ export default function HeroSection() {
 
             return (
               <div key={i} className={cls}>
-                {i === current ? (
-                  <img
-                    src={img}
-                    alt={s.title || "Hero banner"}
-                    className="slide-image-img"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="async"
-                  />
-                ) : (
-                  <div
-                    className="slide-image"
-                    style={{ backgroundImage: `url(${img})` }}
-                  />
-                )}
+                <div
+                  className="slide-image"
+                  style={{
+                    backgroundImage: `url(${img})`,
+                  }}
+                />
 
                 <div className="slide-overlay" />
 
                 <div className="slide-content">
                   <div className="slide-text-wrapper">
+                    
                     {/* ⭐ Text Mode Applied */}
                     <h1
                       className="slide-title"
@@ -260,4 +251,4 @@ export default function HeroSection() {
       </div>
     </Container>
   );
-}
+}   
