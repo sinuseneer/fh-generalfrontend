@@ -371,3 +371,18 @@
                   end of new queries for laptops less than    
   ======================================================= 
 */  
+.slide-image-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.8s ease-out;
+}
+
+.slide-image-img.loaded {
+  clip-path: inset(0 0 0 0);
+}
+

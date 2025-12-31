@@ -10,7 +10,11 @@ export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [direction, setDirection] = useState("next");
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   const autoplayRef = useRef(null);
+  const isFirstRender = useRef(true);
   const navigate = useNavigate();
 
   const ANIM_DURATION = 900;
@@ -26,7 +30,7 @@ export default function HeroSection() {
         id: b._id,
         title: b.title || "",
         subtitle: b.subtitle || "",
-        textMode: b.textMode || "dark", // ⭐ IMPORTANT
+        textMode: b.textMode || "dark",
         desktop: b.image ? `${base_uri}${b.image}` : null,
         mobile: b.mobileImage ? `${base_uri}${b.mobileImage}` : null,
       }));
@@ -43,18 +47,67 @@ export default function HeroSection() {
   }, [fetchSlides]);
 
   /* ----------------------------------------
+     First Render Flag
+  ----------------------------------------- */
+  useEffect(() => {
+    isFirstRender.current = false;
+  }, []);
+
+  /* ----------------------------------------
+     Reset image animation per slide
+  ----------------------------------------- */
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [current]);
+
+  /* ----------------------------------------
+     Detect Mobile Safely
+  ----------------------------------------- */
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  /* ----------------------------------------
+     Preload First Hero Image (LCP)
+  ----------------------------------------- */
+  useEffect(() => {
+    if (!slides.length) return;
+
+    const firstImage = isMobile
+      ? slides[0].mobile || slides[0].desktop
+      : slides[0].desktop || slides[0].mobile;
+
+    if (!firstImage) return;
+
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = firstImage;
+
+    document.head.appendChild(link);
+
+    return () => {
+      if (link.parentNode) {
+        document.head.removeChild(link);
+      }
+    };
+  }, [slides, isMobile]);
+
+  /* ----------------------------------------
      Autoplay Logic
   ----------------------------------------- */
   useEffect(() => {
-    if (slides.length > 1) startAutoplay();
+    if (!isFirstRender.current && slides.length > 1) {
+      startAutoplay();
+    }
     return stopAutoplay;
   }, [slides]);
 
   function startAutoplay() {
     stopAutoplay();
-    autoplayRef.current = setInterval(() => {
-      handleNext();
-    }, 5200);
+    autoplayRef.current = setInterval(handleNext, 5200);
   }
 
   function stopAutoplay() {
@@ -72,12 +125,9 @@ export default function HeroSection() {
 
     setDirection("next");
     setIsTransitioning(true);
-
     setCurrent((prev) => (prev + 1) % slides.length);
 
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, ANIM_DURATION + 40);
+    setTimeout(() => setIsTransitioning(false), ANIM_DURATION + 40);
   };
 
   const handlePrev = () => {
@@ -85,12 +135,9 @@ export default function HeroSection() {
 
     setDirection("prev");
     setIsTransitioning(true);
-
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
 
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, ANIM_DURATION + 40);
+    setTimeout(() => setIsTransitioning(false), ANIM_DURATION + 40);
   };
 
   /* ----------------------------------------
@@ -131,7 +178,8 @@ export default function HeroSection() {
      Animation Class Logic
   ----------------------------------------- */
   const getSlideClass = (i) => {
-    const isActive = i === current;
+    const isActive =
+      i === current && (!isTransitioning || isFirstRender.current);
 
     const oldIndex =
       direction === "next"
@@ -143,9 +191,9 @@ export default function HeroSection() {
 
     return [
       "carousel-slide",
-      isActive ? "active" : "",
-      isIncoming ? direction : "",
-      isOldSlide ? (direction === "next" ? "prev" : "next") : "",
+      isActive && "active",
+      isIncoming && direction,
+      isOldSlide && (direction === "next" ? "prev" : "next"),
     ]
       .filter(Boolean)
       .join(" ");
@@ -159,39 +207,44 @@ export default function HeroSection() {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         aria-roledescription="carousel"
+        aria-label="Hero banner carousel"
+        aria-live="polite"
       >
         <div className="carousel-slides">
           {slides.map((s, i) => {
             const cls = getSlideClass(i);
-
-            const img =
-              typeof window !== "undefined" && window.innerWidth <= 768
-                ? s.mobile || s.desktop
-                : s.desktop || s.mobile;
+            const img = isMobile ? s.mobile || s.desktop : s.desktop || s.mobile;
 
             return (
-              <div key={i} className={cls}>
-                <div
-                  className="slide-image"
-                  style={{
-                    backgroundImage: `url(${img})`,
-                  }}
-                />
+              <div key={s.id} className={cls}>
+                {i === current ? (
+                  <img
+                    src={img}
+                    alt={s.title || "Hero banner"}
+                    className={`slide-image-img ${
+                      imageLoaded ? "loaded" : ""
+                    }`}
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                    onLoad={() => setImageLoaded(true)}
+                  />
+                ) : (
+                  <div
+                    className="slide-image"
+                    style={{ backgroundImage: `url(${img})` }}
+                  />
+                )}
 
                 <div className="slide-overlay" />
 
                 <div className="slide-content">
                   <div className="slide-text-wrapper">
-                    
-                    {/* ⭐ Text Mode Applied */}
                     <h1
                       className="slide-title"
                       style={{
-                        color: s.textMode === "light" ? "#ffffff" : "#000000",
-                        textShadow:
-                          s.textMode === "light"
-                            ? "0 1px 4px rgba(0,0,0,0.7)"
-                            : "0 1px 4px rgba(255,255,255,0.7)",
+                        color:
+                          s.textMode === "light" ? "#ffffff" : "#000000",
                       }}
                     >
                       {s.title}
@@ -204,10 +257,6 @@ export default function HeroSection() {
                           s.textMode === "light"
                             ? "rgba(255,255,255,0.9)"
                             : "rgba(0,0,0,0.9)",
-                        textShadow:
-                          s.textMode === "light"
-                            ? "0 1px 4px rgba(0,0,0,0.7)"
-                            : "0 1px 4px rgba(255,255,255,0.7)",
                       }}
                     >
                       {s.subtitle}
@@ -241,9 +290,11 @@ export default function HeroSection() {
               {slides.map((_, idx) => (
                 <button
                   key={idx}
-                  className={`carousel-dot ${idx === current ? "active" : ""}`}
+                  className={`carousel-dot ${
+                    idx === current ? "active" : ""
+                  }`}
                   onClick={() => !isTransitioning && setCurrent(idx)}
-                ></button>
+                />
               ))}
             </div>
           </>
