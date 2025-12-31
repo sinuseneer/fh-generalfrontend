@@ -59,3 +59,42 @@
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 } */
+
+
+
+.about-section {
+  background-color: #eff8f7; /* soft background */
+}
+
+.about-content {
+  background-color: #1c1c1c; /* dark black section */
+  min-height: 525px;
+}
+
+.about-content h2 {
+  
+  font-size: 2rem;
+}
+
+.about-content .highlight {
+  color: #18b0a8; /* teal accent */
+}
+
+@media (max-width: 768px) {
+  .about-title h2 {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 2rem;
+  text-align: left !important;
+}
+  .about-content {
+    text-align: left;
+    padding: 40px 20px;
+  }
+}
+
+/* Ensure about title stays left-aligned even on smaller screens */
+@media (max-width: 576px) {
+  .about-title h2 {
+    text-align: left !important;
+  }
+}

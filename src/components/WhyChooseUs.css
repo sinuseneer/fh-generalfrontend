@@ -1,0 +1,94 @@
+/* ----------------------------------------------------------------------------------------------- */
+/* why choose us? */
+/* ----------------------------------------- */
+.why-choose-section {
+  background-color: #EFF8F7;
+}
+
+.choose-card {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 300px;
+  min-height: 220px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  padding-top: 50px; /* to make space for the overlapping icon */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* .choose-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+} */
+
+/* ✅ Centered overlap (half on white card, half above) */
+.choose-icon {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 70px;
+  background-color: #1fd1c5;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* icon inside the green box */
+.icon-img {
+  width: 36px;
+  height: 36px;
+}
+
+/* text styling */
+.choose-title {
+  font-size: 1.1rem;
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+.choose-desc {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0 auto;
+  max-width: 90%;
+}
+
+/* ✅ Responsive */
+@media (max-width: 992px) {
+  .choose-card {
+    max-width: 270px;
+  }
+}
+
+@media (max-width: 768px) {
+  .choose-card {
+    max-width: 100%;
+    min-height: 200px;
+    padding-top: 45px;
+  }
+
+  .choose-icon {
+    width: 60px;
+    height: 60px;
+    top: -30px;
+  }
+
+  .icon-img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .choose-title {
+    font-size: 1rem;
+  }
+
+  .choose-desc {
+    font-size: 0.85rem;
+  }
+}

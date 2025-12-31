@@ -200,25 +200,7 @@ body, html {
 
 
 
-/* about section */
 
-.about-section {
-  background-color: #eff8f7; /* soft background */
-}
-
-.about-content {
-  background-color: #1c1c1c; /* dark black section */
-  min-height: 525px;
-}
-
-.about-content h2 {
-  
-  font-size: 2rem;
-}
-
-.about-content .highlight {
-  color: #18b0a8; /* teal accent */
-}
 
 .learn-btn {
   background-color: #18b0a8 !important;
@@ -232,24 +214,6 @@ body, html {
   background-color: #149b95 !important;
 }
 
-@media (max-width: 768px) {
-  .about-title h2 {
-  font-family: "Nunito Sans", sans-serif;
-  font-size: 2rem;
-  text-align: left !important;
-}
-  .about-content {
-    text-align: left;
-    padding: 40px 20px;
-  }
-}
-
-/* Ensure about title stays left-aligned even on smaller screens */
-@media (max-width: 576px) {
-  .about-title h2 {
-    text-align: left !important;
-  }
-}
 
 
 
@@ -258,173 +222,8 @@ body, html {
 
 
 
-/* ----------------------------------------------------------------------------------------------- */
-/* why choose us? */
-/* ----------------------------------------- */
-.why-choose-section {
-  background-color: #EFF8F7;
-}
-
-.choose-card {
-  position: relative;
-  background: #fff;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 300px;
-  min-height: 220px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  padding-top: 50px; /* to make space for the overlapping icon */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* .choose-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-} */
-
-/* ✅ Centered overlap (half on white card, half above) */
-.choose-icon {
-  position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70px;
-  height: 70px;
-  background-color: #1fd1c5;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* icon inside the green box */
-.icon-img {
-  width: 36px;
-  height: 36px;
-}
-
-/* text styling */
-.choose-title {
-  font-size: 1.1rem;
-  margin-top: 15px;
-  margin-bottom: 8px;
-}
-
-.choose-desc {
-  color: #555;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin: 0 auto;
-  max-width: 90%;
-}
-
-/* ✅ Responsive */
-@media (max-width: 992px) {
-  .choose-card {
-    max-width: 270px;
-  }
-}
-
-@media (max-width: 768px) {
-  .choose-card {
-    max-width: 100%;
-    min-height: 200px;
-    padding-top: 45px;
-  }
-
-  .choose-icon {
-    width: 60px;
-    height: 60px;
-    top: -30px;
-  }
-
-  .icon-img {
-    width: 30px;
-    height: 30px;
-  }
-
-  .choose-title {
-    font-size: 1rem;
-  }
-
-  .choose-desc {
-    font-size: 0.85rem;
-  }
-}
-
-/* ----------------------------------------------------------------------------------------------- */
 
 
-
-/* latest news */
-/* -------------------------------------------------- */
-/* body, html {
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
-} */
-
-.latest-news-section {
-  background-color: #f4fafa;
-}
-@media (max-width: 576px) {
-  .about-title h1 {
-    text-align: left !important;
-  }
-}
-@media (max-width: 576px) {
-  h2 {
-    text-align: center !important;
-  }
-
-  .text-muted {
-    text-align: center !important;
-  }
-
-  .btn {
-    width: 100%;
-  }
-}
-
-
-
-/* footer */
-/* ------------------------------------------- */
-
-.footer-section ul li {
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-}
-
-.footer-bottom {
-  background-color: #555;
-  color: #fff;
-}
-
-.footer-link {
-  color: #000; /* normal black */
-  text-decoration: none;
-  transition: color 0.2s ease, text-decoration 0.2s ease;
-}
-
-.footer-link:hover {
-  color: blue;
-  text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-  .footer-section {
-    text-align: center;
-  }
-  .footer-section ul {
-    padding-left: 0;
-  }
-  .footer-section ul li {
-    list-style: none;
-  }
-}
-/* -------------------------------------------------- */
 
 .whatsapp-float {
   position: fixed;
@@ -532,40 +331,3 @@ margin-bottom: 50px;
 }
 
 
-/* seo content alignment */
-.seo-content-section .container {
-  max-width: 1400px;  /* adjust if needed */
-  margin: 0 auto;
-  padding: 45px 40px;    /* left & right margins */
-}
-
-.seo-content-section{
-  background-color: #F8F9FA;
-}
-
-.seo-content-section p {
-  margin-bottom: 8px !important;
-}
-
-.seo-content-section p {
-  margin-bottom: 4px !important;
-}
-
-
-@media (max-width: 768px) {
-  .seo-content-section .container {
-    padding: 7px 18px;
-  }
-  .seo-content-section h1 {
-    font-size: 22px;
-  }
-  .seo-content-section p {
-    font-size: 15px;
-    line-height: 1.6;
-  }
-}
-
-.seo-link{
-  text-decoration: none;
-  color: #2EA898;
-}

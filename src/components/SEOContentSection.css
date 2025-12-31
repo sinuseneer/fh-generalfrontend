@@ -1,0 +1,37 @@
+/* seo content alignment */
+.seo-content-section .container {
+  max-width: 1400px;  /* adjust if needed */
+  margin: 0 auto;
+  padding: 45px 40px;    /* left & right margins */
+}
+
+.seo-content-section{
+  background-color: #F8F9FA;
+}
+
+.seo-content-section p {
+  margin-bottom: 8px !important;
+}
+
+.seo-content-section p {
+  margin-bottom: 4px !important;
+}
+
+
+@media (max-width: 768px) {
+  .seo-content-section .container {
+    padding: 7px 18px;
+  }
+  .seo-content-section h1 {
+    font-size: 22px;
+  }
+  .seo-content-section p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+.seo-link{
+  text-decoration: none;
+  color: #2EA898;
+}

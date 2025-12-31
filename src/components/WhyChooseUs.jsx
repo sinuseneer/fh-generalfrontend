@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import "../App.css";
+import "./WhyChooseUs.css";
 
 const WhyChooseUs = () => {
   const features = [

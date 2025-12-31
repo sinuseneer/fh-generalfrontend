@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../App.css";
 import { Link } from "react-router-dom";
+import "./SEOContentSection.css";
 
 const SEOContentSection = () => {
   const [expanded, setExpanded] = useState(false);

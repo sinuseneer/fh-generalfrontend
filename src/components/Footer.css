@@ -40,3 +40,39 @@ footer {
   color: #2EA898 !important;
   
 }
+
+
+
+
+.footer-section ul li {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.footer-bottom {
+  background-color: #555;
+  color: #fff;
+}
+
+.footer-link {
+  color: #000; /* normal black */
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.footer-link:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .footer-section {
+    text-align: center;
+  }
+  .footer-section ul {
+    padding-left: 0;
+  }
+  .footer-section ul li {
+    list-style: none;
+  }
+}
