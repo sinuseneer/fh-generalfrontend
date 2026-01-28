@@ -138,7 +138,7 @@ export default function Footer() {
                         <li key={cat._id} className="my-1">
                           <a
                             href={`/product?category=${encodeURIComponent(
-                              cat.category_name
+                              cat.category_name,
                             )}`}
                             className="footer-link"
                             onClick={(e) => {
@@ -172,7 +172,7 @@ export default function Footer() {
                         <li key={cat._id} className="my-1">
                           <a
                             href={`/product?category=${encodeURIComponent(
-                              cat.category_name
+                              cat.category_name,
                             )}`}
                             className="footer-link"
                             onClick={(e) => {
@@ -201,10 +201,22 @@ export default function Footer() {
           <Col md={3}>
             <h5 className="fw-bold mb-3">Contact Us</h5>
             <p className="mb-2">
-              <FiPhone className="me-2" /> +1 347 869 4095
+              <a
+                href="tel:+13478694095"
+                className="d-flex align-items-center footer-link"
+              >
+                <FiPhone className="me-2" />
+                +1 347 869 4095
+              </a>
             </p>
             <p className="mb-2">
-              <FiMail className="me-2" /> info@fhgeneralequipment.com
+              <a
+                href="mailto:info@fhgeneralequipment.com"
+                className="d-flex align-items-center footer-link"
+              >
+                <FiMail className="me-2" />
+                info@fhgeneralequipment.com
+              </a>
             </p>
             <p className="mb-2">
               <FiMapPin className="me-2" />

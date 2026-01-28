@@ -16,14 +16,24 @@ function Header() {
               md={6}
               className="contact-info d-flex justify-content-end align-items-center text-white"
             >
-              <div className="contact-item d-flex align-items-center gap-2">
-                <Envelope size={15} />
-                <span>info@fhgeneralequipment.com</span>
+              <div className="contact-item">
+                <a
+                  href="mailto:info@fhgeneralequipment.com"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                >
+                  <Envelope size={15} />
+                  <span>info@fhgeneralequipment.com</span>
+                </a>
               </div>
 
-              <div className="contact-item d-flex align-items-center gap-2">
-                <Telephone size={15} />
-                <span>+1 347 869 4095</span>
+              <div className="contact-item">
+                <a
+                  href="tel:+13478694095"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                >
+                  <Telephone size={15} />
+                  <span>+1 347 869 4095</span>
+                </a>
               </div>
             </Col>
           </Row>
