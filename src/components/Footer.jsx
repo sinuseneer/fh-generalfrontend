@@ -202,11 +202,13 @@ export default function Footer() {
             <h5 className="fw-bold mb-3">Contact Us</h5>
             <p className="mb-2">
               <a
-                href="tel:+13478694095"
+                href="https://wa.me/5926431452"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="d-flex align-items-center footer-link"
               >
                 <FiPhone className="me-2" />
-                +1 347 869 4095
+                +592 643 1452
               </a>
             </p>
             <p className="mb-2">

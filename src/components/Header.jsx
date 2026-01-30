@@ -28,11 +28,13 @@ function Header() {
 
               <div className="contact-item">
                 <a
-                  href="tel:+13478694095"
+                  href="https://wa.me/5926431452?text=Hello%20I%20would%20like%20to%20contact%20you"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="d-flex align-items-center gap-2 text-decoration-none"
                 >
                   <Telephone size={15} />
-                  <span>+1 347 869 4095</span>
+                  <span>+592 643 1452</span>
                 </a>
               </div>
             </Col>

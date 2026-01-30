@@ -8,7 +8,6 @@ import "./product.css";
 import api_uri from "../../config/api";
 import SEO from "../../components/SEO/SEO";
 
-
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: "",
@@ -22,40 +21,46 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const toastId = toast.info("Sending message...", { autoClose: false });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const toastId = toast.info("Sending message...", { autoClose: false });
 
-  const payload = {
-    name: formData.name,
-    email: formData.email,
-    phone: formData.phone,
-    message: formData.message,
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+    };
+
+    try {
+      const res = await fetch(`${api_uri}contact/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      toast.dismiss(toastId);
+
+      if (data.success) {
+        toast.success("Message sent successfully!");
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        toast.error("Failed to send message.");
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error("Something went wrong!");
+    }
   };
 
-  try {
-    const res = await fetch(`${api_uri}contact/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+  const whatsappMessage = encodeURIComponent(
+    "Hi, I visited your website and would like to get more information.",
+  );
 
-    const data = await res.json();
-    toast.dismiss(toastId);
-
-    if (data.success) {
-      toast.success("Message sent successfully!");
-      setFormData({ name: "", email: "", phone: "", message: "" });
-    } else {
-      toast.error("Failed to send message.");
-    }
-  } catch (error) {
-    toast.dismiss(toastId);
-    toast.error("Something went wrong!");
-  }
-};
+  const whatsappLink = `https://wa.me/5926431452?text=${whatsappMessage}`;
 
   const contactDetails = [
     {
@@ -66,7 +71,7 @@ const handleSubmit = async (e) => {
     {
       icon: <Phone size={40} color="#2EA898" />,
       title: "Phone Number",
-      text: "+1 347 869 4095",
+      text: "+592 643 1452",
     },
     {
       icon: <Mail size={40} color="#2EA898" />,
@@ -76,26 +81,24 @@ const handleSubmit = async (e) => {
   ];
 
   return (
-  <>
-  <SEO
-      title="Contact Us | Contact FH General Equipment | Equipment Supplier"
-      description="Contact FH General Equipment for medical and industrial equipment inquiries. We serve customers across the United States with operational support in Guyana."
-      canonical="https://fhgeneralequipments.com/contact"
-    />
+    <>
+      <SEO
+        title="Contact Us | Contact FH General Equipment | Equipment Supplier"
+        description="Contact FH General Equipment for medical and industrial equipment inquiries. We serve customers across the United States with operational support in Guyana."
+        canonical="https://fhgeneralequipments.com/contact"
+      />
       <div className="contact-page">
         {/* Header */}
         <div className="contact-header text-center py-5">
           <h2 className="fw-bold">Contact Us</h2>
         </div>
-  
+
         <Container className="py-4">
           {/* ⭐ Equal Height Row */}
           <Row className="g-4 align-items-stretch">
-  
             {/* LEFT COLUMN */}
             <Col md={6} className="h-100">
               <div className="d-flex flex-column gap-4 h-100">
-  
                 {contactDetails.map((item, index) => (
                   <Card
                     key={index}
@@ -120,19 +123,32 @@ const handleSubmit = async (e) => {
                     >
                       {item.icon}
                     </div>
-  
+
                     <div className="">
                       <h5 className="fw-bold mb-2">{item.title}</h5>
-                      <p className="text-start text-muted mb-0 " style={{ lineHeight: "1.5" }}>
-                        {item.text}
+                      <p
+                        className="text-start mb-0"
+                        style={{ lineHeight: "1.5" }}
+                      >
+                        {item.title === "Phone Number" ? (
+                          <a
+                            href={whatsappLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-decoration-none text-muted"
+                          >
+                            {item.text}
+                          </a>
+                        ) : (
+                          <span className="text-muted">{item.text}</span>
+                        )}
                       </p>
                     </div>
                   </Card>
                 ))}
-  
               </div>
             </Col>
-  
+
             {/* RIGHT COLUMN */}
             <Col md={6} className="h-100">
               <div className="p-4 rounded-4 bg-light shadow-sm h-100 d-flex flex-column">
@@ -140,9 +156,11 @@ const handleSubmit = async (e) => {
                 <p className="text-muted mb-4">
                   Your email address is safe with us.
                 </p>
-  
-                <Form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
-  
+
+                <Form
+                  onSubmit={handleSubmit}
+                  className="d-flex flex-column gap-3"
+                >
                   {/* NAME */}
                   <Form.Group className="position-relative">
                     <User
@@ -165,7 +183,7 @@ const handleSubmit = async (e) => {
                       style={{ paddingLeft: "42px" }}
                     />
                   </Form.Group>
-  
+
                   {/* EMAIL */}
                   <Form.Group className="position-relative">
                     <Mail
@@ -188,7 +206,7 @@ const handleSubmit = async (e) => {
                       style={{ paddingLeft: "42px" }}
                     />
                   </Form.Group>
-  
+
                   {/* PHONE */}
                   <Form.Group className="position-relative">
                     <Phone
@@ -211,7 +229,7 @@ const handleSubmit = async (e) => {
                       style={{ paddingLeft: "42px" }}
                     />
                   </Form.Group>
-  
+
                   {/* MESSAGE */}
                   <Form.Group>
                     <Form.Control
@@ -226,7 +244,7 @@ const handleSubmit = async (e) => {
                       style={{ resize: "none" }}
                     />
                   </Form.Group>
-  
+
                   {/* BUTTON — NOT FULL WIDTH */}
                   <Button
                     variant="dark"
@@ -242,16 +260,14 @@ const handleSubmit = async (e) => {
                   >
                     Send Message
                   </Button>
-  
+
                   <ToastContainer position="top-center" />
-  
                 </Form>
               </div>
             </Col>
-  
           </Row>
         </Container>
       </div>
-  </>
+    </>
   );
 }
