@@ -1,7 +1,7 @@
 // src/components/blog/BlogDetail.jsx
 import React from "react";
 import "./Blogdet.css";
-import { base_uri } from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import DOMPurify from "dompurify";
 
 export default function BlogDetail({ blog }) {
@@ -9,12 +9,6 @@ export default function BlogDetail({ blog }) {
 
   // Current page URL (encoded for share links)
   const pageUrl = encodeURIComponent(window.location.href);
-
-  // If server returns a full URL (starts with http) use it; otherwise prefix base_uri
-  const getImageUrl = (img) => {
-    if (!img) return "";
-    return img.startsWith("http") ? img : `${base_uri}${img}`;
-  };
 
   // Use the HTML stored in blog.longDescription.
   // Sanitize with DOMPurify to prevent XSS.
@@ -88,7 +82,7 @@ export default function BlogDetail({ blog }) {
           {/* HERO IMAGE */}
           <div className="blog-hero-section">
             <img
-              src={getImageUrl(blog.image)}
+              src={getImageUrl(blog.image) || "/placeholder-image.png"}
               className="blog-hero-img"
               alt={blog.title || "blog image"}
               onError={(e) => {

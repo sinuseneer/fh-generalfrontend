@@ -51,7 +51,9 @@ const AddCategory = () => {
 
     } catch (error) {
       console.error("❌ Error adding category:", error);
-      toast.error("Server error while adding category!");
+      toast.error(
+        error.response?.data?.message || "Server error while adding category!"
+      );
     }
   };
 

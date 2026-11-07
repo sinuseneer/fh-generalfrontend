@@ -14,7 +14,8 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 
 
 export default function PostsList() {
@@ -43,8 +44,13 @@ export default function PostsList() {
   const deletePost = async (id) => {
     if (!window.confirm("Delete this post?")) return;
 
-    await axios.delete(`${api_uri}posts/${id}`);
-    fetchPosts();
+    try {
+      await axios.delete(`${api_uri}posts/${id}`);
+      fetchPosts();
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      window.alert(error.response?.data?.message || "Failed to delete post");
+    }
   };
 
   /* ============================
@@ -75,12 +81,17 @@ export default function PostsList() {
       formData.append("image", newImage);
     }
 
-    await axios.put(`${api_uri}posts/${editPost._id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      await axios.put(`${api_uri}posts/${editPost._id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    setOpen(false);
-    fetchPosts();
+      setOpen(false);
+      fetchPosts();
+    } catch (error) {
+      console.error("Failed to update post:", error);
+      window.alert(error.response?.data?.message || "Failed to update post");
+    }
   };
 
   return (
@@ -96,7 +107,7 @@ export default function PostsList() {
               <CardMedia
                 component="img"
                 height="180"
-                image={`${base_uri}${post.image}`}
+                image={getImageUrl(post.image)}
                 alt={post.title}
               />
               <CardContent>
@@ -190,7 +201,7 @@ export default function PostsList() {
               Current Image:
             </Typography>
             <img
-              src={`${base_uri}${editPost.image}`}
+              src={getImageUrl(editPost.image)}
               width="100"
               style={{ borderRadius: 8, marginTop: 8 }}
               alt=""

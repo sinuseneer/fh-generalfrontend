@@ -6,7 +6,8 @@ import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import "../App.css";
 import "./Featureproducts.css";
 import axios from "axios";
-import api_uri, { base_uri } from "../config/api"; // ✅ adjust path if needed
+import api_uri from "../config/api";
+import { getImageUrl } from "../utils/imageUrl";
 import { useNavigate, Link } from "react-router-dom";
 
 // Custom Mobile Slider Component
@@ -34,7 +35,7 @@ const CustomMobileSlider = ({ products }) => {
                 <div className="feature-card text-center">
                   <div className="feature-image-wrapper">
                     <img
-                      src={`${base_uri}/${product.main_image}`}
+                      src={getImageUrl(product.main_image)}
                       alt={product.product_name}
                     />
                   </div>
@@ -151,7 +152,7 @@ export default function FeatureProducts() {
                     <div className="feature-card">
                       <div className="feature-image-wrapper">
                         <img
-                          src={`${base_uri}/${product.main_image}`}
+                          src={getImageUrl(product.main_image)}
                           alt={product.product_name}
                         />
                       </div>

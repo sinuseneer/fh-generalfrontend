@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -66,9 +67,7 @@ function ProductEdit() {
             : [],
         });
 
-        if (product.images?.length > 0) {
-          setProductImages(product.images);
-        }
+        setProductImages(Array.isArray(product.images) ? product.images : []);
       }
     } catch {
       toast.error("Failed to fetch product");
@@ -103,8 +102,8 @@ function ProductEdit() {
         toast.success("Image deleted");
         loadProduct();
       }
-    } catch {
-      toast.error("Failed to delete image");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete image");
     }
   };
 
@@ -142,11 +141,15 @@ function ProductEdit() {
           const imgForm = new FormData();
           imgForm.append("image", replaceImage);
 
-          await axios.put(
+          const replacement = await axios.put(
             `${api_uri}product/replace-image/${editingImageId}`,
             imgForm,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
+          if (replacement.data?.success === false) {
+            throw new Error(replacement.data.message || "Image replacement failed");
+          }
+          await loadProduct();
         }
 
         // Upload new images
@@ -163,7 +166,7 @@ function ProductEdit() {
         setTimeout(() => navigate("/admin/products/list"), 1200);
       }
     } catch (err) {
-      toast.error("Update failed");
+      toast.error(err.response?.data?.message || err.message || "Update failed");
     }
   };
 
@@ -320,7 +323,7 @@ function ProductEdit() {
                   style={{ width: "130px" }}
                 >
                   <Image
-                    src={`${base_uri}${img.image_path}`}
+                    src={getImageUrl(img.image_path)}
                     height="100"
                     width="100"
                     rounded
@@ -360,6 +363,7 @@ function ProductEdit() {
               <Form.Label>Replace Selected Image</Form.Label>
               <Form.Control
                 type="file"
+                accept="image/*"
                 onChange={handleReplaceImage}
                 className="bg-secondary bg-opacity-25 text-light"
               />

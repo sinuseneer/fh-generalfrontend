@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import "./Blog.css";
 import SEO from "../../components/SEO/SEO";
 
@@ -71,9 +72,7 @@ solutions and industry updates by FH General Equipment."
                   <Card className="blog-card clickable-card">
                     <Card.Img
                       variant="top"
-                      src={
-                        item.image ? `${base_uri}${item.image}` : "/images/no-image.jpg"
-                      }
+                      src={getImageUrl(item.image) || "/images/no-image.jpg"}
                       alt={item.title}
                     />
   

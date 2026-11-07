@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import BlogDetail from "./BlogDetail.jsx";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import SEO from "../../components/SEO/SEO";
 
 /**
@@ -42,10 +43,7 @@ export default function BlogDetailPage() {
       const data = res.data || {};
 
       // Fix image URL (if not full URL)
-      const fixedImage =
-        data.image && !data.image.startsWith("http")
-          ? `${base_uri}${data.image}`
-          : data.image || "";
+      const fixedImage = getImageUrl(data.image);
 
       // Format date using createdAt (from Mongoose)
       const formatted = formatDate(data.createdAt);

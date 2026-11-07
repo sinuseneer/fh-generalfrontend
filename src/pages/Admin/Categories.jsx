@@ -1,5 +1,6 @@
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -79,7 +80,7 @@ function Categories() {
         toast.success("Category deleted!");
         setCategories(prev => prev.filter(c => c._id !== selectedCategory));
       })
-      .catch(() => toast.error("Delete failed"))
+      .catch(err => toast.error(err.response?.data?.message || "Delete failed"))
       .finally(() => {
         setShowDeleteModal(false);
         setSelectedCategory(null);
@@ -90,7 +91,7 @@ function Categories() {
   const openEditModal = (cat) => {
     setEditingCategory(cat);
     setName(cat.category_name);
-    setPreview(`${base_uri}${cat.category_image}`);
+    setPreview(getImageUrl(cat.category_image));
     setShowEditModal(true);
   };
 
@@ -117,7 +118,7 @@ function Categories() {
       }
     } catch (err) {
       console.error("Update error:", err);
-      toast.error("Server error while updating");
+      toast.error(err.response?.data?.message || "Server error while updating");
     }
   };
 
@@ -254,7 +255,7 @@ function Categories() {
 
                                 <td>
                                   <Image
-                                    src={cat.category_image ? `${base_uri}${cat.category_image}` : "/images/no-image.jpg"}
+                                    src={getImageUrl(cat.category_image) || "/images/no-image.jpg"}
                                     height="70"
                                     width="70"
                                     rounded

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import { api_uri, base_uri } from "../../config/api";
+import { api_uri } from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import {
   Box,
   Button,
@@ -53,7 +54,7 @@ import { toast } from "react-toastify";
  *  - Uses backend endpoints as in your project
  *
  * Notes:
- *  - Images are shown using base_uri + stored path
+ *  - Images use the stored URL or resolve legacy relative paths
  *  - Backend enforces MAX_ACTIVE; the UI shows errors returned by backend
  */
 
@@ -116,7 +117,7 @@ export default function BannerSettings() {
   // ----------------------------
   const previewFromFile = (file) => (file ? URL.createObjectURL(file) : null);
 
-  const baseImage = (path) => (path ? `${base_uri}${path}` : null);
+  const baseImage = (path) => getImageUrl(path) || null;
 
   // ----------------------------
   // Add modal handlers

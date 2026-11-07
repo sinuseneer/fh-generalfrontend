@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import axios from "axios";
-import { api_uri, base_uri } from "../config/api";
+import { api_uri } from "../config/api";
+import { getImageUrl } from "../utils/imageUrl";
 import "./HeroSection.css";
 import { useNavigate } from "react-router-dom";
 
@@ -27,8 +28,8 @@ export default function HeroSection() {
         title: b.title || "",
         subtitle: b.subtitle || "",
         textMode: b.textMode || "dark", // ⭐ IMPORTANT
-        desktop: b.image ? `${base_uri}${b.image}` : null,
-        mobile: b.mobileImage ? `${base_uri}${b.mobileImage}` : null,
+        desktop: getImageUrl(b.image) || null,
+        mobile: getImageUrl(b.mobileImage) || null,
       }));
 
       setSlides(formatted);
@@ -174,7 +175,7 @@ export default function HeroSection() {
                 <div
                   className="slide-image"
                   style={{
-                    backgroundImage: `url(${img})`,
+                    backgroundImage: img ? `url("${img}")` : "none",
                   }}
                 />
 

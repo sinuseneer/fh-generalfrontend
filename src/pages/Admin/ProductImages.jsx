@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import { useParams } from "react-router-dom";
 import { Card, Button, Row, Col, Spinner, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -63,7 +64,7 @@ function ProductImages() {
               <Card className="shadow-sm text-center">
                 <Card.Img
                   variant="top"
-                  src={`${base_uri}${img.image_path}`}
+                  src={getImageUrl(img.image_path)}
                   alt="Product"
                   style={{ height: "180px", objectFit: "cover" }}
                 />

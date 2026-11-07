@@ -3,7 +3,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
-import api_uri, { base_uri } from "../config/api";
+import api_uri from "../config/api";
+import { getImageUrl } from "../utils/imageUrl";
 import { Container } from "react-bootstrap";
 import "./ProductCarousel.css";
 import { useNavigate } from "react-router-dom";
@@ -74,7 +75,7 @@ const settings = {
                     <img
                       src={
                         cat.category_image
-                          ? `${base_uri}${cat.category_image}`
+                          ? getImageUrl(cat.category_image)
                           : "/images/no-image.jpg"
                       }
                       alt={cat.category_name}

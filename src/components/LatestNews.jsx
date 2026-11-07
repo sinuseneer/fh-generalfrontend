@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import axios from "axios";
-import api_uri, { base_uri } from "../config/api"
+import api_uri from "../config/api";
+import { getImageUrl } from "../utils/imageUrl";
 import "../App.css";
 import "./LatestNews.css";
 
@@ -19,7 +20,7 @@ const LatestNews = () => {
 
       const latestFour = sorted.slice(0, 4).map((item) => ({
         ...item,
-        image: `${base_uri}${item.image}`,
+        image: getImageUrl(item.image),
       }));
 
       setNews(latestFour);

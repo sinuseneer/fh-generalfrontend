@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import { useForm } from "react-hook-form";
 import {
   Table,
@@ -213,7 +214,7 @@ function Products() {
                   <td>
                     {p.main_image ? (
                       <Image
-                        src={`${base_uri}${p.main_image}`}
+                        src={getImageUrl(p.main_image)}
                         alt="product"
                         height="80"
                         width="80"

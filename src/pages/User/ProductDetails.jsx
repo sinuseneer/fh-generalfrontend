@@ -15,7 +15,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
 import "./ProductDetails.css";
-import api_uri, { base_uri } from "../../config/api";
+import api_uri from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import SEO from "../../components/SEO/SEO";
 
 
@@ -42,8 +43,7 @@ export default function ProductDetails() {
     message: "",
   });
 
-  const normalizeImg = (img) =>
-    img ? (img.startsWith("http") ? img : `${base_uri}${img}`) : null;
+  const normalizeImg = (img) => getImageUrl(img) || null;
 
   useEffect(() => {
     if (passedProduct) {
@@ -221,7 +221,7 @@ export default function ProductDetails() {
         canonical={`https://fhgeneralequipments.com/product/${id}`}
         ogImage={
           product.main_image
-            ? `${base_uri}${product.main_image}`
+            ? getImageUrl(product.main_image)
             : "https://fhgeneralequipments.com/images/no-image.jpg"
         }
       />

@@ -126,7 +126,9 @@ function ProductAdd() {
           }
         );
       } else {
-        toast.error("Server error while adding product");
+        toast.error(
+          error.response?.data?.message || "Server error while adding product"
+        );
       }
     }
   };
@@ -283,6 +285,7 @@ function ProductAdd() {
             <Form.Control
               type="file"
               multiple
+              accept="image/*"
               onChange={handleImageChange}
               style={{
                 backgroundColor: "#2a2d33",

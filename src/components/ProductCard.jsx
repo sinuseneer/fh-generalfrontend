@@ -1,5 +1,5 @@
 import React from "react";
-import { base_uri } from "../config/api";
+import { getImageUrl } from "../utils/imageUrl";
 import "./ProductCard.css";
 
 const ProductCard = ({ product, onClick }) => {
@@ -9,7 +9,7 @@ const ProductCard = ({ product, onClick }) => {
         <img
           src={
             product.main_image
-              ? `${base_uri}${product.main_image}`
+              ? getImageUrl(product.main_image)
               : "/images/no-image.jpg"
           }
           alt={product.product_name}

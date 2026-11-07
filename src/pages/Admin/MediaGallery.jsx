@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import "./MediaGallery.css";
-import { base_uri } from "../../config/api";
+import { getImageUrl } from "../../utils/imageUrl";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -49,7 +49,7 @@ export default function MediaGallery() {
         params: { page: pageNum, limit: LIMIT, search, category },
       });
 
-      let items = res.data.items || [];
+      let items = Array.isArray(res.data.items) ? res.data.items : [];
 
       // If the unused-only toggle is on, check usage for each item and keep only unused
       if (showUnusedOnly && items.length > 0) {
@@ -130,7 +130,9 @@ export default function MediaGallery() {
       loadMedia(1, true);
     } catch (err) {
       console.error("uploadFiles error", err);
-      toast.error("Upload failed", { style: toastStyle });
+      toast.error(err?.response?.data?.message || "Upload failed", {
+        style: toastStyle,
+      });
     }
   };
 
@@ -176,7 +178,9 @@ export default function MediaGallery() {
       loadMedia(1, true);
     } catch (err) {
       console.error("deleteSelectedFiles error", err);
-      toast.error("Failed to delete files", { style: toastStyle });
+      toast.error(err?.response?.data?.message || "Failed to delete files", {
+        style: toastStyle,
+      });
     }
   };
 
@@ -222,7 +226,9 @@ export default function MediaGallery() {
       loadMedia(1, true);
     } catch (err) {
       console.error("saveMeta error", err);
-      toast.error("Failed to update", { style: toastStyle });
+      toast.error(err?.response?.data?.message || "Failed to update", {
+        style: toastStyle,
+      });
     }
   };
 
@@ -241,7 +247,9 @@ export default function MediaGallery() {
       loadMedia(1, true);
     } catch (err) {
       console.error("deleteFile error", err);
-      toast.error("Delete failed", { style: toastStyle });
+      toast.error(err?.response?.data?.message || "Delete failed", {
+        style: toastStyle,
+      });
     }
   };
 
@@ -321,6 +329,7 @@ export default function MediaGallery() {
             <input
               type="file"
               multiple
+              accept="image/*"
               onChange={(e) => uploadFiles(e.target.files)}
             />
           </label>
@@ -358,7 +367,7 @@ export default function MediaGallery() {
             key={`${item.folder}/${item.name}`}
           >
             <img
-              src={base_uri + item.url}
+              src={getImageUrl(item.url)}
               alt={item.meta?.alt || ""}
               onClick={(e) => {
                 if (e.shiftKey) toggleMultiSelect(item);
@@ -398,11 +407,15 @@ export default function MediaGallery() {
             </button>
 
             <div className="modal-left">
-              <img src={base_uri + selected.url} alt="" />
+              <img src={getImageUrl(selected.url)} alt="" />
 
               <div className="modal-actions">
                 <a
-                  href={base_uri + selected.downloadUrl}
+                  href={
+                    selected.downloadUrl
+                      ? new URL(selected.downloadUrl, window.location.origin).toString()
+                      : getImageUrl(selected.url)
+                  }
                   className="btn"
                   target="_blank"
                   rel="noreferrer"

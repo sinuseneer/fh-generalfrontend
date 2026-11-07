@@ -42,7 +42,7 @@ export default function AddPost() {
       navigate("/admin/posts/list");
     } catch (error) {
       console.log(error);
-      alert("Failed to add post!");
+      alert(error.response?.data?.message || "Failed to add post!");
     }
   };
 
